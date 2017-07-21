@@ -1,0 +1,45 @@
+{
+  "name": "jukebox",
+  "version": "1.0.0",
+  "description": "Remote audio player (on Raspberry Pi)?",
+  "author": "unblee",
+  "license": "MIT",
+  "homepage": "https://github.com/unblee/jukebox",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/unblee/jukebox.git"
+  },
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node ./src/app.js",
+    "dev": "nodemon ./src/app.js",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "engines": {
+    "node": "~8.0.0"
+  },
+  "dependencies": {
+    "fluent-ffmpeg": "^2.1.2",
+    "koa": "^2.3.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-mount": "^3.0.0",
+    "koa-route": "^3.2.0",
+    "koa-static": "^4.0.1",
+    "koa-websocket": "^4.0.0",
+    "lame": "^1.2.4",
+    "speaker": "^0.3.0",
+    "ytdl-core": "^0.15.0"
+  },
+  "devDependencies": {
+    "husky": "^0.14.3",
+    "lint-staged": "^4.0.2",
+    "nodemon": "^1.11.0",
+    "prettier": "^1.5.3"
+  }
+}

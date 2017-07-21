@@ -1,0 +1,26 @@
+.stripe-background {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    white,
+    white 10px,
+    whitesmoke 10px,
+    whitesmoke 20px
+  );
+}
+
+.player-controler a {
+  color: #4a4a4a;
+}
+
+.player-controler a:hover {
+  color: #75b0ba;
+}
+
+.player-controler .is-loop-active {
+  color: #75b0ba;
+}
+
+.player-controler .deactivate {
+  color: lightgray;
+  pointer-events: none;
+}

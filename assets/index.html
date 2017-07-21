@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <title>jukebox</title>
+
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.3/css/bulma.min.css">
+  <link rel="stylesheet" href="css/index.css">
+  <link rel="stylesheet" href="css/player.css">
+  <link rel="stylesheet" href="css/playlist.css">
+  <link rel="stylesheet" href="css/links-sender.css">
+</head>
+
+<body>
+  <section id="app" class="hero is-fullheight">
+    <div class="hero-body">
+      <div class="container">
+        <div class="columns">
+          <div class="column has-text-centered">
+            <h1 class="app-title">
+              jukebox
+            </h1>
+          </div>
+        </div>
+        <div class="columns">
+          <div class="column">
+            <player :player="bind_player"></player>
+          </div>
+          <div class="column">
+            <playlist :playlist="bind_playlist"></playlist>
+          </div>
+        </div>
+      </div>
+    </div>
+    <links-sender></links-sender>
+  </section>
+
+  <script src="https://unpkg.com/vue"></script>
+  <!-- <script src="https://unpkg.com/vue/dist/vue.min.js"></script> -->
+  <script src="js/playlist.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/links-sender.js"></script>
+  <script src="js/index.js"></script>
+</body>
+
+</html>

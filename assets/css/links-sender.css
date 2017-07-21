@@ -1,0 +1,22 @@
+.links-sender {
+  position: fixed !important;
+  bottom: 0;
+  width: 100%;
+}
+
+.links-sender .send-button {
+  color: #75b0ba;
+}
+
+.links-sender .deactivate {
+  color: lightgray;
+  pointer-events: none;
+}
+
+.links-sender .error-msg {
+  color: #cc0000;
+}
+
+.links-sender input[type="text"]:focus {
+  border-color: #75b0ba;
+}

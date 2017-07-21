@@ -1,0 +1,22 @@
+.app-title {
+  font-weight: bold;
+  color: gray;
+  margin-bottom: 1em;
+  font-size: 4em;
+}
+
+.material-icons.is-large {
+  font-size: 4em;
+}
+
+.material-icons.is-medium {
+  font-size: 2em;
+}
+
+.material-icons.is-small {
+  font-size: 1em;
+}
+
+.material-icons.is-pushable:active {
+  transform: translateY(2px);
+}
