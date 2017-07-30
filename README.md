@@ -5,7 +5,7 @@ Remote audio player (on Raspberry Pi)?
 # ⚠️ Caution ⚠️
 
 `async/await`, `Fetch API`, `ES6 syntax` are used in this application.
-So please use the latest version web browser.
+So please use the latest version web browser.  
 I am checking the operation with the latest version of `chrome` and `firefox`.
 
 # Configuration
@@ -21,7 +21,7 @@ I am checking the operation with the latest version of `chrome` and `firefox`.
 
 ## for Users
 
-First, comment in `<script src="https://unpkg.com/vue/dist/vue.min.js"></script>` in `assets/index.html`.
+First, comment in `<script src="https://unpkg.com/vue/dist/vue.min.js"></script>` in `assets/index.html`.  
 Next, comment out `<script src="https://unpkg.com/vue"></script>` in the same file.
 
 ```console
