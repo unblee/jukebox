@@ -13,7 +13,7 @@ I am checking the operation with the latest version of `chrome` and `firefox`.
 ## Environment value
 
 |Parameter|Default|Example|Description|
-|-|-|-|-|-|
+|-|-|-|-|
 |JUKEBOX_NO_WEB_UI|''|'yes'|If you set the value, startup with no web UI.|
 |JUKEBOX_PORT|8888|3000|If you set the value, startup with the port of the set value.|
 
