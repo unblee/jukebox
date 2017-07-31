@@ -29,72 +29,50 @@ module.exports = class Playlist {
     return validated.unavailable_links;
   }
 
-  // TODO: refactoring
   async _validate_links(links = []) {
     const validated = await Promise.all(
       links.map(async link => {
-        const provider = this.providers.find(provider =>
-          provider.pattern.test(link)
-        );
-        let err_msg = null;
-        let provider_name = null;
-        let length_seconds = null;
-        let title = null;
-        let id = null;
-        let thumbnail_link = null;
         try {
-          length_seconds = await provider.get_length_seconds(link);
-          title = await provider.get_title(link);
+          const provider = this.providers.find(provider =>
+            provider.pattern.test(link)
+          );
+
+          if (!provider) {
+            throw new Error("This link belongs to an unsupported provider");
+          }
+
+          const provider_name = provider.name;
+          const length_seconds = await provider.get_length_seconds(link);
+          const title = await provider.get_title(link);
+          const id = provider.get_id(link);
+          const thumbnail_link = provider.get_thumbnail_link(link);
+
+          if (!length_seconds) {
+            throw new Error(
+              `This '${provider_name}' link can not be played at the moment`
+            );
+          }
+
+          return {
+            provider: provider_name,
+            link,
+            length_seconds,
+            title,
+            id,
+            thumbnail_link
+          };
         } catch (e) {
-          // provider is undefined
-          err_msg = "This link belongs to an unsupported provider";
+          return {
+            link,
+            err_msg: e && e.message
+          };
         }
-        if (!err_msg) {
-          // provider is not undefined
-          provider_name = provider.name;
-          id = provider.get_id(link);
-          thumbnail_link = provider.get_thumbnail_link(link);
-        }
-        if (!length_seconds && !err_msg) {
-          // unavailable link
-          err_msg = `This '${provider_name}' link can not be played at the moment`;
-        }
-        return {
-          err_msg,
-          provider: provider_name,
-          link,
-          length_seconds,
-          title,
-          id,
-          thumbnail_link
-        };
       })
     );
 
-    const available_links = validated
-      .filter(content => !content.err_msg)
-      .map(content => {
-        return {
-          provider: content.provider,
-          link: content.link,
-          length_seconds: content.length_seconds,
-          id: content.id,
-          title: content.title,
-          thumbnail_link: content.thumbnail_link
-        };
-      });
-    const unavailable_links = validated
-      .filter(content => content.err_msg)
-      .map(content => {
-        return {
-          err_msg: content.err_msg,
-          link: content.link
-        };
-      });
-
     return {
-      available_links,
-      unavailable_links
+      available_links: validated.filter(x => !x.err_msg),
+      unavailable_links: validated.filter(x => x.err_msg)
     };
   }
 
