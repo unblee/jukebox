@@ -30,7 +30,7 @@ module.exports = class Playlist {
   }
 
   async _validate_links(links = []) {
-    const validated = Promise.all(
+    const validated = await Promise.all(
       links.map(async link => {
         try {
           const provider = this.providers.find(provider =>
