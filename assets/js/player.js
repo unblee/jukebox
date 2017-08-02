@@ -38,7 +38,7 @@ Vue.component("player", {
     <div class="card has-text-centered">
       <div class="card-image">
         <figure class="image is-16by9 stripe-background">
-          <img v-if="player.now_playing_content" :src="player.now_playing_content.thumbnail_link" alt="Image">
+          <img v-if="player.now_playing_content && player.now_playing_content.thumbnail_link" :src="player.now_playing_content.thumbnail_link" alt="Image">
         </figure>
       </div>
       <div class="card-content">

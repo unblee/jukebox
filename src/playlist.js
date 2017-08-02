@@ -31,7 +31,7 @@ module.exports = class Playlist extends EventEmitter {
           const length_seconds = await provider.get_length_seconds(link);
           const title = await provider.get_title(link);
           const id = provider.get_id(link);
-          const thumbnail_link = provider.get_thumbnail_link(link);
+          const thumbnail_link = await provider.get_thumbnail_link(link);
 
           if (!length_seconds) {
             throw new Error(
