@@ -34,6 +34,7 @@
     "koa-static": "^4.0.1",
     "koa-websocket": "^4.0.0",
     "lame": "^1.2.4",
+    "lodash.throttle": "^4.1.1",
     "lodash.random": "^3.2.0",
     "lodash.shuffle": "^4.2.0",
     "request": "^2.81.0",
