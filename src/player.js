@@ -17,6 +17,13 @@ module.exports = class Player {
     this.now_playing_content = null;
     this.next_play_content = null;
     this.spkr = null;
+
+    this.playlist.on("removed", ({ index }) => {
+      if (index <= this.now_playing_idx) {
+        --this.now_playing_idx;
+        this.ev.emit("update-status");
+      }
+    });
   }
 
   start() {

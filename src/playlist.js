@@ -1,8 +1,10 @@
 const ytdl = require("ytdl-core");
 const Provider = require("./provider");
+const EventEmitter = require("events").EventEmitter;
 
-module.exports = class Playlist {
+module.exports = class Playlist extends EventEmitter {
   constructor(ev) {
+    super();
     this.ev = ev;
     this.queue = [];
   }
@@ -90,6 +92,7 @@ module.exports = class Playlist {
   remove(index) {
     this.queue.splice(index, 1);
     this.ev.emit("update-status");
+    this.emit("removed", { index });
   }
 
   length() {
