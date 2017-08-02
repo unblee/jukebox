@@ -21,7 +21,7 @@ I am checking the operation with the latest version of `chrome` and `firefox`.
 
 ## Prerequisites
 
-### for (speaker)[https://www.npmjs.com/package/speaker] package
+### for [speaker](https://www.npmjs.com/package/speaker) package
 
 `speaker` package requires `alsa.h` header file.
 
@@ -31,7 +31,7 @@ On Debian/Ubuntu:
 $ sudo apt-get install libasound2-dev
 ```
 
-### for (fluent-ffmpeg)[https://www.npmjs.com/package/fluent-ffmpeg] package
+### for [fluent-ffmpeg](https://www.npmjs.com/package/fluent-ffmpeg) package
 
 `fluent-ffmpeg` package requires `ffmpeg` command.
 
