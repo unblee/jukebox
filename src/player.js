@@ -1,6 +1,6 @@
 const Playlist = require("./playlist.js");
 const Provider = require("./provider");
-const speaker = require("speaker");
+const speaker = require("speaker")();
 const decoder = require("lame").Decoder;
 
 module.exports = class Player {
@@ -8,9 +8,11 @@ module.exports = class Player {
     this.playlist = playlist;
     this.ev = ev;
     this.audio_stream = null;
+    this.decoded_stream = null;
     this.one_loop = false;
     this.playlist_loop = false;
     this.now_playing = false;
+    this.pausing = false;
     this.now_playing_idx = 0;
     this.now_playing_content = null;
     this.next_play_content = null;
@@ -30,6 +32,7 @@ module.exports = class Player {
 
   _start() {
     if (this.now_playing) return;
+    if (this.pausing) return this._resume();
 
     this._update_playing_content();
     if (!this.now_playing_content) return;
@@ -59,12 +62,21 @@ module.exports = class Player {
     this._start();
   }
 
+  _resume() {
+    this.pausing = false;
+    this.now_playing = true;
+    this.decoded_stream.pipe(speaker);
+    this.ev.emit("update-status");
+  }
+
   _destroy() {
     this.audio_stream.removeAllListeners("close");
     try {
-      this.audio_stream.destroy();
+      this.decoded_stream.unpipe(speaker);
+      this.decoded_stream.end();
     } catch (e) {}
     this.now_playing = false;
+    this.pausing = false;
     this.ev.emit("update-status");
   }
 
@@ -86,14 +98,12 @@ module.exports = class Player {
     // audio output to the speaker
     this.now_playing = true;
     this.ev.emit("update-status");
-    this.audio_stream = stream
-      .pipe(decoder())
-      .pipe(speaker())
-      .on("close", () => {
-        this.now_playing = false;
-        this.ev.emit("update-status");
-        this._start_next();
-      });
+    this.decoded_stream = stream.pipe(decoder());
+    this.audio_stream = this.decoded_stream.pipe(speaker).on("close", () => {
+      this.now_playing = false;
+      this.ev.emit("update-status");
+      this._start_next();
+    });
   }
 
   /*** controllers ***/
@@ -121,9 +131,12 @@ module.exports = class Player {
     };
   }
 
-  stop() {
+  pause() {
     return ctx => {
-      this._destroy();
+      this.decoded_stream.unpipe(speaker);
+      this.now_playing = false;
+      this.pausing = true;
+      this.ev.emit("update-status");
       ctx.status = 200;
     };
   }
