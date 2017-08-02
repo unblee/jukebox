@@ -1,6 +1,6 @@
 const Koa = require("koa");
 const serve = require("koa-static");
-const route = require("koa-route");
+const socket_route = require("koa-route");
 const mount = require("koa-mount");
 const bodyParser = require("koa-bodyparser");
 const path = require("path");
@@ -16,6 +16,10 @@ const playlist = new Playlist(ev);
 
 const Player = require("./player.js");
 const player = new Player(playlist, ev);
+
+const Router = require("./router");
+const router = new Router();
+router.all_bind(player, playlist);
 
 // use body parser
 app.use(bodyParser());
@@ -40,21 +44,10 @@ ev.on("update-status", () => {
 });
 
 // websocket connection
-app.ws.use(route.get("/socket", ctx => {}));
+app.ws.use(socket_route.get("/socket", ctx => {}));
 
-app.use(route.post("/playlist", playlist.add()));
-app.use(route.delete("/playlist", playlist.clear()));
-app.use(route.delete("/playlist/:index", playlist.remove()));
-
-app.use(route.get("/player/status", player.status()));
-app.use(route.post("/player/start", player.start()));
-app.use(route.post("/player/pause", player.pause()));
-app.use(route.post("/player/next", player.next()));
-app.use(route.post("/player/prev", player.prev()));
-app.use(route.post("/player/loop/one/on", player.one_loop_on()));
-app.use(route.post("/player/loop/one/off", player.one_loop_off()));
-app.use(route.post("/player/loop/playlist/on", player.playlist_loop_on()));
-app.use(route.post("/player/loop/playlist/off", player.playlist_loop_off()));
+app.use(router.routes());
+app.use(router.allowedMethods());
 
 let port = 8888;
 if (process.env.JUKEBOX_PORT) {
