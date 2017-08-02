@@ -15,8 +15,8 @@ Vue.component("links-sender", {
         },
         body: JSON.stringify(this.input.split(","))
       });
-      if (res.ok) return res.json();
-      this.unavaliable_links = json;
+      if (!res.ok) return;
+      this.unavaliable_links = res.json();
       this.input = "";
       setTimeout(() => {
         this.clear_unavaliable_links();
