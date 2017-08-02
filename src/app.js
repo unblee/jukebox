@@ -8,18 +8,14 @@ const path = require("path");
 const websockify = require("koa-websocket");
 const app = websockify(new Koa());
 
-const providers = [];
-const youtube = require("./provider/youtube.js");
-providers.push(youtube);
-
 const Event = require("events");
 const ev = new Event.EventEmitter();
 
 const Playlist = require("./playlist.js");
-const playlist = new Playlist(providers, ev);
+const playlist = new Playlist(ev);
 
 const Player = require("./player.js");
-const player = new Player(playlist, providers, ev);
+const player = new Player(playlist, ev);
 
 // use body parser
 app.use(bodyParser());

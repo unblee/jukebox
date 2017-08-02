@@ -1,9 +1,8 @@
 const ytdl = require("ytdl-core");
-const Event = require("events");
+const Provider = require("./provider");
 
 module.exports = class Playlist {
-  constructor(providers = [], ev) {
-    this.providers = providers;
+  constructor(ev) {
     this.ev = ev;
     this.queue = [];
   }
@@ -33,9 +32,7 @@ module.exports = class Playlist {
     const validated = await Promise.all(
       links.map(async link => {
         try {
-          const provider = this.providers.find(provider =>
-            provider.pattern.test(link)
-          );
+          const provider = Provider.findByLink(link);
 
           if (!provider) {
             throw new Error("This link belongs to an unsupported provider");
