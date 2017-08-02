@@ -4,14 +4,7 @@ module.exports = class PlaylistController {
   }
 
   async add(ctx) {
-    const unavailable_links = await this.playlist.add(ctx.request.body);
-
-    if (unavailable_links.length !== 0) {
-      ctx.body = unavailable_links;
-    } else {
-      ctx.body = [];
-    }
-
+    ctx.body = await this.playlist.add(ctx.request.body); // unavailable_links
     ctx.status = 200;
   }
 
