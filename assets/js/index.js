@@ -12,7 +12,7 @@ new Vue({
   methods: {
     async init() {
       const res = await fetch("/player/status");
-      this.player_status = res.json();
+      this.player_status = await res.json();
       this.bind_update();
     },
     bind_update() {

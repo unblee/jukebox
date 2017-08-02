@@ -20,8 +20,8 @@ module.exports = class PlayerController {
     ctx.status = 200;
   }
 
-  async stop(ctx) {
-    this.player.destroy();
+  async pause(ctx) {
+    this.player.pause();
     ctx.status = 200;
   }
 
