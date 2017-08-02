@@ -2,9 +2,11 @@ const ytdl = require("ytdl-core");
 const Provider = require("./provider");
 const shuffle = require("lodash.shuffle");
 const random = require("lodash.random");
+const EventEmitter = require("events").EventEmitter;
 
-module.exports = class Playlist {
+module.exports = class Playlist extends EventEmitter {
   constructor(ev) {
+    super();
     this.ev = ev;
     this.queue = [];
   }
@@ -40,7 +42,7 @@ module.exports = class Playlist {
           const length_seconds = await provider.get_length_seconds(link);
           const title = await provider.get_title(link);
           const id = provider.get_id(link);
-          const thumbnail_link = provider.get_thumbnail_link(link);
+          const thumbnail_link = await provider.get_thumbnail_link(link);
 
           if (!length_seconds) {
             throw new Error(
@@ -105,6 +107,7 @@ module.exports = class Playlist {
   remove(index) {
     this.queue.splice(index, 1);
     this.ev.emit("update-status");
+    this.emit("removed", { index });
   }
 
   shuffle() {
