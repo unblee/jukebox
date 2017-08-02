@@ -4,6 +4,7 @@ const socket_route = require("koa-route");
 const mount = require("koa-mount");
 const bodyParser = require("koa-bodyparser");
 const path = require("path");
+const throttle = require("lodash.throttle");
 
 const websockify = require("koa-websocket");
 const app = websockify(new Koa());
@@ -39,9 +40,12 @@ app.ws.broadcast = data => {
   }
 };
 
-ev.on("update-status", () => {
-  app.ws.broadcast(JSON.stringify(player.fetch_status()));
-});
+ev.on(
+  "update-status",
+  throttle(() => {
+    app.ws.broadcast(JSON.stringify(player.fetch_status()));
+  }, 200)
+);
 
 // websocket connection
 app.ws.use(socket_route.get("/socket", ctx => {}));
