@@ -11,6 +11,7 @@ module.exports = class Player {
     this.decoded_stream = null;
     this.one_loop = false;
     this.playlist_loop = false;
+    this.shuffle_mode = false;
     this.now_playing = false;
     this.pausing = false;
     this.now_playing_idx = 0;
@@ -85,10 +86,16 @@ module.exports = class Player {
     this.ev.emit("update-status");
   }
 
+  set_shuffle_mode(value) {
+    this.shuffle_mode = !!value;
+    this.ev.emit("update-status");
+  }
+
   fetch_status() {
     return {
       one_loop: this.one_loop,
       playlist_loop: this.playlist_loop,
+      shuffle_mode: this.shuffle_mode,
       now_playing: this.now_playing,
       now_playing_idx: this.now_playing_idx,
       now_playing_content: this.now_playing_content,
