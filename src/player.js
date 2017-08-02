@@ -1,12 +1,12 @@
 const Playlist = require("./playlist.js");
+const Provider = require("./provider");
 const speaker = require("speaker");
 const decoder = require("lame").Decoder;
 
 module.exports = class Player {
-  constructor(playlist = new Playlist(), providers = [], ev) {
+  constructor(playlist = new Playlist(), ev) {
     this.playlist = playlist;
     this.ev = ev;
-    this.providers = providers;
     this.audio_stream = null;
     this.one_loop = false;
     this.playlist_loop = false;
@@ -76,9 +76,7 @@ module.exports = class Player {
       this.now_playing_content = this.playlist.pull(this.now_playing_idx);
     }
 
-    const provider = this.providers.find(provider => {
-      return provider.name === this.now_playing_content.provider;
-    });
+    const provider = Provider.find_by_name(this.now_playing_content.provider);
     const provider_stream = provider.create_stream(
       this.now_playing_content.link
     );
