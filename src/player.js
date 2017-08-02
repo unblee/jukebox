@@ -16,6 +16,67 @@ module.exports = class Player {
     this.next_play_content = null;
   }
 
+  start() {
+    if (this.now_playing) return;
+
+    this._update_playing_content();
+    if (!this.now_playing_content) return;
+
+    this._play_music();
+  }
+
+  start_next() {
+    if (this.one_loop) {
+      // pass
+    } else if (this.playlist_loop) {
+      this._inc_playing_idx();
+    } else {
+      this.playlist.dequeue();
+    }
+    this.start();
+  }
+
+  start_prev() {
+    if (this.one_loop) {
+      // pass
+    } else if (this.playlist_loop) {
+      this._dec_playing_idx();
+    } else {
+      return; // disabled
+    }
+    this.start();
+  }
+
+  destroy() {
+    this.audio_stream.removeAllListeners("close");
+    try {
+      this.audio_stream.destroy();
+    } catch (e) {}
+    this.now_playing = false;
+    this.ev.emit("update-status");
+  }
+
+  set_one_loop(value) {
+    this.one_loop = !!value;
+    this.ev.emit("update-status");
+  }
+
+  set_playlist_loop(value) {
+    this.playlist_loop = !!value;
+    this.ev.emit("update-status");
+  }
+
+  fetch_status() {
+    return {
+      one_loop: this.one_loop,
+      playlist_loop: this.playlist_loop,
+      now_playing: this.now_playing,
+      now_playing_idx: this.now_playing_idx,
+      now_playing_content: this.now_playing_content,
+      playlist: this.playlist.pull_all()
+    };
+  }
+
   _inc_playing_idx() {
     if (this.one_loop) return;
     this.now_playing_idx = (this.now_playing_idx + 1) % this.playlist.length();
@@ -26,46 +87,6 @@ module.exports = class Player {
     this.now_playing_idx =
       (this.now_playing_idx + this.playlist.length() - 1) %
       this.playlist.length();
-  }
-
-  _start() {
-    if (this.now_playing) return;
-
-    this._update_playing_content();
-    if (!this.now_playing_content) return;
-
-    this._play_music();
-  }
-
-  _start_next() {
-    if (this.one_loop) {
-      // pass
-    } else if (this.playlist_loop) {
-      this._inc_playing_idx();
-    } else {
-      this.playlist.dequeue();
-    }
-    this._start();
-  }
-
-  _start_prev() {
-    if (this.one_loop) {
-      // pass
-    } else if (this.playlist_loop) {
-      this._dec_playing_idx();
-    } else {
-      return; // disabled
-    }
-    this._start();
-  }
-
-  _destroy() {
-    this.audio_stream.removeAllListeners("close");
-    try {
-      this.audio_stream.destroy();
-    } catch (e) {}
-    this.now_playing = false;
-    this.ev.emit("update-status");
   }
 
   _update_playing_content(play_content = null) {
@@ -92,88 +113,7 @@ module.exports = class Player {
       .on("close", () => {
         this.now_playing = false;
         this.ev.emit("update-status");
-        this._start_next();
+        this.start_next();
       });
-  }
-
-  /*** controllers ***/
-
-  start() {
-    return ctx => {
-      this._start();
-      ctx.status = 200;
-    };
-  }
-
-  next() {
-    return ctx => {
-      this._destroy();
-      this._start_next();
-      ctx.status = 200;
-    };
-  }
-
-  prev() {
-    return ctx => {
-      this._destroy();
-      this._start_prev();
-      ctx.status = 200;
-    };
-  }
-
-  stop() {
-    return ctx => {
-      this._destroy();
-      ctx.status = 200;
-    };
-  }
-
-  one_loop_on() {
-    return ctx => {
-      this.one_loop = true;
-      this.ev.emit("update-status");
-      ctx.status = 200;
-    };
-  }
-
-  one_loop_off() {
-    return ctx => {
-      this.one_loop = false;
-      this.ev.emit("update-status");
-      ctx.status = 200;
-    };
-  }
-
-  playlist_loop_on() {
-    return ctx => {
-      this.playlist_loop = true;
-      this.ev.emit("update-status");
-      ctx.status = 200;
-    };
-  }
-
-  playlist_loop_off() {
-    return ctx => {
-      this.playlist_loop = false;
-      this.ev.emit("update-status");
-      ctx.status = 200;
-    };
-  }
-
-  status() {
-    return ctx => {
-      ctx.body = this.fetch_status();
-    };
-  }
-
-  fetch_status() {
-    return {
-      one_loop: this.one_loop,
-      playlist_loop: this.playlist_loop,
-      now_playing: this.now_playing,
-      now_playing_idx: this.now_playing_idx,
-      now_playing_content: this.now_playing_content,
-      playlist: this.playlist.pull_all()
-    };
   }
 };

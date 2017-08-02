@@ -17,6 +17,9 @@ const playlist = new Playlist(ev);
 const Player = require("./player.js");
 const player = new Player(playlist, ev);
 
+const PlayerController = require("./controller/player_controller");
+const player_controller = new PlayerController(player);
+
 // use body parser
 app.use(bodyParser());
 
@@ -46,15 +49,45 @@ app.use(route.post("/playlist", playlist.add()));
 app.use(route.delete("/playlist", playlist.clear()));
 app.use(route.delete("/playlist/:index", playlist.remove()));
 
-app.use(route.get("/player/status", player.status()));
-app.use(route.post("/player/start", player.start()));
-app.use(route.post("/player/stop", player.stop()));
-app.use(route.post("/player/next", player.next()));
-app.use(route.post("/player/prev", player.prev()));
-app.use(route.post("/player/loop/one/on", player.one_loop_on()));
-app.use(route.post("/player/loop/one/off", player.one_loop_off()));
-app.use(route.post("/player/loop/playlist/on", player.playlist_loop_on()));
-app.use(route.post("/player/loop/playlist/off", player.playlist_loop_off()));
+app.use(
+  route.get("/player/status", player_controller.status.bind(player_controller))
+);
+app.use(
+  route.post("/player/start", player_controller.start.bind(player_controller))
+);
+app.use(
+  route.post("/player/stop", player_controller.stop.bind(player_controller))
+);
+app.use(
+  route.post("/player/next", player_controller.next.bind(player_controller))
+);
+app.use(
+  route.post("/player/prev", player_controller.prev.bind(player_controller))
+);
+app.use(
+  route.post(
+    "/player/loop/one/on",
+    player_controller.one_loop_on.bind(player_controller)
+  )
+);
+app.use(
+  route.post(
+    "/player/loop/one/off",
+    player_controller.one_loop_off.bind(player_controller)
+  )
+);
+app.use(
+  route.post(
+    "/player/loop/playlist/on",
+    player_controller.playlist_loop_on.bind(player_controller)
+  )
+);
+app.use(
+  route.post(
+    "/player/loop/playlist/off",
+    player_controller.playlist_loop_off.bind(player_controller)
+  )
+);
 
 let port = 8888;
 if (process.env.JUKEBOX_PORT) {
