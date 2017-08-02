@@ -1,6 +1,10 @@
 Vue.component("playlist", {
   props: ["playlist"],
 
+  created() {
+    new Clipboard(".copy-link-button");
+  },
+
   methods: {
     humanize_time(seconds) {
       const s = seconds % 60;
@@ -39,8 +43,13 @@ Vue.component("playlist", {
         <div class="column has-text-centered is-2">
           {{ humanize_time(content.length_seconds) }}
         </div>
-        <div class="column is-2 has-text-centered">
-          <a class="has-text-white delete-content" @click="delete_content(idx)">
+        <div class="column is-1 has-text-centered">
+          <a class="has-text-white in-content-button copy-link-button" :data-clipboard-text="content.link">
+            <i class="material-icons" title="Copy Link">link</i>
+          </a>
+        </div>
+        <div class="column is-1 has-text-centered">
+          <a class="has-text-white in-content-button" @click="delete_content(idx)">
             <i class="material-icons" title="Delete">&#xE872;</i>
           </a>
         </div>

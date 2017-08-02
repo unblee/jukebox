@@ -33,16 +33,16 @@ a.now-playing-content.is-active {
   pointer-events: none;
 }
 
-.delete-content {
-   opacity: 0; 
+.in-content-button {
+  opacity: 0;
   transition: all .2s ease;
 }
 
-.playlist-content:hover .delete-content {
+.playlist-content:hover .in-content-button {
   opacity: 1;
 }
 
-.playlist-content:not(.now-playing-content):hover .delete-content {
+.playlist-content:not(.now-playing-content):hover .in-content-button {
   color: #75b0ba;
   color: #363636;
 }
