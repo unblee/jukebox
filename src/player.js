@@ -1,6 +1,6 @@
 const Playlist = require("./playlist.js");
 const Provider = require("./provider");
-const speaker = require("speaker")();
+const speaker = require("speaker");
 const decoder = require("lame").Decoder;
 
 module.exports = class Player {
@@ -16,6 +16,7 @@ module.exports = class Player {
     this.now_playing_idx = 0;
     this.now_playing_content = null;
     this.next_play_content = null;
+    this.spkr = null;
   }
 
   _inc_playing_idx() {
@@ -65,15 +66,14 @@ module.exports = class Player {
   _resume() {
     this.pausing = false;
     this.now_playing = true;
-    this.decoded_stream.pipe(speaker);
+    this.decoded_stream.pipe(this.spkr);
     this.ev.emit("update-status");
   }
 
   _destroy() {
     this.audio_stream.removeAllListeners("close");
     try {
-      this.decoded_stream.unpipe(speaker);
-      this.decoded_stream.end();
+      this.decoded_stream.unpipe(this.spkr).end();
     } catch (e) {}
     this.now_playing = false;
     this.pausing = false;
@@ -99,8 +99,12 @@ module.exports = class Player {
     this.now_playing = true;
     this.ev.emit("update-status");
     this.decoded_stream = stream.pipe(decoder());
-    this.audio_stream = this.decoded_stream.pipe(speaker).on("close", () => {
+    this.spkr = speaker();
+    this.audio_stream = this.decoded_stream.pipe(this.spkr);
+    this.audio_stream.on("close", () => {
       this.now_playing = false;
+      this.pausing = false;
+      this._destroy();
       this.ev.emit("update-status");
       this._start_next();
     });
@@ -133,7 +137,7 @@ module.exports = class Player {
 
   pause() {
     return ctx => {
-      this.decoded_stream.unpipe(speaker);
+      this.decoded_stream.unpipe(this.spkr);
       this.now_playing = false;
       this.pausing = true;
       this.ev.emit("update-status");
