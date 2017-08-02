@@ -41,7 +41,7 @@ Vue.component("playlist", {
         </div>
         <div class="column is-2 has-text-centered">
           <a class="has-text-white delete-content" @click="delete_content(idx)">
-            <i class="material-icons">&#xE872;</i>
+            <i class="material-icons" title="Delete">&#xE872;</i>
           </a>
         </div>
       </div>
