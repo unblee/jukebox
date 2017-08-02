@@ -76,7 +76,7 @@ module.exports = class Player {
       this.now_playing_content = this.playlist.pull(this.now_playing_idx);
     }
 
-    const provider = Provider.findByName(this.now_playing_content.provider);
+    const provider = Provider.find_by_name(this.now_playing_content.provider);
     const provider_stream = provider.create_stream(
       this.now_playing_content.link
     );

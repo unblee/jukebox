@@ -32,7 +32,7 @@ module.exports = class Playlist {
     const validated = await Promise.all(
       links.map(async link => {
         try {
-          const provider = Provider.findByLink(link);
+          const provider = Provider.find_by_link(link);
 
           if (!provider) {
             throw new Error("This link belongs to an unsupported provider");
