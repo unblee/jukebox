@@ -19,6 +19,7 @@ new Vue({
       this.bind_player = {
         one_loop: this.player_status.one_loop,
         playlist_loop: this.player_status.playlist_loop,
+        shuffle_mode: this.player_status.shuffle_mode,
         now_playing: this.player_status.now_playing,
         now_playing_idx: this.player_status.now_playing_idx,
         now_playing_content: this.player_status.now_playing_content,

@@ -30,6 +30,13 @@ Vue.component("player", {
       } else {
         fetch("/player/loop/playlist/on", { method: "POST" });
       }
+    },
+    player_shuffle_mode_toggle() {
+      if (this.player.shuffle_mode) {
+        fetch("/player/loop/shuffle/off", { method: "POST" });
+      } else {
+        fetch("/player/loop/shuffle/on", { method: "POST" });
+      }
     }
   },
 
@@ -84,6 +91,9 @@ Vue.component("player", {
             </a>
             <a title="Playlist Loop" :class="[{ 'is-loop-active': player.playlist_loop }, { 'deactivate': is_playlist_empty() }]" @click="player_loop_playlist_toggle()">
               <i class="material-icons is-medium">repeat</i>
+            </a>
+            <a title="Shuffle" :class="[{ 'is-loop-active': player.shuffle_mode }, { 'deactivate': is_playlist_empty() }]" @click="player_shuffle_mode_toggle()">
+              <i class="material-icons is-medium">shuffle</i>
             </a>
           </div>
         </div>
