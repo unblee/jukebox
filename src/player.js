@@ -49,8 +49,13 @@ module.exports = class Player {
   }
 
   _start_prev() {
-    if (!this.playlist_loop || this.one_loop) return; // disabled
-    this._dec_playing_idx();
+    if (this.one_loop) {
+      // pass
+    } else if (this.playlist_loop) {
+      this._dec_playing_idx();
+    } else {
+      return; // disabled
+    }
     this._start();
   }
 
