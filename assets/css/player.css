@@ -8,11 +8,11 @@
   );
 }
 
-.player-controler a {
+.player a {
   color: #4a4a4a;
 }
 
-.player-controler a:hover {
+.player a:hover {
   color: #75b0ba;
 }
 

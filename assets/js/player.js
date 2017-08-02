@@ -45,7 +45,9 @@ Vue.component("player", {
         <div class="columns">
           <div class="column">
             <h1 v-if="player.now_playing_content" class="title is-4">
-              {{ player.now_playing_content.title }}
+              <a :href="player.now_playing_content.link" target="_blank">
+                {{ player.now_playing_content.title }}
+              </a>
             </h1>
           </div>
         </div>
