@@ -2,12 +2,8 @@ Vue.component("player", {
   props: ["player"],
 
   methods: {
-    thumbnail_link(provider, id) {
-      youtube: `http://i.ytimg.com/vi/`;
-    },
     is_playlist_empty() {
-      if (!this.player.playlist) return true;
-      return this.player.playlist.length === 0;
+      return !this.player.playlist || this.player.playlist.length === 0;
     },
     player_start() {
       fetch("/player/start", { method: "POST" });

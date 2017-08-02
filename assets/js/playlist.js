@@ -3,27 +3,20 @@ Vue.component("playlist", {
 
   methods: {
     humanize_time(seconds) {
-      const s = seconds % 60;
+      const s = seconds % 3600;
       const m = Math.floor(seconds / 60);
-      let h = 0;
-      if (m > 60) {
-        h = Math.floor(m / 60);
-        m %= 60;
-      }
-      padding = function(num) {
-        return ("00" + num).slice(-2);
-      };
+      const h = Math.floor(seconds / 3600);
+      const padding = num => ("00" + num).slice(-2);
       return `${padding(h)}:${padding(m)}:${padding(s)}`;
     },
     is_now_playing_content(idx) {
-      if (!this.playlist.now_playing_content) {
-        return false;
-      }
-      return this.playlist.now_playing_idx === idx;
+      return (
+        this.playlist.now_playing_content &&
+        this.playlist.now_playing_idx === idx
+      );
     },
     is_playlist_empty() {
-      if (!this.playlist.contents) return true;
-      return this.playlist.contents.length === 0;
+      return !this.playlist.contents || this.playlist.contents.length === 0;
     },
     playlist_clear() {
       fetch("/playlist", { method: "DELETE" });

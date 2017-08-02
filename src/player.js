@@ -18,9 +18,7 @@ module.exports = class Player {
   }
 
   _inc_playing_idx() {
-    if (this.one_loop) {
-      return;
-    }
+    if (this.one_loop) return;
 
     this.now_playing_idx++;
     if (this.now_playing_idx >= this.playlist.length()) {
@@ -29,9 +27,7 @@ module.exports = class Player {
   }
 
   _dec_playing_idx() {
-    if (this.one_loop) {
-      return;
-    }
+    if (this.one_loop) return;
 
     this.now_playing_idx--;
     if (this.now_playing_idx < 0) {
@@ -66,9 +62,7 @@ module.exports = class Player {
   }
 
   _start() {
-    if (this.now_playing) {
-      return;
-    }
+    if (this.now_playing) return;
 
     if (this.playlist.is_empty()) {
       this.now_playing_content = null;
@@ -100,13 +94,11 @@ module.exports = class Player {
         this.ev.emit("update-status");
         if (this.one_loop) {
           this._start();
-          return;
-        }
-        if (this.next_play_prev) {
+        } else if (this.next_play_prev) {
           this._start_prev();
-          return;
+        } else {
+          this._start_next();
         }
-        this._start_next();
       });
   }
 
