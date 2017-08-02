@@ -35,6 +35,9 @@ module.exports = class Player {
       // pass
     } else if (this.playlist_loop) {
       this._inc_playing_idx();
+      if (!this.now_playing_idx) {
+        this.playlist.shuffle();
+      }
     } else {
       this.playlist.dequeue();
     }
@@ -88,6 +91,21 @@ module.exports = class Player {
 
   set_shuffle_mode(value) {
     this.shuffle_mode = !!value;
+    if (this.shuffle_mode) {
+      this.playlist.shuffle();
+      this.now_playing_idx = 0;
+
+      // current playing content moves to top if playing music
+      if (this.now_playing) {
+        const now_content_idx = this.playlist.queue.indexOf(
+          this.now_playing_content
+        );
+        if (now_content_idx) {
+          this.playlist.queue.splice(now_content_idx, 1);
+          this.playlist.queue.unshift(this.now_playing_content);
+        }
+      }
+    }
     this.ev.emit("update-status");
   }
 
