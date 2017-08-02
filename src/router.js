@@ -4,14 +4,15 @@ const PlaylistController = require("./controller/playlist_controller");
 
 module.exports = class Router extends KoaRouter {
   all_bind(player, playlist) {
+    this.player = player;
+    this.playlist = playlist;
     this.bind_player(player);
-    this.bind_playlist(playlist);
+    this.bind_playlist(player, playlist);
   }
 
   bind_player(player) {
     const c = new PlayerController(player);
     this.player_controller = c;
-    this.player = player;
 
     this.get("/player/status", c.status.bind(c));
     this.post("/player/start", c.start.bind(c));
@@ -22,12 +23,13 @@ module.exports = class Router extends KoaRouter {
     this.post("/player/loop/one/off", c.one_loop_off.bind(c));
     this.post("/player/loop/playlist/on", c.playlist_loop_on.bind(c));
     this.post("/player/loop/playlist/off", c.playlist_loop_off.bind(c));
+    this.post("/player/loop/shuffle/on", c.shuffle_mode_on.bind(c));
+    this.post("/player/loop/shuffle/off", c.shuffle_mode_off.bind(c));
   }
 
-  bind_playlist(playlist) {
-    const c = new PlaylistController(playlist);
+  bind_playlist(player, playlist) {
+    const c = new PlaylistController(player, playlist);
     this.playlist_controller = c;
-    this.playlist = playlist;
 
     this.post("/playlist", c.add.bind(c));
     this.delete("/playlist", c.clear.bind(c));

@@ -1,10 +1,17 @@
 module.exports = class PlaylistController {
-  constructor(playlist) {
+  constructor(player, playlist) {
+    this.player = player;
     this.playlist = playlist;
   }
 
   async add(ctx) {
-    ctx.body = await this.playlist.add(ctx.request.body); // unavailable_links
+    const opts = this.player.shuffle_mode
+      ? {
+          shuffle_add: true,
+          shuffle_start_pos: this.player.now_playing_idx + 1
+        }
+      : {};
+    ctx.body = await this.playlist.add(ctx.request.body, opts); // unavailable_links
     ctx.status = 200;
   }
 

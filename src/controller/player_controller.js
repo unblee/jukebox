@@ -45,6 +45,16 @@ module.exports = class PlayerController {
     ctx.status = 200;
   }
 
+  async shuffle_mode_on(ctx) {
+    this.player.set_shuffle_mode(true);
+    ctx.status = 200;
+  }
+
+  async shuffle_mode_off(ctx) {
+    this.player.set_shuffle_mode(false);
+    ctx.status = 200;
+  }
+
   async status(ctx) {
     ctx.body = this.player.fetch_status();
     ctx.status = 200;

@@ -1,5 +1,7 @@
 const ytdl = require("ytdl-core");
 const Provider = require("./provider");
+const shuffle = require("lodash.shuffle");
+const random = require("lodash.random");
 const EventEmitter = require("events").EventEmitter;
 
 module.exports = class Playlist extends EventEmitter {
@@ -10,9 +12,18 @@ module.exports = class Playlist extends EventEmitter {
   }
 
   // return links that unsupported provider or unavailable link
-  async add(links = []) {
+  async add(links = [], { shuffle_add = false, shuffle_start_pos = 0 } = {}) {
     const validated = await this.validate_links(links);
-    this.push(validated.available_links);
+
+    if (shuffle_add) {
+      validated.available_links.forEach(link => {
+        const pos = random(shuffle_start_pos, this.queue.length);
+        this.push(link, pos);
+      });
+    } else {
+      validated.available_links.forEach(link => this.push(link));
+    }
+
     this.ev.emit("update-status");
     return validated.unavailable_links;
   }
@@ -79,8 +90,12 @@ module.exports = class Playlist extends EventEmitter {
     return this.queue[idx];
   }
 
-  push(contents = []) {
-    this.queue = this.queue.concat(contents);
+  push(content, pos = null) {
+    if (pos === null) {
+      this.queue.push(content);
+    } else {
+      this.queue.splice(pos, 0, content);
+    }
     this.ev.emit("update-status");
   }
 
@@ -93,6 +108,11 @@ module.exports = class Playlist extends EventEmitter {
     this.queue.splice(index, 1);
     this.ev.emit("update-status");
     this.emit("removed", { index });
+  }
+
+  shuffle() {
+    this.queue = shuffle(this.queue);
+    this.ev.emit("update-status");
   }
 
   length() {
