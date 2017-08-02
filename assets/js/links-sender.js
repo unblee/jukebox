@@ -6,25 +6,21 @@ Vue.component("links-sender", {
     };
   },
   methods: {
-    playlist_add() {
+    async playlist_add() {
       if (this.input.length === 0) return;
-      fetch("/playlist", {
+      const res = await fetch("/playlist", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify(this.input.split(","))
-      })
-        .then(res => {
-          if (res.ok) return res.json();
-        })
-        .then(json => {
-          this.unavaliable_links = json;
-          this.input = "";
-          setTimeout(() => {
-            this.clear_unavaliable_links();
-          }, 30000);
-        });
+      });
+      if (!res.ok) return;
+      this.unavaliable_links = res.json();
+      this.input = "";
+      setTimeout(() => {
+        this.clear_unavaliable_links();
+      }, 30000);
     },
     clear_unavaliable_links() {
       this.unavaliable_links = [];

@@ -11,9 +11,8 @@ new Vue({
   },
   methods: {
     async init() {
-      this.player_status = await fetch("/player/status").then(res => {
-        return res.json();
-      });
+      const res = await fetch("/player/status");
+      this.player_status = res.json();
       this.bind_update();
     },
     bind_update() {

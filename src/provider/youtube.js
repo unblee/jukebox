@@ -42,8 +42,8 @@ module.exports = {
       quality: "lowest"
     };
 
-    audio = ytdl(link, opts);
-    let ffmpeg = new FFmpeg(audio);
+    const audio = ytdl(link, opts);
+    const ffmpeg = new FFmpeg(audio);
 
     const stream = new Stream.PassThrough();
     ffmpeg.format("mp3").pipe(stream);
