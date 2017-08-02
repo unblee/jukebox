@@ -11,12 +11,20 @@ module.exports = class Player {
     this.decoded_stream = null;
     this.one_loop = false;
     this.playlist_loop = false;
+    this.shuffle_mode = false;
     this.now_playing = false;
     this.pausing = false;
     this.now_playing_idx = 0;
     this.now_playing_content = null;
     this.next_play_content = null;
     this.spkr = null;
+
+    this.playlist.on("removed", ({ index }) => {
+      if (index <= this.now_playing_idx) {
+        --this.now_playing_idx;
+        this.ev.emit("update-status");
+      }
+    });
   }
 
   start() {
@@ -34,6 +42,9 @@ module.exports = class Player {
       // pass
     } else if (this.playlist_loop) {
       this._inc_playing_idx();
+      if (!this.now_playing_idx) {
+        this.playlist.shuffle();
+      }
     } else {
       this.playlist.dequeue();
     }
@@ -85,10 +96,31 @@ module.exports = class Player {
     this.ev.emit("update-status");
   }
 
+  set_shuffle_mode(value) {
+    this.shuffle_mode = !!value;
+    if (this.shuffle_mode) {
+      this.playlist.shuffle();
+      this.now_playing_idx = 0;
+
+      // current playing content moves to top if playing music
+      if (this.now_playing) {
+        const now_content_idx = this.playlist.queue.indexOf(
+          this.now_playing_content
+        );
+        if (now_content_idx) {
+          this.playlist.queue.splice(now_content_idx, 1);
+          this.playlist.queue.unshift(this.now_playing_content);
+        }
+      }
+    }
+    this.ev.emit("update-status");
+  }
+
   fetch_status() {
     return {
       one_loop: this.one_loop,
       playlist_loop: this.playlist_loop,
+      shuffle_mode: this.shuffle_mode,
       now_playing: this.now_playing,
       now_playing_idx: this.now_playing_idx,
       now_playing_content: this.now_playing_content,

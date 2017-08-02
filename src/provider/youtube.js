@@ -1,6 +1,7 @@
 const ytdl = require("ytdl-core");
 const FFmpeg = require("fluent-ffmpeg");
 const Stream = require("stream");
+const request = require("request-promise");
 
 module.exports = {
   name: "youtube",
@@ -10,8 +11,28 @@ module.exports = {
     return this.pattern.exec(link)[3];
   },
 
-  get_thumbnail_link(link) {
-    return `http://i.ytimg.com/vi/${this.get_id(link)}/maxresdefault.jpg`;
+  async get_thumbnail_link(link) {
+    let thumbnail_link = null;
+    const size_list = [
+      "maxresdefault",
+      "sddefault",
+      "hqdefault",
+      "mqdefault",
+      "default"
+    ];
+
+    for (let size of size_list) {
+      const url = `http://i.ytimg.com/vi/${this.get_id(link)}/${size}.jpg`;
+      try {
+        await request(url);
+      } catch (e) {
+        continue;
+      }
+      thumbnail_link = url;
+      break;
+    }
+
+    return thumbnail_link;
   },
 
   async _get_info(link) {
