@@ -7,14 +7,6 @@ a.now-playing-content.is-active {
   color: white;
 }
 
-/* .playlist-content a {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-} */
-
 .playlist-clear-button {
   color: white;
   background-color: #75b0ba;
