@@ -15,6 +15,8 @@ module.exports = class Playlist {
       if (unavailable_links.length !== 0) {
         ctx.body = unavailable_links;
         return;
+      } else {
+        ctx.body = [];
       }
 
       ctx.status = 200;
