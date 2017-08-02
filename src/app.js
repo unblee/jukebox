@@ -18,7 +18,8 @@ const Player = require("./player.js");
 const player = new Player(playlist, ev);
 
 const Router = require("./router");
-const router = new Router(player, playlist);
+const router = new Router();
+router.all_bind(player, playlist);
 
 // use body parser
 app.use(bodyParser());

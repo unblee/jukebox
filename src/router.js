@@ -1,42 +1,36 @@
 const KoaRouter = require("koa-router");
 const PlayerController = require("./controller/player_controller");
+const PlaylistController = require("./controller/playlist_controller");
 
 module.exports = class Router extends KoaRouter {
-  constructor(player, playlist) {
-    super();
+  all_bind(player, playlist) {
+    this.bind_player(player);
+    this.bind_playlist(playlist);
+  }
+
+  bind_player(player) {
+    const c = new PlayerController(player);
+    this.player_controller = c;
     this.player = player;
+
+    this.get("/player/status", c.status.bind(c));
+    this.post("/player/start", c.start.bind(c));
+    this.post("/player/stop", c.stop.bind(c));
+    this.post("/player/next", c.next.bind(c));
+    this.post("/player/prev", c.prev.bind(c));
+    this.post("/player/loop/one/on", c.one_loop_on.bind(c));
+    this.post("/player/loop/one/off", c.one_loop_off.bind(c));
+    this.post("/player/loop/playlist/on", c.playlist_loop_on.bind(c));
+    this.post("/player/loop/playlist/off", c.playlist_loop_off.bind(c));
+  }
+
+  bind_playlist(playlist) {
+    const c = new PlaylistController(playlist);
+    this.playlist_controller = c;
     this.playlist = playlist;
 
-    const player_controller = new PlayerController(player);
-    this.player_controller = player_controller;
-
-    this.post("/playlist", playlist.add());
-    this.delete("/playlist", playlist.clear());
-    this.delete("/playlist/:index", playlist.remove());
-
-    this.get(
-      "/player/status",
-      player_controller.status.bind(player_controller)
-    );
-    this.post("/player/start", player_controller.start.bind(player_controller));
-    this.post("/player/stop", player_controller.stop.bind(player_controller));
-    this.post("/player/next", player_controller.next.bind(player_controller));
-    this.post("/player/prev", player_controller.prev.bind(player_controller));
-    this.post(
-      "/player/loop/one/on",
-      player_controller.one_loop_on.bind(player_controller)
-    );
-    this.post(
-      "/player/loop/one/off",
-      player_controller.one_loop_off.bind(player_controller)
-    );
-    this.post(
-      "/player/loop/playlist/on",
-      player_controller.playlist_loop_on.bind(player_controller)
-    );
-    this.post(
-      "/player/loop/playlist/off",
-      player_controller.playlist_loop_off.bind(player_controller)
-    );
+    this.post("/playlist", c.add.bind(c));
+    this.delete("/playlist", c.clear.bind(c));
+    this.delete("/playlist/:index", c.remove.bind(c));
   }
 };

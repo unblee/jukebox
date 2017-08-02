@@ -7,21 +7,6 @@ module.exports = class Playlist {
     this.queue = [];
   }
 
-  add() {
-    return async ctx => {
-      const unavailable_links = await this._add(ctx.request.body);
-
-      if (unavailable_links.length !== 0) {
-        ctx.body = unavailable_links;
-        return;
-      } else {
-        ctx.body = [];
-      }
-
-      ctx.status = 200;
-    };
-  }
-
   // return links that unsupported provider or unavailable link
   async _add(links = []) {
     const validated = await this._validate_links(links);
@@ -75,13 +60,6 @@ module.exports = class Playlist {
     };
   }
 
-  clear() {
-    return ctx => {
-      this.replace();
-      ctx.status = 200;
-    };
-  }
-
   dequeue() {
     this.queue.shift();
     this.ev.emit("update-status");
@@ -109,19 +87,16 @@ module.exports = class Playlist {
     this.ev.emit("update-status");
   }
 
+  remove(index) {
+    this.queue.splice(index, 1);
+    this.ev.emit("update-status");
+  }
+
   length() {
     return this.queue.length;
   }
 
   is_empty() {
     return this.queue.length === 0;
-  }
-
-  remove() {
-    return (ctx, index) => {
-      this.queue.splice(index, 1);
-      this.ev.emit("update-status");
-      ctx.status = 200;
-    };
   }
 };
