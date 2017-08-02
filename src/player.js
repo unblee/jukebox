@@ -38,16 +38,18 @@ module.exports = class Player {
   }
 
   _start_next() {
-    if (!this.playlist_loop) {
-      this.playlist.dequeue();
-    } else {
+    if (this.one_loop) {
+      // pass
+    } else if (this.playlist_loop) {
       this._inc_playing_idx();
+    } else {
+      this.playlist.dequeue();
     }
     this._start();
   }
 
   _start_prev() {
-    if (!this.playlist_loop) return;
+    if (!this.playlist_loop || this.one_loop) return; // disabled
     this._dec_playing_idx();
     this._start();
   }
@@ -85,12 +87,7 @@ module.exports = class Player {
       .on("close", () => {
         this.now_playing = false;
         this.ev.emit("update-status");
-
-        if (this.one_loop) {
-          this._start();
-        } else {
-          this._start_next();
-        }
+        this._start_next();
       });
   }
 
