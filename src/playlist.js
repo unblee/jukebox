@@ -8,14 +8,14 @@ module.exports = class Playlist {
   }
 
   // return links that unsupported provider or unavailable link
-  async _add(links = []) {
-    const validated = await this._validate_links(links);
+  async add(links = []) {
+    const validated = await this.validate_links(links);
     this.push(validated.available_links);
     this.ev.emit("update-status");
     return validated.unavailable_links;
   }
 
-  async _validate_links(links = []) {
+  async validate_links(links = []) {
     const validated = await Promise.all(
       links.map(async link => {
         try {
