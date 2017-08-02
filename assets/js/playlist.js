@@ -27,24 +27,32 @@ Vue.component("playlist", {
     },
     playlist_clear() {
       fetch("/playlist", { method: "DELETE" });
+    },
+    delete_content(index) {
+      fetch(`/playlist/${index}`, { method: "DELETE" });
     }
   },
 
   template: `
-  <div class="playlist">
-    <div v-for="(content,idx) in playlist.contents" class="card playlist-content">
-      <a :title="content.title"></a>
-      <div class="card-content" :class="{'now-playing-content':is_now_playing_content(idx)}">
-        <div class="columns">
-          <div class="column is-9">
-            {{ content.title }}
-          </div>
-          <div class="column">
-            {{ humanize_time(content.length_seconds) }}
-          </div>
+  <div class="playlist panel">
+    <a v-for="(content,idx) in playlist.contents" class="panel-block playlist-content"
+      :class="{'now-playing-content is-active':is_now_playing_content(idx)}"
+      :title="content.title"
+      >
+      <div class="control columns">
+        <div class="column is-8 playlist-content-title-wrapper is-clipped">
+          {{ content.title }}
+        </div>
+        <div class="column has-text-centered is-2">
+          {{ humanize_time(content.length_seconds) }}
+        </div>
+        <div class="column is-2 has-text-centered">
+          <a class="has-text-white delete-content" @click="delete_content(idx)">
+            <i class="material-icons">&#xE872;</i>
+          </a>
         </div>
       </div>
-    </div>
+    </a>
     <div title="Clear Playlist" class="card playlist-clear-button" :class="{ 'deactivate': is_playlist_empty() }">
       <a @click="playlist_clear()"></a>
       <i class="material-icons is-medium">delete_sweep</i>

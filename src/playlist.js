@@ -125,4 +125,12 @@ module.exports = class Playlist {
   is_empty() {
     return this.queue.length === 0;
   }
+
+  remove() {
+    return (ctx, index) => {
+      this.queue.splice(index, 1);
+      this.ev.emit("update-status");
+      ctx.status = 200;
+    };
+  }
 };

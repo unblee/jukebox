@@ -1,23 +1,19 @@
 .playlist {
   margin-bottom: 100px;
 }
-.now-playing-content {
+a.now-playing-content.is-active {
   background-color: #75b0ba;
   font-weight: bold;
   color: white;
 }
 
-.playlist-content:hover {
-  background-color: whitesmoke;
-}
-
-.playlist-content a {
+/* .playlist-content a {
   position: absolute;
   top: 0;
   left: 0;
   height: 100%;
   width: 100%;
-}
+} */
 
 .playlist-clear-button {
   color: white;
@@ -43,4 +39,18 @@
   background-color: lightgray;
   margin-top: 0em;
   pointer-events: none;
+}
+
+.delete-content {
+   opacity: 0; 
+  transition: all .2s ease;
+}
+
+.playlist-content:hover .delete-content {
+  opacity: 1;
+}
+
+.playlist-content:not(.now-playing-content):hover .delete-content {
+  color: #75b0ba;
+  color: #363636;
 }
