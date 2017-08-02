@@ -48,6 +48,7 @@ app.ws.use(route.get("/socket", ctx => {}));
 
 app.use(route.post("/playlist", playlist.add()));
 app.use(route.delete("/playlist", playlist.clear()));
+app.use(route.delete("/playlist/:index", playlist.remove()));
 
 app.use(route.get("/player/status", player.status()));
 app.use(route.post("/player/start", player.start()));
