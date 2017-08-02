@@ -284,3 +284,14 @@ A response of `/player/status` is delivered when some event(e.g. audio play star
 ```
 GET /socket
 ```
+
+# Contributing
+
+## Submitting a Pull Request
+
+1. Fork it
+2. Create a branch (`git checkout -b my-fix`)
+3. Commit your changes (`git commit -am "fix something"`)
+4. Push to the branch (`git push origin my-fix`)
+5. Open a [Pull Request](https://github.com/unblee/jukebox/pulls)
+6. Have a coffee break and wait
