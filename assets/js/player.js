@@ -8,8 +8,8 @@ Vue.component("player", {
     player_start() {
       fetch("/player/start", { method: "POST" });
     },
-    player_stop() {
-      fetch("/player/stop", { method: "POST" });
+    player_pause() {
+      fetch("/player/pause", { method: "POST" });
     },
     player_next() {
       fetch("/player/next", { method: "POST" });
@@ -61,8 +61,8 @@ Vue.component("player", {
               </div>
               <div class="column">
                 <div v-if="player.now_playing">
-                  <a title="Stop" @click="player_stop()" :class="{ 'deactivate': is_playlist_empty() && !player.now_playing_content }">
-                    <i class="material-icons is-large is-pushable">stop</i>
+                  <a title="Pause" @click="player_pause()" :class="{ 'deactivate': is_playlist_empty() && !player.now_playing_content }">
+                    <i class="material-icons is-large is-pushable">pause</i>
                   </a>
                 </div>
                 <div v-else>

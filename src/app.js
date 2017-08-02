@@ -48,7 +48,7 @@ app.use(route.delete("/playlist/:index", playlist.remove()));
 
 app.use(route.get("/player/status", player.status()));
 app.use(route.post("/player/start", player.start()));
-app.use(route.post("/player/stop", player.stop()));
+app.use(route.post("/player/pause", player.pause()));
 app.use(route.post("/player/next", player.next()));
 app.use(route.post("/player/prev", player.prev()));
 app.use(route.post("/player/loop/one/on", player.one_loop_on()));
