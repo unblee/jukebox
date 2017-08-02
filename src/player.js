@@ -14,32 +14,27 @@ module.exports = class Player {
     this.now_playing_idx = 0;
     this.now_playing_content = null;
     this.next_play_content = null;
-    this.next_play_prev = false;
   }
 
   _inc_playing_idx() {
     if (this.one_loop) return;
-
-    this.now_playing_idx++;
-    if (this.now_playing_idx >= this.playlist.length()) {
-      this.now_playing_idx = 0;
-    }
+    this.now_playing_idx = (this.now_playing_idx + 1) % this.playlist.length();
   }
 
   _dec_playing_idx() {
     if (this.one_loop) return;
-
-    this.now_playing_idx--;
-    if (this.now_playing_idx < 0) {
-      this.now_playing_idx = this.playlist.length() - 1;
-    }
+    this.now_playing_idx =
+      (this.now_playing_idx + this.playlist.length() - 1) %
+      this.playlist.length();
   }
 
-  start() {
-    return ctx => {
-      this._start();
-      ctx.status = 200;
-    };
+  _start() {
+    if (this.now_playing) return;
+
+    this._update_playing_content();
+    if (!this.now_playing_content) return;
+
+    this._play_music();
   }
 
   _start_next() {
@@ -48,94 +43,85 @@ module.exports = class Player {
     } else {
       this._inc_playing_idx();
     }
-    // fetch next play content
-    this.next_play_content = this.playlist.pull(this.now_playing_idx);
     this._start();
   }
 
   _start_prev() {
-    this.next_play_prev = false;
+    if (!this.playlist_loop) return;
     this._dec_playing_idx();
-    // fetch next play content
-    this.next_play_content = this.playlist.pull(this.now_playing_idx);
     this._start();
   }
 
-  _start() {
-    if (this.now_playing) return;
+  _destroy() {
+    this.audio_stream.removeAllListeners("close");
+    try {
+      this.audio_stream.destroy();
+    } catch (e) {}
+    this.now_playing = false;
+    this.ev.emit("update-status");
+  }
 
-    if (this.playlist.is_empty()) {
+  _update_playing_content(play_content = null) {
+    if (play_content) {
+      this.now_playing_content = this.next_play_content;
+    } else if (this.playlist.is_empty()) {
       this.now_playing_content = null;
-      this.ev.emit("update-status");
-      return;
-    }
-
-    this.now_playing_content = this.next_play_content;
-
-    if (!this.now_playing_content) {
+    } else {
       this.now_playing_content = this.playlist.pull(this.now_playing_idx);
     }
+    this.ev.emit("update-status");
+  }
 
+  _play_music() {
     const provider = Provider.find_by_name(this.now_playing_content.provider);
-    const provider_stream = provider.create_stream(
-      this.now_playing_content.link
-    );
+    const stream = provider.create_stream(this.now_playing_content.link);
 
     // audio output to the speaker
     this.now_playing = true;
     this.ev.emit("update-status");
-    this.audio_stream = provider_stream
+    this.audio_stream = stream
       .pipe(decoder())
       .pipe(speaker())
       .on("close", () => {
         this.now_playing = false;
         this.ev.emit("update-status");
+
         if (this.one_loop) {
           this._start();
-        } else if (this.next_play_prev) {
-          this._start_prev();
         } else {
           this._start_next();
         }
       });
   }
 
+  /*** controllers ***/
+
+  start() {
+    return ctx => {
+      this._start();
+      ctx.status = 200;
+    };
+  }
+
   next() {
     return ctx => {
-      this.now_playing = false;
-      try {
-        this.audio_stream.destroy();
-      } catch (e) {}
-      this.ev.emit("update-status");
+      this._destroy();
+      this._start_next();
       ctx.status = 200;
     };
   }
 
   prev() {
     return ctx => {
-      if (!this.playlist_loop) {
-        ctx.status = 200;
-        return;
-      }
-      this.now_playing = false;
-      this.next_play_prev = true;
-      try {
-        this.audio_stream.destroy();
-      } catch (e) {}
-      this.ev.emit("update-status");
+      this._destroy();
+      this._start_prev();
       ctx.status = 200;
     };
   }
 
   stop() {
     return ctx => {
-      this.now_playing = false;
-
-      this.audio_stream.removeAllListeners("close");
-      try {
-        this.audio_stream.destroy();
-      } catch (e) {}
-      this.ev.emit("update-status");
+      this._destroy();
       ctx.status = 200;
     };
   }
