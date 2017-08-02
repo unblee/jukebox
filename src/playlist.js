@@ -82,14 +82,6 @@ module.exports = class Playlist {
     };
   }
 
-  one_loop_on() {
-    this.one_loop = true;
-  }
-
-  one_loop_off() {
-    this.one_loop = false;
-  }
-
   dequeue() {
     this.queue.shift();
     this.ev.emit("update-status");
