@@ -19,6 +19,28 @@ I am checking the operation with the latest version of `chrome` and `firefox`.
 
 # Installation
 
+## Prerequisites
+
+### for (speaker)[https://www.npmjs.com/package/speaker] package
+
+`speaker` package requires `alsa.h` header file.
+
+On Debian/Ubuntu:
+
+```console
+$ sudo apt-get install libasound2-dev
+```
+
+### for (fluent-ffmpeg)[https://www.npmjs.com/package/fluent-ffmpeg] package
+
+`fluent-ffmpeg` package requires `ffmpeg` command.
+
+On Debian/Ubuntu:
+
+```console
+$ sudo apt-get install ffmpeg
+```
+
 ## for Users
 
 First, comment in `<script src="https://unpkg.com/vue/dist/vue.min.js"></script>` in `assets/index.html`.  
