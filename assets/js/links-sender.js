@@ -2,25 +2,33 @@ Vue.component("links-sender", {
   data() {
     return {
       unavaliable_links: [],
-      input: ""
+      input: "",
+      adding: false
     };
   },
   methods: {
     async playlist_add() {
       if (this.input.length === 0) return;
-      const res = await fetch("/playlist", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(this.input.split(","))
-      });
-      if (!res.ok) return;
-      this.unavaliable_links = res.json();
-      this.input = "";
-      setTimeout(() => {
-        this.clear_unavaliable_links();
-      }, 30000);
+      try {
+        this.adding = true;
+        const res = await fetch("/playlist", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(this.input.split(","))
+        });
+        this.adding = false;
+        if (!res.ok) return;
+        this.unavaliable_links = await res.json();
+        this.input = "";
+        setTimeout(() => {
+          this.clear_unavaliable_links();
+        }, 30000);
+      } catch (e) {
+        this.adding = false;
+        console.error(e);
+      }
     },
     clear_unavaliable_links() {
       this.unavaliable_links = [];
@@ -48,7 +56,8 @@ Vue.component("links-sender", {
                 <input v-model="input" @keyup.enter="playlist_add()" class="input" type="text" placeholder="Please enter the link you want to add to the playlist.  e.g. 'https://youtu.be/id1, https://youtu.be/id2'">
               </div>
               <p class="control">
-                <a class="button send-button" @click="playlist_add()" :class="{ deactivate: input.length === 0 }">
+                <a class="button send-button" @click="playlist_add()"
+                  :disabled="!input.length || adding">
                   <i class="material-icons">send</i>
                 </a>
               </p>

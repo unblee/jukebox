@@ -8,11 +8,6 @@
   color: #75b0ba;
 }
 
-.links-sender .deactivate {
-  color: lightgray;
-  pointer-events: none;
-}
-
 .links-sender .error-msg {
   color: #cc0000;
 }
