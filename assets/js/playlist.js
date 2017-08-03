@@ -27,6 +27,9 @@ Vue.component("playlist", {
     },
     delete_content(index) {
       fetch(`/playlist/${index}`, { method: "DELETE" });
+    },
+    play_music(index) {
+      fetch(`/player/seek/${index}`, { method: "POST" });
     }
   },
 
@@ -35,6 +38,7 @@ Vue.component("playlist", {
     <a v-for="(content,idx) in playlist.contents" class="panel-block playlist-content"
       :class="{'now-playing-content is-active':is_now_playing_content(idx)}"
       :title="content.title"
+      @click="play_music(idx)"
       >
       <div class="control columns">
         <div class="column is-8 playlist-content-title-wrapper is-clipped">

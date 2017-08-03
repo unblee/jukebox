@@ -62,6 +62,14 @@ module.exports = class Player {
     this.start();
   }
 
+  start_specific(index) {
+    // always not consume queue.
+    console.log(this.now_playing_idx);
+    this.now_playing_idx = +index;
+    console.log(this.now_playing_idx);
+    this.start();
+  }
+
   pause() {
     this.decoded_stream.unpipe(this.spkr);
     this.now_playing = false;
@@ -77,7 +85,7 @@ module.exports = class Player {
   }
 
   destroy() {
-    this.audio_stream.removeAllListeners("close");
+    if (this.audio_stream) this.audio_stream.removeAllListeners("close");
     try {
       this.decoded_stream.unpipe(this.spkr).end();
     } catch (e) {}
