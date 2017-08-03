@@ -64,9 +64,7 @@ module.exports = class Player {
 
   start_specific(index) {
     // always not consume queue.
-    console.log(this.now_playing_idx);
     this.now_playing_idx = +index;
-    console.log(this.now_playing_idx);
     this.start();
   }
 
