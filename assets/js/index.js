@@ -13,7 +13,7 @@ new Vue({
     ["player_status.now_playing"](now_playing) {
       const app_name = "jukebox";
       document.title = now_playing
-        ? `⏵ ${this.player_status.now_playing_content.title} - ${app_name}`
+        ? `${this.player_status.now_playing_content.title} - ${app_name}`
         : app_name;
     }
   },
