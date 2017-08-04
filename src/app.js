@@ -18,6 +18,13 @@ const playlist = new Playlist(ev);
 const Player = require("./player.js");
 const player = new Player(playlist, ev);
 
+// load status
+const PlayerStatusStore = require("./player_status_store.js");
+const player_status_store = new PlayerStatusStore();
+if (player_status_store.exists_sync()) {
+  player.set_status(player_status_store.read_sync());
+}
+
 const Router = require("./router");
 const router = new Router();
 router.all_bind(player, playlist);
@@ -43,7 +50,13 @@ app.ws.broadcast = data => {
 ev.on(
   "update-status",
   throttle(() => {
-    app.ws.broadcast(JSON.stringify(player.fetch_status()));
+    const status = player.fetch_status();
+    app.ws.broadcast(JSON.stringify(status));
+
+    // save status
+    player_status_store.write_sync(status, {
+      pretty: process.env.NODE_ENV !== "production"
+    });
   }, 200)
 );
 
