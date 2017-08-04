@@ -36,22 +36,24 @@ module.exports = class Track {
   }
 
   static async create_by_links(links = []) {
-    const tracks = [];
-    const errors = [];
+    // Don't use `for of` because of serial processing
+    const xs = await Promise.all(
+      links.map(async link => {
+        try {
+          return await Track.create_by_link(link);
+        } catch (e) {
+          return {
+            link,
+            err_msg: e && e.message
+          };
+        }
+      })
+    );
 
-    for (let link of links) {
-      try {
-        const track = await Track.create_by_link(link);
-        tracks.push(track);
-      } catch (e) {
-        errors.push({
-          link,
-          err_msg: e && e.message
-        });
-      }
-    }
-
-    return { tracks, errors };
+    return {
+      tracks: xs.filter(x => x instanceof Track),
+      errors: xs.filter(x => !(x instanceof Track))
+    };
   }
 
   to_json() {
