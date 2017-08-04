@@ -39,32 +39,36 @@ Vue.component("links-sender", {
   },
   template: `
   <div class="links-sender">
-    <div v-if="!is_unavaliable_links_empty()">
-      <div class="card">
-        <div class="card-content error-msg">
-          <div v-for="link in unavaliable_links">
-            '{{ link.link }}' => '{{ link.err_msg }}'
+    <form action="#" @submit.prevent="playlist_add">
+      <div class="field has-addons">
+        <div class="control is-expanded">
+          <input
+            v-model="input"
+            class="input"
+            type="text"
+            :disabled="adding"
+            placeholder="e.g. 'https://youtu.be/id1, https://youtu.be/id2'">
+        </div>
+        <p class="control">
+          <button type="submit" class="button send-button"
+            :class="{
+              'is-loading': adding
+            }"
+            :disabled="!input.length || adding">
+            <i class="material-icons">send</i>
+          </button>
+        </p>
+      </div>
+      <div v-if="!is_unavaliable_links_empty()" class="field">
+        <div class="message is-danger">
+          <div class="message-body error-msg">
+            <div v-for="link in unavaliable_links">
+              '{{ link.link }}' => '{{ link.err_msg }}'
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="card">
-      <div class="card-content">
-        <div class="container">
-            <div class="field has-addons">
-              <div class="control is-expanded">
-                <input v-model="input" @keyup.enter="playlist_add()" class="input" type="text" placeholder="Please enter the link you want to add to the playlist.  e.g. 'https://youtu.be/id1, https://youtu.be/id2'">
-              </div>
-              <p class="control">
-                <a class="button send-button" @click="playlist_add()"
-                  :disabled="!input.length || adding">
-                  <i class="material-icons">send</i>
-                </a>
-              </p>
-          </div>
-        </div>
-      </div>
-    </div>
+    </form>
   </div>
   `
 });
