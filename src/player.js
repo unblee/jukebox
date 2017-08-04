@@ -42,7 +42,7 @@ module.exports = class Player {
       // pass
     } else if (this.playlist_loop) {
       this._inc_playing_idx();
-      if (!this.now_playing_idx) {
+      if (this.shuffle_mode && !this.now_playing_idx) {
         this.playlist.shuffle();
       }
     } else {
