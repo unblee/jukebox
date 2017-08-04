@@ -21,7 +21,7 @@ module.exports = class PlaylistController {
   }
 
   async remove(ctx) {
-    this.playlist.remove(ctx.params.index);
+    this.playlist.remove(Number(ctx.params.index));
     ctx.status = 200;
   }
 };

@@ -62,7 +62,7 @@ module.exports = class PlayerController {
 
   async seek(ctx) {
     this.player.destroy();
-    this.player.start_specific(ctx.params.index);
+    this.player.start_specific(Number(ctx.params.index));
     ctx.status = 200;
   }
 };
