@@ -20,7 +20,12 @@ module.exports = class Player {
     this.spkr = null;
 
     this.playlist.on("removed", ({ index }) => {
-      if (index <= this.now_playing_idx) {
+      if (index === this.now_playing_idx) {
+        // stop and move playing index to the next music
+        this.destroy();
+        this._update_playing_content();
+      } else if (index < this.now_playing_idx) {
+        // adjust playing index
         --this.now_playing_idx;
         this.ev.emit("update-status");
       }
