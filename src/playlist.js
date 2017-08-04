@@ -1,76 +1,26 @@
 const ytdl = require("ytdl-core");
-const Provider = require("./provider");
 const shuffle = require("lodash.shuffle");
 const random = require("lodash.random");
 const EventEmitter = require("events").EventEmitter;
 
 module.exports = class Playlist extends EventEmitter {
-  constructor(ev) {
+  constructor(ev, queue = []) {
     super();
     this.ev = ev;
-    this.queue = [];
+    this.queue = queue;
   }
 
-  // return links that unsupported provider or unavailable link
-  async add(links = [], { shuffle_add = false, shuffle_start_pos = 0 } = {}) {
-    const validated = await this.validate_links(links);
+  adds(tracks = [], { shuffle_add = false, shuffle_start_pos = 0 } = {}) {
+    tracks.map(track => this.add(track, { shuffle_add, shuffle_start_pos }));
+  }
 
+  add(track, { shuffle_add = false, shuffle_start_pos = 0 } = {}) {
     if (shuffle_add) {
-      validated.available_links.forEach(link => {
-        const pos = random(shuffle_start_pos, this.queue.length);
-        this.push(link, pos);
-      });
+      const pos = random(shuffle_start_pos, this.queue.length);
+      this.push(track, pos);
     } else {
-      validated.available_links.forEach(link => this.push(link));
+      this.push(track);
     }
-
-    this.ev.emit("update-status");
-    return validated.unavailable_links;
-  }
-
-  async validate_links(links = []) {
-    const validated = await Promise.all(
-      links.map(async link => {
-        try {
-          const provider = Provider.find_by_link(link);
-
-          if (!provider) {
-            throw new Error("This link belongs to an unsupported provider");
-          }
-
-          const provider_name = provider.name;
-          const length_seconds = await provider.get_length_seconds(link);
-          const title = await provider.get_title(link);
-          const id = provider.get_id(link);
-          const thumbnail_link = await provider.get_thumbnail_link(link);
-
-          if (!length_seconds) {
-            throw new Error(
-              `This '${provider_name}' link can not be played at the moment`
-            );
-          }
-
-          return {
-            provider: provider_name,
-            link,
-            length_seconds,
-            title,
-            id,
-            thumbnail_link
-          };
-        } catch (e) {
-          return {
-            link,
-            err_msg: e && e.message
-          };
-        }
-      })
-    );
-
-    return {
-      available_links: validated.filter(x => !x.err_msg),
-      unavailable_links: validated.filter(x => x.err_msg)
-    };
   }
 
   dequeue() {
@@ -121,5 +71,9 @@ module.exports = class Playlist extends EventEmitter {
 
   is_empty() {
     return this.queue.length === 0;
+  }
+
+  to_json() {
+    return this.queue.map(x => x.to_json());
   }
 };
