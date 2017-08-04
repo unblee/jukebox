@@ -1,11 +1,18 @@
 Vue.component("playlist", {
   props: ["playlist"],
-
+  data() {
+    return {
+      clipboard: null
+    };
+  },
   created() {
-    new Clipboard(".copy-link-button");
+    this.clipboard = new Clipboard(".copy-link-button");
   },
 
   methods: {
+    copyUrl(e) {
+      this.clipboard.onClick(e);
+    },
     humanize_time(seconds) {
       const s = seconds % 60;
       const m = Math.floor(seconds % 3600 / 60);
@@ -24,6 +31,9 @@ Vue.component("playlist", {
     },
     delete_content(index) {
       fetch(`/playlist/${index}`, { method: "DELETE" });
+    },
+    play_music(index) {
+      fetch(`/player/seek/${index}`, { method: "POST" });
     }
   },
   computed: {
@@ -41,6 +51,7 @@ Vue.component("playlist", {
       <a v-for="(content,idx) in playlist.contents" class="panel-block playlist-content is-paddingless"
           :class="{'now-playing-content is-active':is_now_playing_content(idx)}"
           :title="content.title"
+          @click="play_music(idx)"
           >
           <div class="control columns is-marginless is-mobile">
             <div class="column is-1 align-self-center has-text-centered is-paddingless-vertical thumbnail-wrapper">
@@ -56,12 +67,12 @@ Vue.component("playlist", {
               {{ humanize_time(content.length_seconds) }}
             </div>
             <div class="column is-1 has-text-centered align-self-center is-paddingless-vertical">
-              <a class="is-flex in-content-button copy-link-button" :data-clipboard-text="content.link">
+              <a class="is-flex in-content-button copy-link-button" @click.prevent.stop="copyUrl" :data-clipboard-text="content.link">
                 <i class="material-icons icon" title="Copy Link">link</i>
               </a>
             </div>
             <div class="column is-1 has-text-centered align-self-center is-paddingless-vertical">
-              <a class="is-flex in-content-button" @click="delete_content(idx)">
+              <a class="is-flex in-content-button" @click.prevent.stop="delete_content(idx)">
                 <i class="material-icons icon" title="Delete">&#xE872;</i>
               </a>
             </div>
