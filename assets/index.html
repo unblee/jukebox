@@ -17,17 +17,17 @@
 </head>
 
 <body>
-  <section id="app" class="hero is-fullheight">
+  <section class="hero is-fullheight">
     <div class="hero-body">
       <div class="container">
         <div class="columns">
           <div class="column has-text-centered">
             <h1 class="app-title">
-              jukebox
+              j<span class="app-title-u">u</span>kebox
             </h1>
           </div>
         </div>
-        <div class="columns">
+        <div class="columns player-wrapper" id="app" v-cloak>
           <div class="column is-6">
             <player :player="bind_player"></player>
           </div>
@@ -37,7 +37,6 @@
         </div>
       </div>
     </div>
-    <links-sender></links-sender>
   </section>
 
   <script src="https://unpkg.com/vue"></script>

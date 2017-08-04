@@ -1,26 +1,79 @@
-.stripe-background {
-  background-image: repeating-linear-gradient(
-    -45deg,
-    white,
-    white 10px,
-    whitesmoke 10px,
-    whitesmoke 20px
-  );
+.player-wrapper {
+  height: calc(100vh - 12rem);
 }
 
-.player a {
-  color: #4a4a4a;
+.black-background {
+  background-color: black;
+}
+
+.player {
+  height: 100%;
+  position: relative;
+}
+
+.player-main-controller a {
+  color: white;
 }
 
 .player a:hover {
   color: #75b0ba;
 }
 
-.player-controler .is-loop-active {
+.player-other-controller a {
+  color: lightgray;
+}
+.player-overlay:hover .player-other-controller a {
+  color: #fff;
+}
+.player-overlay .player-other-controller a.is-loop-active {
   color: #75b0ba;
 }
 
-.player-controler .deactivate {
+.player .deactivate {
   color: lightgray;
   pointer-events: none;
+  opacity: .5;
+}
+
+.player-title {
+  padding: 1rem 1rem .5rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+   overflow: hidden;
+}
+
+.player-overlay {
+  background: linear-gradient(to bottom, rgba(0,0,0,1) 0%,rgba(0,0,0,0) 20%,rgba(0,0,0,0) 79%, rgba(0,0,0,0.5) 80%,rgba(0,0,0,.5) 100%);
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: background .2s ease;
+}
+
+
+.player-overlay:hover {
+  background: rgba(0, 0, 0, .6);
+}
+
+.player-thumbnail {
+  max-height: 100%;
+  width: auto;
+  margin: auto;
+}
+
+.player-main-controller {
+  opacity: 0;
+  transition: opacity .2s ease;
+}
+
+.player-overlay:hover .player-main-controller {
+  opacity: 1;
+}
+
+.player-other-controller {
+  padding: .5rem 0;
 }
