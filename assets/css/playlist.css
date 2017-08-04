@@ -1,36 +1,37 @@
 .playlist {
-  margin-bottom: 100px;
-}
-a.now-playing-content.is-active {
-  background-color: #75b0ba;
-  font-weight: bold;
-  color: white;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
 }
 
-.playlist-clear-button {
+.playlist.has-content {
+  justify-content: space-between;
+}
+
+.panel-block.is-active .panel-icon, .panel-block a {
+  color: #75b0ba;
+}
+
+.panel-block a:hover {
+  color: #666;
+}
+
+.panel-block a:active {
+  color: #363636;
+}
+
+.playlist-clear-button.is-outlined:not([disabled]) {
+  color: #75b0ba;
+  border-color: #75b0ba;
+}
+
+.playlist-clear-button.is-outlined:not([disabled]):hover {
   color: white;
   background-color: #75b0ba;
-  text-align: center;
-  margin-top: 1em;
 }
 
 .playlist-clear-button:active {
   transform: translateY(2px);
-}
-
-.playlist-clear-button a {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-}
-
-.playlist-clear-button.deactivate {
-  color: white;
-  background-color: lightgray;
-  margin-top: 0em;
-  pointer-events: none;
 }
 
 .in-content-button {
@@ -42,7 +43,28 @@ a.now-playing-content.is-active {
   opacity: 1;
 }
 
-.playlist-content:not(.now-playing-content):hover .in-content-button {
-  color: #75b0ba;
-  color: #363636;
+.scroll-view {
+  overflow: auto;
+}
+
+.align-self-center {
+  align-self: center;
+}
+
+.is-paddingless-vertical {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.playlist-content-title-wrapper {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.playlist-border-top {
+  border-top: 1px solid #dbdbdb;
+}
+
+.thumbnail-wrapper {
+  padding-right: 0;
 }
