@@ -16,6 +16,7 @@ I am checking the operation with the latest version of `chrome` and `firefox`.
 |-|-|-|-|
 |JUKEBOX_NO_WEB_UI|''|'yes'|If you set the value, startup with no web UI.|
 |JUKEBOX_PORT|8888|3000|If you set the value, startup with the port of the set value.|
+|JUKEBOX_CACHE_TIME|60000|0|Request cache time (mill seconds)|
 
 # Installation
 
