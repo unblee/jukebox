@@ -134,6 +134,22 @@ module.exports = class Player {
     };
   }
 
+  set_status(status) {
+    this.set_one_loop(status.one_loop);
+    this.set_playlist_loop(status.playlist_loop);
+    this.set_shuffle_mode(status.shuffle_mode);
+    this.playlist.replace(status.playlist);
+
+    // set update now_playing, now_playing_idx and now_playing_content
+    if (status.now_playing_idx) {
+      this.now_playing_idx = status.now_playing_idx;
+      this.now_playing_content = status.now_playing_content;
+      if (status.now_playing) {
+        this.start_specific(this.now_playing_idx);
+      }
+    }
+  }
+
   _inc_playing_idx() {
     if (this.one_loop) return;
     this.now_playing_idx = (this.now_playing_idx + 1) % this.playlist.length();
