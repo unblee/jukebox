@@ -1,43 +1,43 @@
-Vue.component("player", {
-  props: ["player"],
+Vue.component('player', {
+  props: ['player'],
 
   methods: {
     is_playlist_empty() {
       return !this.player.playlist || this.player.playlist.length === 0;
     },
     player_start() {
-      fetch("/player/start", { method: "POST" });
+      fetch('/player/start', { method: 'POST' });
     },
     player_pause() {
-      fetch("/player/pause", { method: "POST" });
+      fetch('/player/pause', { method: 'POST' });
     },
     player_next() {
-      fetch("/player/next", { method: "POST" });
+      fetch('/player/next', { method: 'POST' });
     },
     player_prev() {
-      fetch("/player/prev", { method: "POST" });
+      fetch('/player/prev', { method: 'POST' });
     },
     player_loop_one_toggle() {
       if (this.player.one_loop) {
-        fetch("/player/loop/one/off", { method: "POST" });
+        fetch('/player/loop/one/off', { method: 'POST' });
       } else {
-        fetch("/player/loop/one/on", { method: "POST" });
+        fetch('/player/loop/one/on', { method: 'POST' });
       }
     },
     player_loop_playlist_toggle() {
       if (this.player.playlist_loop) {
-        fetch("/player/loop/playlist/off", { method: "POST" });
+        fetch('/player/loop/playlist/off', { method: 'POST' });
       } else {
-        fetch("/player/loop/playlist/on", { method: "POST" });
+        fetch('/player/loop/playlist/on', { method: 'POST' });
       }
     },
     player_shuffle_mode_toggle() {
       if (this.player.shuffle_mode) {
-        fetch("/player/loop/shuffle/off", { method: "POST" });
+        fetch('/player/loop/shuffle/off', { method: 'POST' });
       } else {
-        fetch("/player/loop/shuffle/on", { method: "POST" });
+        fetch('/player/loop/shuffle/on', { method: 'POST' });
       }
-    }
+    },
   },
   computed: {
     exist_thumbnail() {
@@ -45,7 +45,7 @@ Vue.component("player", {
         this.player.now_playing_content &&
         this.player.now_playing_content.thumbnail_link
       );
-    }
+    },
   },
 
   template: `
@@ -107,5 +107,5 @@ Vue.component("player", {
       </div>
     </div>
   </div>
-  `
+  `,
 });

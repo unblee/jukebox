@@ -1,7 +1,7 @@
-const Playlist = require("./playlist.js");
-const Provider = require("./provider");
-const speaker = require("speaker");
-const decoder = require("lame").Decoder;
+const Playlist = require('./playlist.js');
+const Provider = require('./provider');
+const speaker = require('speaker');
+const decoder = require('lame').Decoder;
 
 module.exports = class Player {
   constructor(playlist = new Playlist(), ev) {
@@ -19,7 +19,7 @@ module.exports = class Player {
     this.next_play_content = null;
     this.spkr = null;
 
-    this.playlist.on("removed", ({ index }) => {
+    this.playlist.on('removed', ({ index }) => {
       if (index === this.now_playing_idx) {
         // stop and move playing index to the next music
         this.destroy();
@@ -27,7 +27,7 @@ module.exports = class Player {
       } else if (index < this.now_playing_idx) {
         // adjust playing index
         --this.now_playing_idx;
-        this.ev.emit("update-status");
+        this.ev.emit('update-status');
       }
     });
   }
@@ -77,34 +77,34 @@ module.exports = class Player {
     this.decoded_stream.unpipe(this.spkr);
     this.now_playing = false;
     this.pausing = true;
-    this.ev.emit("update-status");
+    this.ev.emit('update-status');
   }
 
   resume() {
     this.pausing = false;
     this.now_playing = true;
     this.decoded_stream.pipe(this.spkr);
-    this.ev.emit("update-status");
+    this.ev.emit('update-status');
   }
 
   destroy() {
-    if (this.audio_stream) this.audio_stream.removeAllListeners("close");
+    if (this.audio_stream) this.audio_stream.removeAllListeners('close');
     try {
       this.decoded_stream.unpipe(this.spkr).end();
     } catch (e) {}
     this.now_playing = false;
     this.pausing = false;
-    this.ev.emit("update-status");
+    this.ev.emit('update-status');
   }
 
   set_one_loop(value) {
     this.one_loop = !!value;
-    this.ev.emit("update-status");
+    this.ev.emit('update-status');
   }
 
   set_playlist_loop(value) {
     this.playlist_loop = !!value;
-    this.ev.emit("update-status");
+    this.ev.emit('update-status');
   }
 
   set_shuffle_mode(value) {
@@ -116,7 +116,7 @@ module.exports = class Player {
       // current playing content moves to top if playing music
       if (this.now_playing) {
         const now_content_idx = this.playlist.queue.indexOf(
-          this.now_playing_content
+          this.now_playing_content,
         );
         if (now_content_idx) {
           this.playlist.queue.splice(now_content_idx, 1);
@@ -124,7 +124,7 @@ module.exports = class Player {
         }
       }
     }
-    this.ev.emit("update-status");
+    this.ev.emit('update-status');
   }
 
   fetch_status() {
@@ -135,7 +135,7 @@ module.exports = class Player {
       now_playing: this.now_playing,
       now_playing_idx: this.now_playing_idx,
       now_playing_content: this.now_playing_content,
-      playlist: this.playlist.to_json()
+      playlist: this.playlist.to_json(),
     };
   }
 
@@ -175,7 +175,7 @@ module.exports = class Player {
     } else {
       this.now_playing_content = this.playlist.pull(this.now_playing_idx);
     }
-    this.ev.emit("update-status");
+    this.ev.emit('update-status');
   }
 
   _play_music() {
@@ -184,15 +184,15 @@ module.exports = class Player {
 
     // audio output to the speaker
     this.now_playing = true;
-    this.ev.emit("update-status");
+    this.ev.emit('update-status');
     this.decoded_stream = stream.pipe(decoder());
     this.spkr = speaker();
     this.audio_stream = this.decoded_stream.pipe(this.spkr);
-    this.audio_stream.on("close", () => {
+    this.audio_stream.on('close', () => {
       this.now_playing = false;
       this.pausing = false;
       this.destroy();
-      this.ev.emit("update-status");
+      this.ev.emit('update-status');
       this.start_next();
     });
   }

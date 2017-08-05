@@ -1,4 +1,4 @@
-const Provider = require("./provider");
+const Provider = require('./provider');
 
 module.exports = class Track {
   constructor({ provider, link, length_seconds, title, id, thumbnail_link }) {
@@ -13,7 +13,7 @@ module.exports = class Track {
   static async create_by_link(link) {
     const provider = Provider.find_by_link(link);
     if (!provider) {
-      throw new Error("This link belongs to an unsupported provider");
+      throw new Error('This link belongs to an unsupported provider');
     }
 
     const provider_name = provider.name;
@@ -23,12 +23,12 @@ module.exports = class Track {
       length_seconds: await provider.get_length_seconds(link),
       title: await provider.get_title(link),
       id: provider.get_id(link),
-      thumbnail_link: await provider.get_thumbnail_link(link)
+      thumbnail_link: await provider.get_thumbnail_link(link),
     });
 
     if (!track.length_seconds) {
       throw new Error(
-        `This '${provider_name}' link can not be played at the moment`
+        `This '${provider_name}' link can not be played at the moment`,
       );
     }
 
@@ -38,21 +38,21 @@ module.exports = class Track {
   static async create_by_links(links = []) {
     // Don't use `for of` because of serial processing
     const xs = await Promise.all(
-      links.map(async link => {
+      links.map(async (link) => {
         try {
           return await Track.create_by_link(link);
         } catch (e) {
           return {
             link,
-            err_msg: e && e.message
+            err_msg: e && e.message,
           };
         }
-      })
+      }),
     );
 
     return {
       tracks: xs.filter(x => x instanceof Track),
-      errors: xs.filter(x => !(x instanceof Track))
+      errors: xs.filter(x => !(x instanceof Track)),
     };
   }
 
@@ -63,7 +63,7 @@ module.exports = class Track {
       length_seconds: this.length_seconds,
       title: this.title,
       id: this.id,
-      thumbnail_link: this.thumbnail_link
+      thumbnail_link: this.thumbnail_link,
     };
   }
 };

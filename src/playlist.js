@@ -1,7 +1,7 @@
-const ytdl = require("ytdl-core");
-const shuffle = require("lodash.shuffle");
-const random = require("lodash.random");
-const EventEmitter = require("events").EventEmitter;
+const ytdl = require('ytdl-core');
+const shuffle = require('lodash.shuffle');
+const random = require('lodash.random');
+const EventEmitter = require('events').EventEmitter;
 
 module.exports = class Playlist extends EventEmitter {
   constructor(ev, queue = []) {
@@ -25,7 +25,7 @@ module.exports = class Playlist extends EventEmitter {
 
   dequeue() {
     this.queue.shift();
-    this.ev.emit("update-status");
+    this.ev.emit('update-status');
   }
 
   pull_all() {
@@ -46,23 +46,23 @@ module.exports = class Playlist extends EventEmitter {
     } else {
       this.queue.splice(pos, 0, content);
     }
-    this.ev.emit("update-status");
+    this.ev.emit('update-status');
   }
 
   replace(queue = []) {
     this.queue = queue;
-    this.ev.emit("update-status");
+    this.ev.emit('update-status');
   }
 
   remove(index) {
     this.queue.splice(index, 1);
-    this.ev.emit("update-status");
-    this.emit("removed", { index });
+    this.ev.emit('update-status');
+    this.emit('removed', { index });
   }
 
   shuffle() {
     this.queue = shuffle(this.queue);
-    this.ev.emit("update-status");
+    this.ev.emit('update-status');
   }
 
   length() {

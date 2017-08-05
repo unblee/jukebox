@@ -1,5 +1,6 @@
 const providers = [];
-const youtube = require("./youtube.js");
+const youtube = require('./youtube.js');
+
 providers.push(youtube);
 
 module.exports = {
@@ -13,5 +14,5 @@ module.exports = {
 
   get providers() {
     return providers;
-  }
+  },
 };
