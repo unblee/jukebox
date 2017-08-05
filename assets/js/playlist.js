@@ -1,43 +1,43 @@
-Vue.component("playlist", {
-  props: ["playlist"],
+Vue.component('playlist', {
+  props: ['playlist'],
   data() {
     return {
       clipboard: null
     };
   },
   created() {
-    this.clipboard = new Clipboard(".copy-link-button");
+    this.clipboard = new Clipboard('.copy-link-button');
   },
 
   methods: {
     copyUrl(e) {
       this.clipboard.onClick(e);
     },
-    humanize_time(seconds) {
+    humanizeTime(seconds) {
       const s = seconds % 60;
-      const m = Math.floor(seconds % 3600 / 60);
+      const m = Math.floor((seconds % 3600) / 60);
       const h = Math.floor(seconds / 3600);
-      const padding = num => ("00" + num).slice(-2);
+      const padding = num => (`00${num}`).slice(-2);
       return `${padding(h)}:${padding(m)}:${padding(s)}`;
     },
-    is_now_playing_content(idx) {
+    isNowPlayingContent(idx) {
       return (
-        this.playlist.now_playing_content &&
-        this.playlist.now_playing_idx === idx
+        this.playlist.nowPlayingContent &&
+        this.playlist.nowPlayingIdx === idx
       );
     },
-    playlist_clear() {
-      fetch("/playlist", { method: "DELETE" });
+    playlistClear() {
+      fetch('/playlist', { method: 'DELETE' });
     },
-    delete_content(index) {
-      fetch(`/playlist/${index}`, { method: "DELETE" });
+    deleteContent(index) {
+      fetch(`/playlist/${index}`, { method: 'DELETE' });
     },
-    play_music(index) {
-      fetch(`/player/seek/${index}`, { method: "POST" });
+    playMusic(index) {
+      fetch(`/player/seek/${index}`, { method: 'POST' });
     }
   },
   computed: {
-    is_playlist_empty() {
+    isPlaylistEmpty() {
       return !this.playlist.contents || this.playlist.contents.length === 0;
     }
   },
@@ -49,22 +49,22 @@ Vue.component("playlist", {
     }">
     <div class="panel scroll-view" v-show="playlist && playlist.contents && playlist.contents.length">
       <a v-for="(content,idx) in playlist.contents" class="panel-block playlist-content is-paddingless"
-          :class="{'now-playing-content is-active':is_now_playing_content(idx)}"
+          :class="{'now-playing-content is-active':isNowPlayingContent(idx)}"
           :title="content.title"
-          @click="play_music(idx)"
+          @click="playMusic(idx)"
           >
           <div class="control columns is-marginless is-mobile">
             <div class="column is-1 align-self-center has-text-centered is-paddingless-vertical thumbnail-wrapper">
-              <span class="panel-icon" v-if="is_now_playing_content(idx)">
+              <span class="panel-icon" v-if="isNowPlayingContent(idx)">
                 <i class="material-icons icon">equalizer</i>
               </span>
-              <img :src="content.thumbnail_link" v-else class="is-block">
+              <img :src="content.thumbnailLink" v-else class="is-block">
             </div>
             <div class="column is-7 playlist-content-title-wrapper">
               {{ content.title }}
             </div>
             <div class="column has-text-centered is-2">
-              {{ humanize_time(content.length_seconds) }}
+              {{ humanizeTime(content.lengthSeconds) }}
             </div>
             <div class="column is-1 has-text-centered align-self-center is-paddingless-vertical">
               <a class="is-flex in-content-button copy-link-button" @click.prevent.stop="copyUrl" :data-clipboard-text="content.link">
@@ -72,7 +72,7 @@ Vue.component("playlist", {
               </a>
             </div>
             <div class="column is-1 has-text-centered align-self-center is-paddingless-vertical">
-              <a class="is-flex in-content-button" @click.prevent.stop="delete_content(idx)">
+              <a class="is-flex in-content-button" @click.prevent.stop="deleteContent(idx)">
                 <i class="material-icons icon" title="Delete">&#xE872;</i>
               </a>
             </div>
@@ -84,8 +84,8 @@ Vue.component("playlist", {
         <button
           title="Clear Playlist"
           class="button playlist-clear-button is-outlined is-fullwidth is-paddingless"
-          :disabled="is_playlist_empty"
-          @click="playlist_clear">
+          :disabled="isPlaylistEmpty"
+          @click="playlistClear">
           <i class="material-icons icon">delete_sweep</i>
         </button>
       </div>

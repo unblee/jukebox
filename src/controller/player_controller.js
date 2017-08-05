@@ -10,13 +10,13 @@ module.exports = class PlayerController {
 
   async next(ctx) {
     this.player.destroy();
-    this.player.start_next();
+    this.player.startNext();
     ctx.status = 200;
   }
 
   async prev(ctx) {
     this.player.destroy();
-    this.player.start_prev();
+    this.player.startPrev();
     ctx.status = 200;
   }
 
@@ -25,44 +25,44 @@ module.exports = class PlayerController {
     ctx.status = 200;
   }
 
-  async one_loop_on(ctx) {
-    this.player.set_one_loop(true);
+  async oneLoopOn(ctx) {
+    this.player.setOneLoop(true);
     ctx.status = 200;
   }
 
-  async one_loop_off(ctx) {
-    this.player.set_one_loop(false);
+  async oneLoopOff(ctx) {
+    this.player.setOneLoop(false);
     ctx.status = 200;
   }
 
-  async playlist_loop_on(ctx) {
-    this.player.set_playlist_loop(true);
+  async playlistLoopOn(ctx) {
+    this.player.setPlaylistLoop(true);
     ctx.status = 200;
   }
 
-  async playlist_loop_off(ctx) {
-    this.player.set_playlist_loop(false);
+  async playlistLoopOff(ctx) {
+    this.player.setPlaylistLoop(false);
     ctx.status = 200;
   }
 
-  async shuffle_mode_on(ctx) {
-    this.player.set_shuffle_mode(true);
+  async shuffleModeOn(ctx) {
+    this.player.setShuffleMode(true);
     ctx.status = 200;
   }
 
-  async shuffle_mode_off(ctx) {
-    this.player.set_shuffle_mode(false);
+  async shuffleModeOff(ctx) {
+    this.player.setShuffleMode(false);
     ctx.status = 200;
   }
 
   async status(ctx) {
-    ctx.body = this.player.fetch_status();
+    ctx.body = this.player.fetchStatus();
     ctx.status = 200;
   }
 
   async seek(ctx) {
     this.player.destroy();
-    this.player.start_specific(Number(ctx.params.index));
+    this.player.startSpecific(Number(ctx.params.index));
     ctx.status = 200;
   }
 };

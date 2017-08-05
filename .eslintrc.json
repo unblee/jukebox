@@ -1,0 +1,23 @@
+{
+  "plugins": [
+    "prettier"
+  ],
+  "extends": "airbnb-base",
+  "env": {
+    "browser": true,
+    "node": true,
+    "amd": true
+  },
+  "globals": {
+    "Vue": true,
+    "Clipboard": true
+  },
+  "rules": {
+    "no-new": "off",
+    "comma-dangle": ["error", "never"],
+    "arrow-parens": ["error", "as-needed"],
+    "no-underscore-dangle": "off",
+    "no-plusplus": "off",
+    "no-console": "off"
+  }
+}

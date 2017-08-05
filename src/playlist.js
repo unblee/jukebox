@@ -1,7 +1,6 @@
-const ytdl = require("ytdl-core");
-const shuffle = require("lodash.shuffle");
-const random = require("lodash.random");
-const EventEmitter = require("events").EventEmitter;
+const shuffle = require('lodash.shuffle');
+const random = require('lodash.random');
+const EventEmitter = require('events').EventEmitter;
 
 module.exports = class Playlist extends EventEmitter {
   constructor(ev, queue = []) {
@@ -10,13 +9,13 @@ module.exports = class Playlist extends EventEmitter {
     this.queue = queue;
   }
 
-  adds(tracks = [], { shuffle_add = false, shuffle_start_pos = 0 } = {}) {
-    tracks.map(track => this.add(track, { shuffle_add, shuffle_start_pos }));
+  adds(tracks = [], { shuffleAdd = false, shuffleStartPos = 0 } = {}) {
+    tracks.map(track => this.add(track, { shuffleAdd, shuffleStartPos }));
   }
 
-  add(track, { shuffle_add = false, shuffle_start_pos = 0 } = {}) {
-    if (shuffle_add) {
-      const pos = random(shuffle_start_pos, this.queue.length);
+  add(track, { shuffleAdd = false, shuffleStartPos = 0 } = {}) {
+    if (shuffleAdd) {
+      const pos = random(shuffleStartPos, this.queue.length);
       this.push(track, pos);
     } else {
       this.push(track);
@@ -25,16 +24,16 @@ module.exports = class Playlist extends EventEmitter {
 
   dequeue() {
     this.queue.shift();
-    this.ev.emit("update-status");
+    this.ev.emit('update-status');
   }
 
-  pull_all() {
+  pullAll() {
     return this.queue;
   }
 
   pull(idx = 0) {
-    if (this.is_empty()) {
-      return;
+    if (this.isEmpty()) {
+      return null;
     }
 
     return this.queue[idx];
@@ -46,34 +45,34 @@ module.exports = class Playlist extends EventEmitter {
     } else {
       this.queue.splice(pos, 0, content);
     }
-    this.ev.emit("update-status");
+    this.ev.emit('update-status');
   }
 
   replace(queue = []) {
     this.queue = queue;
-    this.ev.emit("update-status");
+    this.ev.emit('update-status');
   }
 
   remove(index) {
     this.queue.splice(index, 1);
-    this.ev.emit("update-status");
-    this.emit("removed", { index });
+    this.ev.emit('update-status');
+    this.emit('removed', { index });
   }
 
   shuffle() {
     this.queue = shuffle(this.queue);
-    this.ev.emit("update-status");
+    this.ev.emit('update-status');
   }
 
   length() {
     return this.queue.length;
   }
 
-  is_empty() {
+  isEmpty() {
     return this.queue.length === 0;
   }
 
-  to_json() {
-    return this.queue.map(x => x.to_json());
+  toJson() {
+    return this.queue.map(x => x.toJson());
   }
 };

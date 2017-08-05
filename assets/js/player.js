@@ -1,86 +1,86 @@
-Vue.component("player", {
-  props: ["player"],
+Vue.component('player', {
+  props: ['player'],
 
   methods: {
-    is_playlist_empty() {
+    isPlaylistEmpty() {
       return !this.player.playlist || this.player.playlist.length === 0;
     },
-    player_start() {
-      fetch("/player/start", { method: "POST" });
+    playerStart() {
+      fetch('/player/start', { method: 'POST' });
     },
-    player_pause() {
-      fetch("/player/pause", { method: "POST" });
+    playerPause() {
+      fetch('/player/pause', { method: 'POST' });
     },
-    player_next() {
-      fetch("/player/next", { method: "POST" });
+    playerNext() {
+      fetch('/player/next', { method: 'POST' });
     },
-    player_prev() {
-      fetch("/player/prev", { method: "POST" });
+    playerPrev() {
+      fetch('/player/prev', { method: 'POST' });
     },
-    player_loop_one_toggle() {
-      if (this.player.one_loop) {
-        fetch("/player/loop/one/off", { method: "POST" });
+    playerLoopOneToggle() {
+      if (this.player.oneLoop) {
+        fetch('/player/loop/one/off', { method: 'POST' });
       } else {
-        fetch("/player/loop/one/on", { method: "POST" });
+        fetch('/player/loop/one/on', { method: 'POST' });
       }
     },
-    player_loop_playlist_toggle() {
-      if (this.player.playlist_loop) {
-        fetch("/player/loop/playlist/off", { method: "POST" });
+    playerLoopPlaylistToggle() {
+      if (this.player.playlistLoop) {
+        fetch('/player/loop/playlist/off', { method: 'POST' });
       } else {
-        fetch("/player/loop/playlist/on", { method: "POST" });
+        fetch('/player/loop/playlist/on', { method: 'POST' });
       }
     },
-    player_shuffle_mode_toggle() {
-      if (this.player.shuffle_mode) {
-        fetch("/player/loop/shuffle/off", { method: "POST" });
+    playerShuffleModeToggle() {
+      if (this.player.shuffleMode) {
+        fetch('/player/loop/shuffle/off', { method: 'POST' });
       } else {
-        fetch("/player/loop/shuffle/on", { method: "POST" });
+        fetch('/player/loop/shuffle/on', { method: 'POST' });
       }
     }
   },
   computed: {
-    exist_thumbnail() {
+    existThumbnail() {
       return (
-        this.player.now_playing_content &&
-        this.player.now_playing_content.thumbnail_link
+        this.player.nowPlayingContent &&
+        this.player.nowPlayingContent.thumbnailLink
       );
     }
   },
 
   template: `
   <div class="player is-flex black-background">
-    <img v-if="exist_thumbnail" :src="player.now_playing_content.thumbnail_link" alt="Image" class="player-thumbnail is-block">
+    <img v-if="existThumbnail" :src="player.nowPlayingContent.thumbnailLink" alt="Image" class="player-thumbnail is-block">
     <div class="player-overlay is-flex">
       <h1 class="title is-4 player-title is-marginless">
-        <a :href="player.now_playing_content.link" target="_blank"
-        v-if="player.now_playing_content"
-        class="has-text-white" :title="player.now_playing_content.title">
-          {{ player.now_playing_content.title }}
+        <a :href="player.nowPlayingContent.link" target="_blank"
+        v-if="player.nowPlayingContent"
+        class="has-text-white" :title="player.nowPlayingContent.title">
+          {{ player.nowPlayingContent.title }}
         </a>
         <span v-else>&nbsp;</span>
       </h1>
       <div class="player-main-controller has-text-centered">
         <div class="columns is-mobile">
           <div class="column">
-            <a title="Prev" :class="{ 'deactivate': !player.playlist_loop || is_playlist_empty() }" @click="player_prev()">
+            <a title="Prev" :class="{ 'deactivate': !player.playlistLoop || isPlaylistEmpty() }" @click="playerPrev()">
               <i class="material-icons is-large is-pushable">skip_previous</i>
             </a>
           </div>
           <div class="column">
-            <div v-if="player.now_playing">
-              <a title="Pause" @click="player_pause()" :class="{ 'deactivate': is_playlist_empty() && !player.now_playing_content }">
+            <div v-if="player.nowPlaying">
+              <a title="Pause" @click="playerPause()" :class="{ 'deactivate': isPlaylistEmpty() && !player.nowPlayingContent }">
                 <i class="material-icons is-large is-pushable">pause</i>
               </a>
             </div>
             <div v-else>
-              <a title="Play" @click="player_start()" :class="{ 'deactivate': is_playlist_empty() && !player.now_playing_content }">
+              <a title="Play" @click="playerStart()" :class="{ 'deactivate': isPlaylistEmpty() && !player.nowPlayingContent }">
                 <i class="material-icons is-large is-pushable">play_arrow</i>
               </a>
             </div>
           </div>
           <div class="column">
-            <a title="Next" @click="player_next()" :class="{ 'deactivate': is_playlist_empty() }">
+            <a title="Next" @click="playerNext()" :class="{ 'deactivate': isPlaylistEmpty() }">
               <i class="material-icons is-large is-pushable">skip_next</i>
             </a>
           </div>
@@ -89,17 +89,17 @@ Vue.component("player", {
       <div class="player-other-controller">
         <div class="columns has-text-centered is-mobile">
           <div class="column">
-            <a title="One Loop" :class="[{ 'is-loop-active': player.one_loop }, { 'deactivate': is_playlist_empty() && !player.now_playing_content }]" @click="player_loop_one_toggle()">
+            <a title="One Loop" :class="[{ 'is-loop-active': player.oneLoop }, { 'deactivate': isPlaylistEmpty() && !player.nowPlayingContent }]" @click="playerLoopOneToggle()">
               <i class="material-icons is-medium">repeat_one</i>
             </a>
           </div>
           <div class="column">
-            <a title="Playlist Loop" :class="[{ 'is-loop-active': player.playlist_loop }, { 'deactivate': is_playlist_empty() }]" @click="player_loop_playlist_toggle()">
+            <a title="Playlist Loop" :class="[{ 'is-loop-active': player.playlistLoop }, { 'deactivate': isPlaylistEmpty() }]" @click="playerLoopPlaylistToggle()">
               <i class="material-icons is-medium">repeat</i>
             </a>
           </div>
           <div class="column">
-            <a title="Shuffle" :class="[{ 'is-loop-active': player.shuffle_mode }, { 'deactivate': is_playlist_empty() }]" @click="player_shuffle_mode_toggle()">
+            <a title="Shuffle" :class="[{ 'is-loop-active': player.shuffleMode }, { 'deactivate': isPlaylistEmpty() }]" @click="playerShuffleModeToggle()">
               <i class="material-icons is-medium">shuffle</i>
             </a>
           </div>

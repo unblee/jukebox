@@ -1,45 +1,45 @@
-Vue.component("links-sender", {
+Vue.component('links-sender', {
   data() {
     return {
-      unavaliable_links: [],
-      input: "",
+      unavaliableLinks: [],
+      input: '',
       adding: false
     };
   },
   methods: {
-    async playlist_add() {
+    async playlistAdd() {
       if (this.input.length === 0) return;
       try {
         this.adding = true;
-        const res = await fetch("/playlist", {
-          method: "POST",
+        const res = await fetch('/playlist', {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json"
+            'Content-Type': 'application/json'
           },
-          body: JSON.stringify(this.input.split(","))
+          body: JSON.stringify(this.input.split(','))
         });
         this.adding = false;
         if (!res.ok) return;
-        this.unavaliable_links = await res.json();
-        this.input = "";
+        this.unavaliableLinks = await res.json();
+        this.input = '';
         setTimeout(() => {
-          this.clear_unavaliable_links();
+          this.clearUnavaliableLinks();
         }, 30000);
       } catch (e) {
         this.adding = false;
         console.error(e);
       }
     },
-    clear_unavaliable_links() {
-      this.unavaliable_links = [];
+    clearUnavaliableLinks() {
+      this.unavaliableLinks = [];
     },
-    is_unavaliable_links_empty() {
-      return this.unavaliable_links.length === 0;
+    isUnavaliableLinksEmpty() {
+      return this.unavaliableLinks.length === 0;
     }
   },
   template: `
   <div class="links-sender">
-    <form action="#" @submit.prevent="playlist_add">
+    <form action="#" @submit.prevent="playlistAdd">
       <div class="field has-addons">
         <div class="control is-expanded">
           <input
@@ -59,11 +59,11 @@ Vue.component("links-sender", {
           </button>
         </p>
       </div>
-      <div v-if="!is_unavaliable_links_empty()" class="field">
+      <div v-if="!isUnavaliableLinksEmpty()" class="field">
         <div class="message is-danger">
           <div class="message-body error-msg">
-            <div v-for="link in unavaliable_links">
-              '{{ link.link }}' => '{{ link.err_msg }}'
+            <div v-for="link in unavaliableLinks">
+              '{{ link.link }}' => '{{ link.errMsg }}'
             </div>
           </div>
         </div>

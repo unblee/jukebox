@@ -1,50 +1,48 @@
-const Provider = require("./provider");
+const Provider = require('./provider');
 
 module.exports = class Track {
-  constructor({ provider, link, length_seconds, title, id, thumbnail_link }) {
+  constructor({ provider, link, lengthSeconds, title, id, thumbnailLink }) {
     this.provider = provider;
     this.link = link;
-    this.length_seconds = length_seconds;
+    this.lengthSeconds = lengthSeconds;
     this.title = title;
     this.id = id;
-    this.thumbnail_link = thumbnail_link;
+    this.thumbnailLink = thumbnailLink;
   }
 
-  static async create_by_link(link) {
-    const provider = Provider.find_by_link(link);
+  static async createByLink(link) {
+    const provider = Provider.findByLink(link);
     if (!provider) {
-      throw new Error("This link belongs to an unsupported provider");
+      throw new Error('This link belongs to an unsupported provider');
     }
 
-    const provider_name = provider.name;
+    const providerName = provider.name;
     const track = new this({
-      provider: provider_name,
+      provider: providerName,
       link,
-      length_seconds: await provider.get_length_seconds(link),
-      title: await provider.get_title(link),
-      id: provider.get_id(link),
-      thumbnail_link: await provider.get_thumbnail_link(link)
+      lengthSeconds: await provider.getLengthSeconds(link),
+      title: await provider.getTitle(link),
+      id: provider.getId(link),
+      thumbnailLink: await provider.getThumbnailLink(link)
     });
 
-    if (!track.length_seconds) {
-      throw new Error(
-        `This '${provider_name}' link can not be played at the moment`
-      );
+    if (!track.lengthSeconds) {
+      throw new Error(`This '${providerName}' link can not be played at the moment`);
     }
 
     return track;
   }
 
-  static async create_by_links(links = []) {
+  static async createByLinks(links = []) {
     // Don't use `for of` because of serial processing
     const xs = await Promise.all(
       links.map(async link => {
         try {
-          return await Track.create_by_link(link);
+          return await Track.createByLink(link);
         } catch (e) {
           return {
             link,
-            err_msg: e && e.message
+            errMsg: e && e.message
           };
         }
       })
@@ -56,14 +54,14 @@ module.exports = class Track {
     };
   }
 
-  to_json() {
+  toJson() {
     return {
       provider: this.provider,
       link: this.link,
-      length_seconds: this.length_seconds,
+      lengthSeconds: this.lengthSeconds,
       title: this.title,
       id: this.id,
-      thumbnail_link: this.thumbnail_link
+      thumbnailLink: this.thumbnailLink
     };
   }
 };
