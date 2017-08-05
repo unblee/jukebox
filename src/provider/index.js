@@ -4,11 +4,11 @@ const youtube = require('./youtube.js');
 providers.push(youtube);
 
 module.exports = {
-  find_by_link(link) {
+  findByLink(link) {
     return providers.find(provider => provider.pattern.test(link));
   },
 
-  find_by_name(name) {
+  findByName(name) {
     return providers.find(provider => provider.name === name);
   },
 

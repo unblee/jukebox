@@ -1,6 +1,6 @@
 const Koa = require('koa');
 const serve = require('koa-static');
-const socket_route = require('koa-route');
+const socketRoute = require('koa-route');
 const mount = require('koa-mount');
 const bodyParser = require('koa-bodyparser');
 const path = require('path');
@@ -25,15 +25,15 @@ const player = new Player(playlist, ev);
 // load status
 const PlayerStatusStore = require('./player_status_store.js');
 
-const player_status_store = new PlayerStatusStore();
-if (player_status_store.exists_sync()) {
-  player.set_status(player_status_store.read_sync());
+const playerStatusStore = new PlayerStatusStore();
+if (playerStatusStore.existsSync()) {
+  player.setStatus(playerStatusStore.readSync());
 }
 
 const Router = require('./router');
 
 const router = new Router();
-router.all_bind(player, playlist);
+router.allBind(player, playlist);
 
 // use body parser
 app.use(bodyParser());
@@ -56,18 +56,18 @@ app.ws.broadcast = data => {
 ev.on(
   'update-status',
   throttle(() => {
-    const status = player.fetch_status();
+    const status = player.fetchStatus();
     app.ws.broadcast(JSON.stringify(status));
 
     // save status
-    player_status_store.write_sync(status, {
+    playerStatusStore.writeSync(status, {
       pretty: process.env.NODE_ENV !== 'production'
     });
   }, 200),
 );
 
 // websocket connection
-app.ws.use(socket_route.get('/socket', () => {}));
+app.ws.use(socketRoute.get('/socket', () => {}));
 
 app.use(router.routes());
 app.use(router.allowedMethods());

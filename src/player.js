@@ -7,50 +7,50 @@ module.exports = class Player {
   constructor(playlist = new Playlist(), ev) {
     this.playlist = playlist;
     this.ev = ev;
-    this.audio_stream = null;
-    this.decoded_stream = null;
-    this.one_loop = false;
-    this.playlist_loop = false;
-    this.shuffle_mode = false;
-    this.now_playing = false;
+    this.audioStream = null;
+    this.decodedStream = null;
+    this.oneLoop = false;
+    this.playlistLoop = false;
+    this.shuffleMode = false;
+    this.nowPlaying = false;
     this.pausing = false;
-    this.now_playing_idx = 0;
-    this.now_playing_content = null;
-    this.next_play_content = null;
+    this.nowPlayingIdx = 0;
+    this.nowPlayingContent = null;
+    this.nextPlayContent = null;
     this.spkr = null;
 
     this.playlist.on('removed', ({ index }) => {
-      if (index === this.now_playing_idx) {
+      if (index === this.nowPlayingIdx) {
         // stop and move playing index to the next music
         this.destroy();
-        this._update_playing_content();
-      } else if (index < this.now_playing_idx) {
+        this._updatePlayingContent();
+      } else if (index < this.nowPlayingIdx) {
         // adjust playing index
-        --this.now_playing_idx;
+        --this.nowPlayingIdx;
         this.ev.emit('update-status');
       }
     });
   }
 
   start() {
-    if (this.now_playing) return;
+    if (this.nowPlaying) return;
     if (this.pausing) {
       this.resume();
       return;
     }
 
-    this._update_playing_content();
-    if (!this.now_playing_content) return;
+    this._updatePlayingContent();
+    if (!this.nowPlayingContent) return;
 
-    this._play_music();
+    this._playMusic();
   }
 
-  start_next() {
-    if (this.one_loop) {
+  startNext() {
+    if (this.oneLoop) {
       // pass
-    } else if (this.playlist_loop) {
-      this._inc_playing_idx();
-      if (this.shuffle_mode && !this.now_playing_idx) {
+    } else if (this.playlistLoop) {
+      this._incPlayingIdx();
+      if (this.shuffleMode && !this.nowPlayingIdx) {
         this.playlist.shuffle();
       }
     } else {
@@ -59,146 +59,146 @@ module.exports = class Player {
     this.start();
   }
 
-  start_prev() {
-    if (this.one_loop) {
+  startPrev() {
+    if (this.oneLoop) {
       // pass
-    } else if (this.playlist_loop) {
-      this._dec_playing_idx();
+    } else if (this.playlistLoop) {
+      this._decPlayingIdx();
     } else {
       return; // disabled
     }
     this.start();
   }
 
-  start_specific(index) {
+  startSpecific(index) {
     // always not consume queue.
-    this.now_playing_idx = +index;
+    this.nowPlayingIdx = +index;
     this.start();
   }
 
   pause() {
-    this.decoded_stream.unpipe(this.spkr);
-    this.now_playing = false;
+    this.decodedStream.unpipe(this.spkr);
+    this.nowPlaying = false;
     this.pausing = true;
     this.ev.emit('update-status');
   }
 
   resume() {
     this.pausing = false;
-    this.now_playing = true;
-    this.decoded_stream.pipe(this.spkr);
+    this.nowPlaying = true;
+    this.decodedStream.pipe(this.spkr);
     this.ev.emit('update-status');
   }
 
   destroy() {
-    if (this.audio_stream) this.audio_stream.removeAllListeners('close');
+    if (this.audioStream) this.audioStream.removeAllListeners('close');
     try {
-      this.decoded_stream.unpipe(this.spkr).end();
+      this.decodedStream.unpipe(this.spkr).end();
     } catch (e) {
       console.error(e);
     }
-    this.now_playing = false;
+    this.nowPlaying = false;
     this.pausing = false;
     this.ev.emit('update-status');
   }
 
-  set_one_loop(value) {
-    this.one_loop = !!value;
+  setOneLoop(value) {
+    this.oneLoop = !!value;
     this.ev.emit('update-status');
   }
 
-  set_playlist_loop(value) {
-    this.playlist_loop = !!value;
+  setPlaylistLoop(value) {
+    this.playlistLoop = !!value;
     this.ev.emit('update-status');
   }
 
-  set_shuffle_mode(value) {
-    this.shuffle_mode = !!value;
-    if (this.shuffle_mode) {
+  setShuffleMode(value) {
+    this.shuffleMode = !!value;
+    if (this.shuffleMode) {
       this.playlist.shuffle();
-      this.now_playing_idx = 0;
+      this.nowPlayingIdx = 0;
 
       // current playing content moves to top if playing music
-      if (this.now_playing) {
-        const now_content_idx = this.playlist.queue.indexOf(
-          this.now_playing_content,
+      if (this.nowPlaying) {
+        const nowContentIdx = this.playlist.queue.indexOf(
+          this.nowPlayingContent,
         );
-        if (now_content_idx) {
-          this.playlist.queue.splice(now_content_idx, 1);
-          this.playlist.queue.unshift(this.now_playing_content);
+        if (nowContentIdx) {
+          this.playlist.queue.splice(nowContentIdx, 1);
+          this.playlist.queue.unshift(this.nowPlayingContent);
         }
       }
     }
     this.ev.emit('update-status');
   }
 
-  fetch_status() {
+  fetchStatus() {
     return {
-      one_loop: this.one_loop,
-      playlist_loop: this.playlist_loop,
-      shuffle_mode: this.shuffle_mode,
-      now_playing: this.now_playing,
-      now_playing_idx: this.now_playing_idx,
-      now_playing_content: this.now_playing_content,
-      playlist: this.playlist.to_json()
+      oneLoop: this.oneLoop,
+      playlistLoop: this.playlistLoop,
+      shuffleMode: this.shuffleMode,
+      nowPlaying: this.nowPlaying,
+      nowPlayingIdx: this.nowPlayingIdx,
+      nowPlayingContent: this.nowPlayingContent,
+      playlist: this.playlist.toJson()
     };
   }
 
-  set_status(status) {
-    this.set_one_loop(status.one_loop);
-    this.set_playlist_loop(status.playlist_loop);
-    this.set_shuffle_mode(status.shuffle_mode);
+  setStatus(status) {
+    this.setOneLoop(status.oneLoop);
+    this.setPlaylistLoop(status.playlistLoop);
+    this.setShuffleMode(status.shuffleMode);
     this.playlist.replace(status.playlist);
 
-    // set update now_playing, now_playing_idx and now_playing_content
-    if (status.now_playing_idx) {
-      this.now_playing_idx = status.now_playing_idx;
-      this.now_playing_content = status.now_playing_content;
-      if (status.now_playing) {
-        this.start_specific(this.now_playing_idx);
+    // set update nowPlaying, nowPlayingIdx and nowPlayingContent
+    if (status.nowPlayingIdx) {
+      this.nowPlayingIdx = status.nowPlayingIdx;
+      this.nowPlayingContent = status.nowPlayingContent;
+      if (status.nowPlaying) {
+        this.startSpecific(this.nowPlayingIdx);
       }
     }
   }
 
-  _inc_playing_idx() {
-    if (this.one_loop) return;
-    this.now_playing_idx = (this.now_playing_idx + 1) % this.playlist.length();
+  _incPlayingIdx() {
+    if (this.oneLoop) return;
+    this.nowPlayingIdx = (this.nowPlayingIdx + 1) % this.playlist.length();
   }
 
-  _dec_playing_idx() {
-    if (this.one_loop) return;
-    this.now_playing_idx =
-      (this.now_playing_idx + (this.playlist.length() - 1)) %
+  _decPlayingIdx() {
+    if (this.oneLoop) return;
+    this.nowPlayingIdx =
+      (this.nowPlayingIdx + (this.playlist.length() - 1)) %
       this.playlist.length();
   }
 
-  _update_playing_content(play_content = null) {
-    if (play_content) {
-      this.now_playing_content = this.next_play_content;
-    } else if (this.playlist.is_empty()) {
-      this.now_playing_content = null;
+  _updatePlayingContent(playContent = null) {
+    if (playContent) {
+      this.nowPlayingContent = this.nextPlayContent;
+    } else if (this.playlist.isEmpty()) {
+      this.nowPlayingContent = null;
     } else {
-      this.now_playing_content = this.playlist.pull(this.now_playing_idx);
+      this.nowPlayingContent = this.playlist.pull(this.nowPlayingIdx);
     }
     this.ev.emit('update-status');
   }
 
-  _play_music() {
-    const provider = Provider.find_by_name(this.now_playing_content.provider);
-    const stream = provider.create_stream(this.now_playing_content.link);
+  _playMusic() {
+    const provider = Provider.findByName(this.nowPlayingContent.provider);
+    const stream = provider.createStream(this.nowPlayingContent.link);
 
     // audio output to the speaker
-    this.now_playing = true;
+    this.nowPlaying = true;
     this.ev.emit('update-status');
-    this.decoded_stream = stream.pipe(decoder());
+    this.decodedStream = stream.pipe(decoder());
     this.spkr = speaker();
-    this.audio_stream = this.decoded_stream.pipe(this.spkr);
-    this.audio_stream.on('close', () => {
-      this.now_playing = false;
+    this.audioStream = this.decodedStream.pipe(this.spkr);
+    this.audioStream.on('close', () => {
+      this.nowPlaying = false;
       this.pausing = false;
       this.destroy();
       this.ev.emit('update-status');
-      this.start_next();
+      this.startNext();
     });
   }
 };

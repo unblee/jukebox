@@ -1,63 +1,63 @@
 new Vue({
   el: '#app',
   data: {
-    player_status: {},
-    bind_player: {},
-    bind_playlist: {}
+    playerStatus: {},
+    bindPlayer: {},
+    bindPlaylist: {}
   },
   async created() {
     await this.init();
-    this.setup_socket();
+    this.setupSocket();
   },
   watch: {
-    player_status: {
-      now_playing(now_playing) {
-        const app_name = 'jukebox';
-        document.title = now_playing
-          ? `${this.player_status.now_playing_content.title} - ${app_name}`
-          : app_name;
+    playerStatus: {
+      nowPlaying(nowPlaying) {
+        const appName = 'jukebox';
+        document.title = nowPlaying
+          ? `${this.playerStatus.nowPlayingContent.title} - ${appName}`
+          : appName;
       }
     }
   },
   methods: {
     async init() {
       const res = await fetch('/player/status');
-      this.player_status = await res.json();
-      this.bind_update();
+      this.playerStatus = await res.json();
+      this.bindUpdate();
     },
-    bind_update() {
-      this.bind_player = {
-        one_loop: this.player_status.one_loop,
-        playlist_loop: this.player_status.playlist_loop,
-        shuffle_mode: this.player_status.shuffle_mode,
-        now_playing: this.player_status.now_playing,
-        now_playing_idx: this.player_status.now_playing_idx,
-        now_playing_content: this.player_status.now_playing_content,
-        playlist: this.player_status.playlist
+    bindUpdate() {
+      this.bindPlayer = {
+        oneLoop: this.playerStatus.oneLoop,
+        playlistLoop: this.playerStatus.playlistLoop,
+        shuffleMode: this.playerStatus.shuffleMode,
+        nowPlaying: this.playerStatus.nowPlaying,
+        nowPlayingIdx: this.playerStatus.nowPlayingIdx,
+        nowPlayingContent: this.playerStatus.nowPlayingContent,
+        playlist: this.playerStatus.playlist
       };
-      this.bind_playlist = {
-        contents: this.player_status.playlist,
-        now_playing_content: this.player_status.now_playing_content,
-        now_playing_idx: this.player_status.now_playing_idx
+      this.bindPlaylist = {
+        contents: this.playerStatus.playlist,
+        nowPlayingContent: this.playerStatus.nowPlayingContent,
+        nowPlayingIdx: this.playerStatus.nowPlayingIdx
       };
     },
     teardown() {
-      this.player_status = {};
-      this.bind_player = {};
-      this.bind_playlist = {};
+      this.playerStatus = {};
+      this.bindPlayer = {};
+      this.bindPlaylist = {};
     },
-    setup_socket() {
+    setupSocket() {
       const socket = new WebSocket(`ws://${location.host}/socket`);
 
       socket.addEventListener('message', event => {
-        this.player_status = JSON.parse(event.data);
-        this.bind_update();
+        this.playerStatus = JSON.parse(event.data);
+        this.bindUpdate();
       });
       socket.addEventListener('close', () => {
         this.teardown();
         setTimeout(() => {
           this.init();
-          this.setup_socket();
+          this.setupSocket();
         }, 1000);
       });
     }

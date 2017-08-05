@@ -8,8 +8,8 @@ module.exports = class PlaylistController {
 
   async add(ctx) {
     const links = ctx.request.body;
-    const { tracks, errors } = await Track.create_by_links(links);
-    this.playlist.adds(tracks, this._add_opts);
+    const { tracks, errors } = await Track.createByLinks(links);
+    this.playlist.adds(tracks, this._addOpts);
 
     ctx.body = errors;
     ctx.status = 200;
@@ -25,11 +25,11 @@ module.exports = class PlaylistController {
     ctx.status = 200;
   }
 
-  get _add_opts() {
-    if (this.player.shuffle_mode) {
+  get _addOpts() {
+    if (this.player.shuffleMode) {
       return {
         shuffle_add: true,
-        shuffle_start_pos: this.player.now_playing_idx + 1
+        shuffle_start_pos: this.player.nowPlayingIdx + 1
       };
     }
     return {};

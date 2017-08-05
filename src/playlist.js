@@ -9,13 +9,13 @@ module.exports = class Playlist extends EventEmitter {
     this.queue = queue;
   }
 
-  adds(tracks = [], { shuffle_add = false, shuffle_start_pos = 0 } = {}) {
-    tracks.map(track => this.add(track, { shuffle_add, shuffle_start_pos }));
+  adds(tracks = [], { shuffleAdd = false, shuffleStartPos = 0 } = {}) {
+    tracks.map(track => this.add(track, { shuffleAdd, shuffleStartPos }));
   }
 
-  add(track, { shuffle_add = false, shuffle_start_pos = 0 } = {}) {
-    if (shuffle_add) {
-      const pos = random(shuffle_start_pos, this.queue.length);
+  add(track, { shuffleAdd = false, shuffleStartPos = 0 } = {}) {
+    if (shuffleAdd) {
+      const pos = random(shuffleStartPos, this.queue.length);
       this.push(track, pos);
     } else {
       this.push(track);
@@ -27,12 +27,12 @@ module.exports = class Playlist extends EventEmitter {
     this.ev.emit('update-status');
   }
 
-  pull_all() {
+  pullAll() {
     return this.queue;
   }
 
   pull(idx = 0) {
-    if (this.is_empty()) {
+    if (this.isEmpty()) {
       return null;
     }
 
@@ -68,11 +68,11 @@ module.exports = class Playlist extends EventEmitter {
     return this.queue.length;
   }
 
-  is_empty() {
+  isEmpty() {
     return this.queue.length === 0;
   }
 
-  to_json() {
-    return this.queue.map(x => x.to_json());
+  toJson() {
+    return this.queue.map(x => x.toJson());
   }
 };
