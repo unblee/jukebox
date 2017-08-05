@@ -26,19 +26,20 @@ new Vue({
       this.bindUpdate();
     },
     bindUpdate() {
-      this.bindPlayer = {
-        oneLoop: this.playerStatus.oneLoop,
-        playlistLoop: this.playerStatus.playlistLoop,
-        shuffleMode: this.playerStatus.shuffleMode,
-        nowPlaying: this.playerStatus.nowPlaying,
-        nowPlayingIdx: this.playerStatus.nowPlayingIdx,
-        nowPlayingContent: this.playerStatus.nowPlayingContent,
-        playlist: this.playerStatus.playlist
-      };
+      const { loopMode, shuffleMode, playlist, nowPlayingIdx } = this.playerStatus;
+      const nowPlayingContent = nowPlayingIdx < playlist.length ? playlist[nowPlayingIdx] : null;
+
       this.bindPlaylist = {
-        contents: this.playerStatus.playlist,
-        nowPlayingContent: this.playerStatus.nowPlayingContent,
-        nowPlayingIdx: this.playerStatus.nowPlayingIdx
+        contents: playlist,
+        nowPlayingIdx,
+        nowPlayingContent
+      };
+      this.bindPlayer = {
+        loopMode,
+        shuffleMode,
+        nowPlayingIdx,
+        nowPlayingContent,
+        playlist
       };
     },
     teardown() {
