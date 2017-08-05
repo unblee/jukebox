@@ -25,23 +25,8 @@ module.exports = class PlayerController {
     ctx.status = 200;
   }
 
-  async oneLoopOn(ctx) {
-    this.player.setOneLoop(true);
-    ctx.status = 200;
-  }
-
-  async oneLoopOff(ctx) {
-    this.player.setOneLoop(false);
-    ctx.status = 200;
-  }
-
-  async playlistLoopOn(ctx) {
-    this.player.setPlaylistLoop(true);
-    ctx.status = 200;
-  }
-
-  async playlistLoopOff(ctx) {
-    this.player.setPlaylistLoop(false);
+  async setLoopMode(ctx) {
+    this.player.setLoopMode(ctx.params.mode);
     ctx.status = 200;
   }
 
