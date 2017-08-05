@@ -29,7 +29,7 @@ module.exports = class PlaylistController {
     if (this.player.shuffle_mode) {
       return {
         shuffle_add: true,
-        shuffle_start_pos: this.player.now_playing_idx + 1,
+        shuffle_start_pos: this.player.now_playing_idx + 1
       };
     }
     return {};

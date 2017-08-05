@@ -37,7 +37,7 @@ Vue.component('player', {
       } else {
         fetch('/player/loop/shuffle/on', { method: 'POST' });
       }
-    },
+    }
   },
   computed: {
     exist_thumbnail() {
@@ -45,7 +45,7 @@ Vue.component('player', {
         this.player.now_playing_content &&
         this.player.now_playing_content.thumbnail_link
       );
-    },
+    }
   },
 
   template: `
@@ -107,5 +107,5 @@ Vue.component('player', {
       </div>
     </div>
   </div>
-  `,
+  `
 });

@@ -3,19 +3,21 @@ new Vue({
   data: {
     player_status: {},
     bind_player: {},
-    bind_playlist: {},
+    bind_playlist: {}
   },
   async created() {
     await this.init();
     this.setup_socket();
   },
   watch: {
-    'player_status.now_playing': function (now_playing) {
-      const app_name = 'jukebox';
-      document.title = now_playing
-        ? `${this.player_status.now_playing_content.title} - ${app_name}`
-        : app_name;
-    },
+    player_status: {
+      now_playing(now_playing) {
+        const app_name = 'jukebox';
+        document.title = now_playing
+          ? `${this.player_status.now_playing_content.title} - ${app_name}`
+          : app_name;
+      }
+    }
   },
   methods: {
     async init() {
@@ -31,12 +33,12 @@ new Vue({
         now_playing: this.player_status.now_playing,
         now_playing_idx: this.player_status.now_playing_idx,
         now_playing_content: this.player_status.now_playing_content,
-        playlist: this.player_status.playlist,
+        playlist: this.player_status.playlist
       };
       this.bind_playlist = {
         contents: this.player_status.playlist,
         now_playing_content: this.player_status.now_playing_content,
-        now_playing_idx: this.player_status.now_playing_idx,
+        now_playing_idx: this.player_status.now_playing_idx
       };
     },
     teardown() {
@@ -47,7 +49,7 @@ new Vue({
     setup_socket() {
       const socket = new WebSocket(`ws://${location.host}/socket`);
 
-      socket.addEventListener('message', (event) => {
+      socket.addEventListener('message', event => {
         this.player_status = JSON.parse(event.data);
         this.bind_update();
       });
@@ -58,6 +60,6 @@ new Vue({
           this.setup_socket();
         }, 1000);
       });
-    },
-  },
+    }
+  }
 });

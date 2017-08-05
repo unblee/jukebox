@@ -14,7 +14,8 @@
     "start": "node ./src/app.js",
     "dev": "nodemon --watch src ./src/app.js",
     "precommit": "lint-staged",
-    "lint": "eslint . --ext .js"
+    "lint": "eslint --ext .js",
+    "lint:all": "eslint . --ext .js"
   },
   "lint-staged": {
     "*.js": [

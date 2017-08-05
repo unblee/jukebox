@@ -23,7 +23,7 @@ module.exports = class Track {
       length_seconds: await provider.get_length_seconds(link),
       title: await provider.get_title(link),
       id: provider.get_id(link),
-      thumbnail_link: await provider.get_thumbnail_link(link),
+      thumbnail_link: await provider.get_thumbnail_link(link)
     });
 
     if (!track.length_seconds) {
@@ -38,13 +38,13 @@ module.exports = class Track {
   static async create_by_links(links = []) {
     // Don't use `for of` because of serial processing
     const xs = await Promise.all(
-      links.map(async (link) => {
+      links.map(async link => {
         try {
           return await Track.create_by_link(link);
         } catch (e) {
           return {
             link,
-            err_msg: e && e.message,
+            err_msg: e && e.message
           };
         }
       }),
@@ -52,7 +52,7 @@ module.exports = class Track {
 
     return {
       tracks: xs.filter(x => x instanceof Track),
-      errors: xs.filter(x => !(x instanceof Track)),
+      errors: xs.filter(x => !(x instanceof Track))
     };
   }
 
@@ -63,7 +63,7 @@ module.exports = class Track {
       length_seconds: this.length_seconds,
       title: this.title,
       id: this.id,
-      thumbnail_link: this.thumbnail_link,
+      thumbnail_link: this.thumbnail_link
     };
   }
 };

@@ -34,7 +34,10 @@ module.exports = class Player {
 
   start() {
     if (this.now_playing) return;
-    if (this.pausing) return this.resume();
+    if (this.pausing) {
+      this.resume();
+      return;
+    }
 
     this._update_playing_content();
     if (!this.now_playing_content) return;
@@ -91,7 +94,9 @@ module.exports = class Player {
     if (this.audio_stream) this.audio_stream.removeAllListeners('close');
     try {
       this.decoded_stream.unpipe(this.spkr).end();
-    } catch (e) {}
+    } catch (e) {
+      console.error(e);
+    }
     this.now_playing = false;
     this.pausing = false;
     this.ev.emit('update-status');
@@ -135,7 +140,7 @@ module.exports = class Player {
       now_playing: this.now_playing,
       now_playing_idx: this.now_playing_idx,
       now_playing_content: this.now_playing_content,
-      playlist: this.playlist.to_json(),
+      playlist: this.playlist.to_json()
     };
   }
 
@@ -163,7 +168,7 @@ module.exports = class Player {
   _dec_playing_idx() {
     if (this.one_loop) return;
     this.now_playing_idx =
-      (this.now_playing_idx + this.playlist.length() - 1) %
+      (this.now_playing_idx + (this.playlist.length() - 1)) %
       this.playlist.length();
   }
 

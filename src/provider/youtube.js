@@ -17,7 +17,7 @@ module.exports = {
     'sddefault',
     'hqdefault',
     'mqdefault',
-    'default',
+    'default'
   ],
 
   get_id(link) {
@@ -27,7 +27,7 @@ module.exports = {
   async get_thumbnail_link(link) {
     // Don't use `for of` because of serial processing
     const uris = await Promise.all(
-      this.size_list.map(async (size) => {
+      this.size_list.map(async size => {
         const uri = `http://i.ytimg.com/vi/${this.get_id(link)}/${size}.jpg`;
         try {
           await memorized_request({ method: 'HEAD', uri });
@@ -64,7 +64,7 @@ module.exports = {
   create_stream(link) {
     const opts = {
       filter: 'audioonly',
-      quality: 'lowest',
+      quality: 'lowest'
     };
 
     const audio = ytdl(link, opts);
@@ -73,5 +73,5 @@ module.exports = {
     const stream = new Stream.PassThrough();
     ffmpeg.format('mp3').pipe(stream);
     return stream;
-  },
+  }
 };

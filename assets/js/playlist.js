@@ -2,7 +2,7 @@ Vue.component('playlist', {
   props: ['playlist'],
   data() {
     return {
-      clipboard: null,
+      clipboard: null
     };
   },
   created() {
@@ -15,7 +15,7 @@ Vue.component('playlist', {
     },
     humanize_time(seconds) {
       const s = seconds % 60;
-      const m = Math.floor(seconds % 3600 / 60);
+      const m = Math.floor((seconds % 3600) / 60);
       const h = Math.floor(seconds / 3600);
       const padding = num => (`00${num}`).slice(-2);
       return `${padding(h)}:${padding(m)}:${padding(s)}`;
@@ -34,12 +34,12 @@ Vue.component('playlist', {
     },
     play_music(index) {
       fetch(`/player/seek/${index}`, { method: 'POST' });
-    },
+    }
   },
   computed: {
     is_playlist_empty() {
       return !this.playlist.contents || this.playlist.contents.length === 0;
-    },
+    }
   },
 
   template: `
@@ -96,5 +96,5 @@ Vue.component('playlist', {
       </div>
     </div>
   </div>
-  `,
+  `
 });

@@ -3,7 +3,7 @@ Vue.component('links-sender', {
     return {
       unavaliable_links: [],
       input: '',
-      adding: false,
+      adding: false
     };
   },
   methods: {
@@ -14,9 +14,9 @@ Vue.component('links-sender', {
         const res = await fetch('/playlist', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
           },
-          body: JSON.stringify(this.input.split(',')),
+          body: JSON.stringify(this.input.split(','))
         });
         this.adding = false;
         if (!res.ok) return;
@@ -35,7 +35,7 @@ Vue.component('links-sender', {
     },
     is_unavaliable_links_empty() {
       return this.unavaliable_links.length === 0;
-    },
+    }
   },
   template: `
   <div class="links-sender">
@@ -70,5 +70,5 @@ Vue.component('links-sender', {
       </div>
     </form>
   </div>
-  `,
+  `
 });

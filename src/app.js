@@ -44,13 +44,13 @@ if (!process.env.JUKEBOX_NO_WEB_UI) {
 }
 
 // define broadcast function to websocket
-app.ws.broadcast = (data) => {
-  for (const client of app.ws.server.clients) {
+app.ws.broadcast = data => {
+  app.ws.server.clients.forEach(client => {
     if (client.readyState === 1) {
       // websocket connection is open
       client.send(data);
     }
-  }
+  });
 };
 
 ev.on(
@@ -61,13 +61,13 @@ ev.on(
 
     // save status
     player_status_store.write_sync(status, {
-      pretty: process.env.NODE_ENV !== 'production',
+      pretty: process.env.NODE_ENV !== 'production'
     });
   }, 200),
 );
 
 // websocket connection
-app.ws.use(socket_route.get('/socket', (ctx) => {}));
+app.ws.use(socket_route.get('/socket', () => {}));
 
 app.use(router.routes());
 app.use(router.allowedMethods());

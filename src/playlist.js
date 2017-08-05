@@ -1,4 +1,3 @@
-const ytdl = require('ytdl-core');
 const shuffle = require('lodash.shuffle');
 const random = require('lodash.random');
 const EventEmitter = require('events').EventEmitter;
@@ -34,7 +33,7 @@ module.exports = class Playlist extends EventEmitter {
 
   pull(idx = 0) {
     if (this.is_empty()) {
-      return;
+      return null;
     }
 
     return this.queue[idx];

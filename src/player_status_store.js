@@ -22,7 +22,7 @@ module.exports = class PlayerStatusStore {
     return fs.existsSync(this.store_path);
   }
 
-  get store_path() {
+  static get store_path() {
     return path.join(__dirname, '..', 'store', 'player_status.json');
   }
 };
