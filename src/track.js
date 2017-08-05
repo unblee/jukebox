@@ -22,14 +22,12 @@ module.exports = class Track {
       link,
       lengthSeconds: await provider.getLengthSeconds(link),
       title: await provider.getTitle(link),
-      id: provider.get_id(link),
+      id: provider.getId(link),
       thumbnailLink: await provider.getThumbnailLink(link)
     });
 
     if (!track.lengthSeconds) {
-      throw new Error(
-        `This '${providerName}' link can not be played at the moment`,
-      );
+      throw new Error(`This '${providerName}' link can not be played at the moment`);
     }
 
     return track;
@@ -44,10 +42,10 @@ module.exports = class Track {
         } catch (e) {
           return {
             link,
-            err_msg: e && e.message
+            errMsg: e && e.message
           };
         }
-      }),
+      })
     );
 
     return {

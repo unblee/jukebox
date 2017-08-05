@@ -11,7 +11,7 @@ new Vue({
   },
   watch: {
     /* eslint-disable no-useless-computed-key, object-shorthand */
-    ['player_status.nowPlaying'](nowPlaying) {
+    ['playerStatus.nowPlaying'](nowPlaying) {
       const appName = 'jukebox';
       document.title = nowPlaying
         ? `${this.playerStatus.nowPlayingContent.title} - ${appName}`
@@ -23,7 +23,6 @@ new Vue({
     async init() {
       const res = await fetch('/player/status');
       this.playerStatus = await res.json();
-      console.log(this.playerStatus);
       this.bindUpdate();
     },
     bindUpdate() {

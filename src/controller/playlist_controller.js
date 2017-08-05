@@ -28,8 +28,8 @@ module.exports = class PlaylistController {
   get _addOpts() {
     if (this.player.shuffleMode) {
       return {
-        shuffle_add: true,
-        shuffle_start_pos: this.player.nowPlayingIdx + 1
+        shuffleAdd: true,
+        shuffleStartPos: this.player.nowPlayingIdx + 1
       };
     }
     return {};

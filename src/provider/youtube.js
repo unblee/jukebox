@@ -12,17 +12,17 @@ const memorizedYtdlGetInfo = memorize(ytdl.getInfo.bind(ytdl), CACHE_TIME);
 module.exports = {
   name: 'youtube',
   pattern: /https?:\/\/(www\.)?youtu(be\.com\/watch\?v=|\.be\/)(.+)/,
-  size_list: ['maxresdefault', 'sddefault', 'hqdefault', 'mqdefault', 'default'],
+  sizeList: ['maxresdefault', 'sddefault', 'hqdefault', 'mqdefault', 'default'],
 
-  get_id(link) {
+  getId(link) {
     return this.pattern.exec(link)[3];
   },
 
   async getThumbnailLink(link) {
     // Don't use `for of` because of serial processing
     const uris = await Promise.all(
-      this.size_list.map(async size => {
-        const uri = `http://i.ytimg.com/vi/${this.get_id(link)}/${size}.jpg`;
+      this.sizeList.map(async size => {
+        const uri = `http://i.ytimg.com/vi/${this.getId(link)}/${size}.jpg`;
         try {
           await memorizedRequest({ method: 'HEAD', uri });
           return uri;
