@@ -15,7 +15,9 @@
     "dev": "nodemon --watch src ./src/app.js",
     "precommit": "lint-staged",
     "lint": "eslint --ext .js",
-    "lint:all": "eslint . --ext .js"
+    "lint:all": "eslint . --ext .js",
+    "test": "mocha",
+    "test:all": "mocha --recursive tests/"
   },
   "lint-staged": {
     "*.js": [
@@ -53,7 +55,9 @@
     "eslint-plugin-prettier": "^2.1.2",
     "husky": "^0.14.3",
     "lint-staged": "^4.0.2",
+    "mocha": "^3.5.0",
     "nodemon": "^1.11.0",
+    "power-assert": "^1.4.4",
     "prettier": "^1.5.3",
     "prettier-eslint-cli": "^4.1.1"
   }
