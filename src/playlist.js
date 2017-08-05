@@ -60,8 +60,8 @@ module.exports = class Playlist extends EventEmitter {
   }
 
   moveToTop(index) {
-    const [content] = this.playlist.queue.splice(index, 1);
-    this.playlist.queue.unshift(content);
+    const [content] = this.queue.splice(index, 1);
+    this.queue.unshift(content);
   }
 
   shuffle() {

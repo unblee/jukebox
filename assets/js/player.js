@@ -57,7 +57,7 @@ Vue.component('player', {
             </a>
           </div>
           <div class="column">
-            <div v-if="player.nowPlaying">
+            <div v-if="player.state === 'playing'">
               <a title="Pause" @click="playerPause()" :class="{ 'deactivate': isPlaylistEmpty() && !player.nowPlayingContent }">
                 <i class="material-icons is-large is-pushable">pause</i>
               </a>

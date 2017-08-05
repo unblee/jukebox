@@ -8,23 +8,19 @@ Vue.component('playlist', {
   created() {
     this.clipboard = new Clipboard('.copy-link-button');
   },
-
   methods: {
     copyUrl(e) {
       this.clipboard.onClick(e);
     },
     humanizeTime(seconds) {
       const s = seconds % 60;
-      const m = Math.floor((seconds % 3600) / 60);
+      const m = Math.floor(seconds / 60) % 60;
       const h = Math.floor(seconds / 3600);
-      const padding = num => (`00${num}`).slice(-2);
+      const padding = num => `00${num}`.slice(-2);
       return `${padding(h)}:${padding(m)}:${padding(s)}`;
     },
     isNowPlayingContent(idx) {
-      return (
-        this.playlist.nowPlayingContent &&
-        this.playlist.nowPlayingIdx === idx
-      );
+      return this.playlist.nowPlayingContent && this.playlist.nowPlayingIdx === idx;
     },
     playlistClear() {
       fetch('/playlist', { method: 'DELETE' });

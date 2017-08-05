@@ -49,7 +49,6 @@ module.exports = class PlayerStatus extends EventEmitter {
   }
 
   stop() {
-    this._nowPlayingIdx = null;
     this._state = State.STOPPED;
     this._emitUpdated();
   }

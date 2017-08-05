@@ -38,7 +38,6 @@ module.exports = class Player {
 
       case State.PAUSING:
         this.resume();
-        this.status.resume();
         return;
 
       case State.STOPPED:
@@ -168,12 +167,10 @@ module.exports = class Player {
   }
 
   _incPlayingIdx() {
-    if (this.status.loopMode === LoopMode.ONE) return;
     this.status.setNowPlayingIdx((this.status.nowPlayingIdx + 1) % this.playlist.length());
   }
 
   _decPlayingIdx() {
-    if (this.status.loopMode === LoopMode.ONE) return;
     this.status.setNowPlayingIdx(
       (this.status.nowPlayingIdx + (this.playlist.length() - 1)) % this.playlist.length()
     );
@@ -202,6 +199,6 @@ module.exports = class Player {
 
   get nowPlayingContent() {
     const idx = this.status.nowPlayingIdx;
-    return idx < this.playlist.length ? this.playlist.pull(idx) : null;
+    return idx < this.playlist.length() ? this.playlist.pull(idx) : null;
   }
 };
