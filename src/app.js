@@ -63,7 +63,7 @@ ev.on(
     playerStatusStore.writeSync(status, {
       pretty: process.env.NODE_ENV !== 'production'
     });
-  }, 200),
+  }, 200)
 );
 
 // websocket connection
