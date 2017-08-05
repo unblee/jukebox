@@ -135,7 +135,7 @@ module.exports = class Player {
       now_playing: this.now_playing,
       now_playing_idx: this.now_playing_idx,
       now_playing_content: this.now_playing_content,
-      playlist: this.playlist.pull_all()
+      playlist: this.playlist.to_json()
     };
   }
 
