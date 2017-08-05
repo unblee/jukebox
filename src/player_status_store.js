@@ -6,7 +6,7 @@ const Track = require('./track');
 
 module.exports = class PlayerStatusStore {
   readSync() {
-    const status = JSON.parse(fs.readFileSync(this.storePath, ENCODE_TYPE));
+    const status = JSON.parse(fs.readFileSync(this.constructor.storePath, ENCODE_TYPE));
     if (status.playlist) {
       status.playlist = status.playlist.map(x => new Track(x));
     }
@@ -15,14 +15,14 @@ module.exports = class PlayerStatusStore {
 
   writeSync(content, { pretty = false } = {}) {
     const data = JSON.stringify(content, null, pretty ? '  ' : null);
-    fs.writeFileSync(this.storePath, data, ENCODE_TYPE);
+    fs.writeFileSync(this.constructor.storePath, data, ENCODE_TYPE);
   }
 
   existsSync() {
-    return fs.existsSync(this.storePath);
+    return fs.existsSync(this.constructor.storePath);
   }
 
   static get storePath() {
-    return path.join(__dirname, '..', 'store', 'playerStatus.json');
+    return path.join(__dirname, '..', 'store', 'player_status.json');
   }
 };

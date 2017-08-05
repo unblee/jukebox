@@ -92,10 +92,12 @@ module.exports = class Player {
 
   destroy() {
     if (this.audioStream) this.audioStream.removeAllListeners('close');
-    try {
-      this.decodedStream.unpipe(this.spkr).end();
-    } catch (e) {
-      console.error(e);
+    if (this.decodedStream) {
+      try {
+        this.decodedStream.unpipe(this.spkr).end();
+      } catch (e) {
+        console.error(e);
+      }
     }
     this.nowPlaying = false;
     this.pausing = false;
@@ -120,9 +122,7 @@ module.exports = class Player {
 
       // current playing content moves to top if playing music
       if (this.nowPlaying) {
-        const nowContentIdx = this.playlist.queue.indexOf(
-          this.nowPlayingContent,
-        );
+        const nowContentIdx = this.playlist.queue.indexOf(this.nowPlayingContent);
         if (nowContentIdx) {
           this.playlist.queue.splice(nowContentIdx, 1);
           this.playlist.queue.unshift(this.nowPlayingContent);
@@ -168,8 +168,7 @@ module.exports = class Player {
   _decPlayingIdx() {
     if (this.oneLoop) return;
     this.nowPlayingIdx =
-      (this.nowPlayingIdx + (this.playlist.length() - 1)) %
-      this.playlist.length();
+      (this.nowPlayingIdx + (this.playlist.length() - 1)) % this.playlist.length();
   }
 
   _updatePlayingContent(playContent = null) {

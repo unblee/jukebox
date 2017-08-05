@@ -12,13 +12,7 @@ const memorizedYtdlGetInfo = memorize(ytdl.getInfo.bind(ytdl), CACHE_TIME);
 module.exports = {
   name: 'youtube',
   pattern: /https?:\/\/(www\.)?youtu(be\.com\/watch\?v=|\.be\/)(.+)/,
-  size_list: [
-    'maxresdefault',
-    'sddefault',
-    'hqdefault',
-    'mqdefault',
-    'default'
-  ],
+  size_list: ['maxresdefault', 'sddefault', 'hqdefault', 'mqdefault', 'default'],
 
   get_id(link) {
     return this.pattern.exec(link)[3];
@@ -35,7 +29,7 @@ module.exports = {
         } catch (e) {
           return null;
         }
-      }),
+      })
     );
 
     return uris.find(Boolean) || null;
@@ -52,7 +46,7 @@ module.exports = {
   async getLengthSeconds(link) {
     const info = await this._getInfo(link);
     if (!info) return null;
-    return info.lengthSeconds;
+    return info.length_seconds;
   },
 
   async getTitle(link) {
