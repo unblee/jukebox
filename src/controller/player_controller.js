@@ -9,13 +9,13 @@ module.exports = class PlayerController {
   }
 
   async next(ctx) {
-    this.player.destroy();
+    this.player.stop();
     this.player.startNext();
     ctx.status = 200;
   }
 
   async prev(ctx) {
-    this.player.destroy();
+    this.player.stop();
     this.player.startPrev();
     ctx.status = 200;
   }
@@ -46,7 +46,7 @@ module.exports = class PlayerController {
   }
 
   async seek(ctx) {
-    this.player.destroy();
+    this.player.stop();
     this.player.startSpecific(Number(ctx.params.index));
     ctx.status = 200;
   }
