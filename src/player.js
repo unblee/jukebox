@@ -25,6 +25,11 @@ module.exports = class Player {
       }
     });
 
+    this.playlist.on('cleared', () => {
+      this.destroy();
+      this.status.setNowPlayingIdx(0);
+    });
+
     this.status.on('updated', () => {
       this.ev.emit('update-status');
     });

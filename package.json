@@ -17,8 +17,9 @@
     "lint": "eslint --ext .js",
     "lint:all": "eslint . --ext .js",
     "test": "mocha",
-    "test:all": "mocha --recursive tests/",
-    "coverage": "nyc mocha --recursive tests/"
+    "test:all": "mocha --recursive features/ --recursive units/",
+    "coverage": "nyc mocha --recursive features/ --recursive units/",
+    "e2e": "nightwatch --config nightwatch.conf.js"
   },
   "lint-staged": {
     "*.js": [
@@ -65,18 +66,22 @@
     "ytdl-core": "^0.15.0"
   },
   "devDependencies": {
+    "chromedriver": "^2.31.0",
     "eslint": "^4.3.0",
     "eslint-config-airbnb-base": "^11.3.1",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-prettier": "^2.1.2",
+    "geckodriver": "^1.8.0",
     "husky": "^0.14.3",
     "lint-staged": "^4.0.2",
     "mocha": "^3.5.0",
+    "nightwatch": "^0.9.16",
     "nodemon": "^1.11.0",
     "nyc": "^11.1.0",
     "power-assert": "^1.4.4",
     "prettier": "^1.5.3",
     "prettier-eslint-cli": "^4.1.1",
+    "selenium-server": "^3.4.0",
     "sinon": "^3.0.0",
     "supertest": "^3.0.0"
   }

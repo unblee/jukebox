@@ -50,6 +50,9 @@ module.exports = class Playlist extends EventEmitter {
 
   replace(queue = []) {
     this.queue = queue;
+    if (!queue.length) {
+      this.emit('cleared');
+    }
     this.ev.emit('update-status');
   }
 
