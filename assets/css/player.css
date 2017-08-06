@@ -77,3 +77,8 @@
 .player-other-controller {
   padding: .5rem 0;
 }
+
+.player-volume-bar {
+  position: relative;
+  top: -5px;
+}

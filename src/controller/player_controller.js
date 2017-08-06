@@ -25,23 +25,8 @@ module.exports = class PlayerController {
     ctx.status = 200;
   }
 
-  async oneLoopOn(ctx) {
-    this.player.setOneLoop(true);
-    ctx.status = 200;
-  }
-
-  async oneLoopOff(ctx) {
-    this.player.setOneLoop(false);
-    ctx.status = 200;
-  }
-
-  async playlistLoopOn(ctx) {
-    this.player.setPlaylistLoop(true);
-    ctx.status = 200;
-  }
-
-  async playlistLoopOff(ctx) {
-    this.player.setPlaylistLoop(false);
+  async setLoopMode(ctx) {
+    this.player.setLoopMode(ctx.params.mode);
     ctx.status = 200;
   }
 
@@ -67,17 +52,17 @@ module.exports = class PlayerController {
   }
 
   async volume(ctx) {
-    this.player.volume = ctx.request.body.volume;
+    this.player.setVolume(ctx.request.body.volume);
     ctx.status = 200;
   }
 
   async volumeOff(ctx) {
-    this.player.volume = 0;
+    this.player.setVolume(0);
     ctx.status = 200;
   }
 
   async volumeOn(ctx) {
-    this.player.volume = this.player.prevVolumeValue;
+    this.player.setVolume(this.player.status.prevVolumeValue);
     ctx.status = 200;
   }
 };

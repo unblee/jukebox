@@ -5,32 +5,31 @@ const mount = require('koa-mount');
 const bodyParser = require('koa-bodyparser');
 const path = require('path');
 const throttle = require('lodash.throttle');
-
 const websockify = require('koa-websocket');
+const Event = require('events');
+const Router = require('./router');
+const Playlist = require('./playlist.js');
+const Player = require('./player.js');
+const PlayerStatus = require('./player_status.js');
+const PlayerStatusStore = require('./player_status_store.js');
 
 const app = websockify(new Koa());
 
-const Event = require('events');
-
 const ev = new Event.EventEmitter();
-
-const Playlist = require('./playlist.js');
 
 const playlist = new Playlist(ev);
 
-const Player = require('./player.js');
-
-const player = new Player(playlist, ev);
-
-// load status
-const PlayerStatusStore = require('./player_status_store.js');
-
 const playerStatusStore = new PlayerStatusStore();
+let playerStatus;
 if (playerStatusStore.existsSync()) {
-  player.setStatus(playerStatusStore.readSync());
+  const x = playerStatusStore.readSync();
+  playlist.replace(x.playlist);
+  playerStatus = new PlayerStatus(x);
+} else {
+  playerStatus = new PlayerStatus();
 }
 
-const Router = require('./router');
+const player = new Player(playlist, playerStatus, ev);
 
 const router = new Router();
 router.allBind(player, playlist);
@@ -77,4 +76,4 @@ if (process.env.JUKEBOX_PORT) {
   port = process.env.JUKEBOX_PORT;
 }
 
-app.listen(port);
+module.exports = app.listen(port);
