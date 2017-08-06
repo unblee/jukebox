@@ -206,7 +206,6 @@ module.exports = class Player {
   }
 
   setVolume(vol) {
-    console.log('called setvolume');
     this.status.volume = vol;
     mpg123Util.setVolume(this.decodedStream.mh, this.status.volume);
     this.ev.emit('update-status');
