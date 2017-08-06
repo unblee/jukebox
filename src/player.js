@@ -1,23 +1,25 @@
 const Provider = require('./provider');
-const speaker = require('speaker');
-const mpg123Util = require('node-mpg123-util');
-const decoder = require('lame').Decoder;
 const LoopMode = require('./loop_mode');
 const State = require('./state');
+const Speaker = require('./speaker');
 
 module.exports = class Player {
   constructor(playlist, playerStatus, ev) {
     this.playlist = playlist;
     this.status = playerStatus;
     this.ev = ev;
-    this.audioStream = null;
-    this.decodedStream = null;
-    this.spkr = null;
+    this.speaker = new Speaker({ volume: this.status.volume });
+
+    this.speaker.on('stopped', () => {
+      this.status.stop();
+      this.startNext();
+    });
+
     this.playlist.on('removed', ({ index }) => {
       const nowIdx = this.status.nowPlayingIdx;
       if (index === nowIdx) {
-        // stop and move playing index to the next music
-        this.destroy();
+        // start next track if loop mode is playlist
+        this.stop();
       } else if (index < nowIdx) {
         // adjust playing index
         this.status.setNowPlayingIdx(nowIdx - 1);
@@ -41,7 +43,9 @@ module.exports = class Player {
         return;
 
       case State.STOPPED:
-        this._playMusic();
+        this.speaker.start(this.nowPlayingStream);
+        this.status.play();
+        this.ev.emit('update-status');
         return;
 
       default:
@@ -100,26 +104,19 @@ module.exports = class Player {
   }
 
   pause() {
-    this.decodedStream.unpipe(this.spkr);
+    this.speaker.pause();
     this.status.pause();
     this.ev.emit('update-status');
   }
 
   resume() {
-    this.decodedStream.pipe(this.spkr);
+    this.speaker.resume();
     this.status.resume();
     this.ev.emit('update-status');
   }
 
-  destroy() {
-    if (this.audioStream) this.audioStream.removeAllListeners('close');
-    if (this.decodedStream) {
-      try {
-        this.decodedStream.unpipe(this.spkr).end();
-      } catch (e) {
-        console.error(e);
-      }
-    }
+  stop() {
+    this.speaker.stop();
     this.status.stop();
     this.ev.emit('update-status');
   }
@@ -176,28 +173,11 @@ module.exports = class Player {
     );
   }
 
-  _playMusic() {
+  get nowPlayingStream() {
     const content = this.nowPlayingContent;
-    if (!content) return;
+    if (!content) return null;
     const provider = Provider.findByName(content.provider);
-    const stream = provider.createStream(content.link);
-
-    // audio output to the speaker
-    this.nowPlaying = true;
-    this.ev.emit('update-status');
-    this.decodedStream = stream.pipe(decoder());
-    mpg123Util.setVolume(this.decodedStream.mh, this.status.volume);
-    this.spkr = speaker();
-    this.audioStream = this.decodedStream.pipe(this.spkr);
-    this.audioStream.on('close', () => {
-      this.destroy();
-      this.status.stop();
-      this.ev.emit('update-status');
-      this.startNext();
-    });
-
-    this.status.play();
-    this.ev.emit('update-status');
+    return provider.createStream(content.link);
   }
 
   get nowPlayingContent() {
@@ -206,8 +186,8 @@ module.exports = class Player {
   }
 
   setVolume(vol) {
+    this.speaker.volume = vol;
     this.status.volume = vol;
-    mpg123Util.setVolume(this.decodedStream.mh, this.status.volume);
     this.ev.emit('update-status');
   }
 };
