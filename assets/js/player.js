@@ -62,9 +62,6 @@ Vue.component('player', {
         const headers = {
           'Content-Type': 'application/json'
         };
-        if (volume > 0) {
-          this.prevVolume = volume;
-        }
         fetch('/player/volume', { method: 'POST', body, headers });
         // }, 500);
       }
