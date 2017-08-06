@@ -17,7 +17,8 @@
     "lint": "eslint --ext .js",
     "lint:all": "eslint . --ext .js",
     "test": "mocha",
-    "test:all": "mocha --recursive tests/"
+    "test:all": "mocha --recursive tests/",
+    "coverage": "nyc mocha --recursive tests/"
   },
   "lint-staged": {
     "*.js": [
@@ -28,6 +29,20 @@
   },
   "engines": {
     "node": "~8.0.0"
+  },
+  "nyc": {
+    "reporter": [
+      "text",
+      "text-summary",
+      "lcov",
+      "html"
+    ],
+    "exclude": [
+      "**/node_modules/**",
+      "tests/",
+      "coverage/"
+    ],
+    "all": true
   },
   "dependencies": {
     "fluent-ffmpeg": "^2.1.2",
@@ -58,6 +73,7 @@
     "lint-staged": "^4.0.2",
     "mocha": "^3.5.0",
     "nodemon": "^1.11.0",
+    "nyc": "^11.1.0",
     "power-assert": "^1.4.4",
     "prettier": "^1.5.3",
     "prettier-eslint-cli": "^4.1.1",
