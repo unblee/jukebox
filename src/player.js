@@ -10,10 +10,7 @@ module.exports = class Player {
     this.ev = ev;
     this.speaker = new Speaker({ volume: this.status.volume });
 
-    this.speaker.on('stopped', () => {
-      this.status.stop();
-      this.startNext();
-    });
+    this._onSpeakerStoppedEventBinded = () => this._onSpeakerStopped();
 
     this.playlist.on('removed', ({ index }) => {
       const nowIdx = this.status.nowPlayingIdx;
@@ -44,6 +41,7 @@ module.exports = class Player {
 
       case State.STOPPED:
         this.speaker.start(this.nowPlayingStream);
+        this.speaker.on('stopped', this._onSpeakerStoppedEventBinded);
         this.status.play();
         this.ev.emit('update-status');
         return;
@@ -116,6 +114,7 @@ module.exports = class Player {
   }
 
   stop() {
+    this.speaker.removeListener('stopped', this._onSpeakerStoppedEventBinded);
     this.speaker.stop();
     this.status.stop();
     this.ev.emit('update-status');
@@ -189,5 +188,10 @@ module.exports = class Player {
     this.speaker.volume = vol;
     this.status.volume = vol;
     this.ev.emit('update-status');
+  }
+
+  _onSpeakerStopped() {
+    this.status.stop();
+    this.startNext();
   }
 };

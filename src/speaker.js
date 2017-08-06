@@ -47,10 +47,6 @@ module.exports = class Speaker extends EventEmitter {
   }
 
   stop() {
-    if (this._audioStream) {
-      this._audioStream.removeAllListeners('close');
-      this._audioStream = null;
-    }
     if (this._decodedStream) {
       try {
         this._decodedStream.unpipe(this._speaker).end();
@@ -59,6 +55,7 @@ module.exports = class Speaker extends EventEmitter {
       }
       this._decodedStream = null;
     }
+    this._audioStream = null;
     this.emit('stopped');
   }
 };
