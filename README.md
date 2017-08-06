@@ -1,3 +1,7 @@
+<div style="text-align: center;">
+![jukebox](https://raw.githubusercontent.com/unblee/jukebox/master/assets/img/logo.png)
+</div>
+
 # jukebox
 
 Remote audio player (on Raspberry Pi)?
