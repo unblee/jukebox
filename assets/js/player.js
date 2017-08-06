@@ -41,10 +41,33 @@ Vue.component('player', {
   },
   computed: {
     existThumbnail() {
-      return (
-        this.player.nowPlayingContent &&
-        this.player.nowPlayingContent.thumbnailLink
-      );
+      return this.player.nowPlayingContent && this.player.nowPlayingContent.thumbnailLink;
+    },
+    mute: {
+      get() {
+        return !this.volume;
+      },
+      set(isMute) {
+        fetch(`/player/volume/${isMute ? 'off' : 'on'}`, { method: 'POST' });
+      }
+    },
+    volume: {
+      get() {
+        return this.player.volume;
+      },
+      set(volume) {
+        // TODO: Remove eslint-disable-line when introduce webpack and lodash.throttle
+        // _.throttle(() => { // eslint-disable-line
+        const body = JSON.stringify({ volume });
+        const headers = {
+          'Content-Type': 'application/json'
+        };
+        if (volume > 0) {
+          this.prevVolume = volume;
+        }
+        fetch('/player/volume', { method: 'POST', body, headers });
+        // }, 500);
+      }
     }
   },
 
@@ -87,6 +110,11 @@ Vue.component('player', {
         </div>
       </div>
       <div class="player-other-controller">
+        <a class="icon" @click="mute = !mute">
+          <i class="material-icons" v-if="!mute">volume_up</i>
+          <i class="material-icons" v-else>volume_off</i>
+        </a>
+        <input type="range" v-model.number="volume" max="1.5" min="0" step="0.01" @dblclick="volume = 1">
         <div class="columns has-text-centered is-mobile">
           <div class="column">
             <a title="One Loop" :class="[{ 'is-loop-active': player.oneLoop }, { 'deactivate': isPlaylistEmpty() && !player.nowPlayingContent }]" @click="playerLoopOneToggle()">

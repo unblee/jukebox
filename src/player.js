@@ -1,7 +1,10 @@
 const Playlist = require('./playlist.js');
 const Provider = require('./provider');
 const speaker = require('speaker');
-const decoder = require('lame').Decoder;
+const lame = require('lame');
+const mpg123Util = require('node-mpg123-util');
+
+const { Decoder } = lame;
 
 module.exports = class Player {
   constructor(playlist = new Playlist(), ev) {
@@ -18,7 +21,8 @@ module.exports = class Player {
     this.nowPlayingContent = null;
     this.nextPlayContent = null;
     this.spkr = null;
-
+    this.volumeValue = 1;
+    this.prevVolumeValue = this.volumeValue;
     this.playlist.on('removed', ({ index }) => {
       if (index === this.nowPlayingIdx) {
         // stop and move playing index to the next music
@@ -140,6 +144,7 @@ module.exports = class Player {
       nowPlaying: this.nowPlaying,
       nowPlayingIdx: this.nowPlayingIdx,
       nowPlayingContent: this.nowPlayingContent,
+      volume: this.volumeValue,
       playlist: this.playlist.toJson()
     };
   }
@@ -189,7 +194,16 @@ module.exports = class Player {
     // audio output to the speaker
     this.nowPlaying = true;
     this.ev.emit('update-status');
-    this.decodedStream = stream.pipe(decoder());
+    const decoder = new Decoder({
+      channels: 2,
+      bitDepth: 16,
+      sampleRate: 44100,
+      bitRate: 128,
+      outSampleRate: 22050,
+      mode: lame.STEREO
+    });
+    mpg123Util.setVolume(decoder.mh, this.volumeValue);
+    this.decodedStream = stream.pipe(decoder);
     this.spkr = speaker();
     this.audioStream = this.decodedStream.pipe(this.spkr);
     this.audioStream.on('close', () => {
@@ -199,5 +213,18 @@ module.exports = class Player {
       this.ev.emit('update-status');
       this.startNext();
     });
+  }
+
+  get volume() {
+    return this.volumeValue;
+  }
+
+  set volume(vol) {
+    if (this.volumeValue > 0) {
+      this.prevVolumeValue = this.volumeValue;
+    }
+    this.volumeValue = vol;
+    mpg123Util.setVolume(this.decodedStream.mh, this.volumeValue);
+    this.ev.emit('update-status');
   }
 };

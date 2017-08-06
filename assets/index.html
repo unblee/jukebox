@@ -29,10 +29,10 @@
         </div>
         <div class="columns player-wrapper" id="app" v-cloak>
           <div class="column is-6">
-            <player :player="bindPlayer"></player>
+            <player :player="bindPlayer" v-if="bindPlayer"></player>
           </div>
           <div class="column is-6">
-            <playlist :playlist="bindPlaylist"></playlist>
+            <playlist :playlist="bindPlaylist" v-if="bindPlaylist"></playlist>
           </div>
         </div>
       </div>

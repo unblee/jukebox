@@ -65,4 +65,19 @@ module.exports = class PlayerController {
     this.player.startSpecific(Number(ctx.params.index));
     ctx.status = 200;
   }
+
+  async volume(ctx) {
+    this.player.volume = ctx.request.body.volume;
+    ctx.status = 200;
+  }
+
+  async volumeOff(ctx) {
+    this.player.volume = 0;
+    ctx.status = 200;
+  }
+
+  async volumeOn(ctx) {
+    this.player.volume = this.player.prevVolumeValue;
+    ctx.status = 200;
+  }
 };

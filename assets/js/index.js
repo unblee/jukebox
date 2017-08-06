@@ -1,9 +1,9 @@
 new Vue({
   el: '#app',
   data: {
-    playerStatus: {},
-    bindPlayer: {},
-    bindPlaylist: {}
+    playerStatus: null,
+    bindPlayer: null,
+    bindPlaylist: null
   },
   async created() {
     await this.init();
@@ -33,6 +33,7 @@ new Vue({
         nowPlaying: this.playerStatus.nowPlaying,
         nowPlayingIdx: this.playerStatus.nowPlayingIdx,
         nowPlayingContent: this.playerStatus.nowPlayingContent,
+        volume: this.playerStatus.volume,
         playlist: this.playerStatus.playlist
       };
       this.bindPlaylist = {
@@ -42,9 +43,9 @@ new Vue({
       };
     },
     teardown() {
-      this.playerStatus = {};
-      this.bindPlayer = {};
-      this.bindPlaylist = {};
+      this.playerStatus = null;
+      this.bindPlayer = null;
+      this.bindPlaylist = null;
     },
     setupSocket() {
       const socket = new WebSocket(`ws://${location.host}/socket`);
