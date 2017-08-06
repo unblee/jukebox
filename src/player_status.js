@@ -8,7 +8,8 @@ module.exports = class PlayerStatus extends EventEmitter {
       loopMode = LoopMode.NONE,
       state = State.STOPPED,
       shuffleMode = false,
-      nowPlayingIdx = null
+      nowPlayingIdx = null,
+      volumeValue = 1
     } = {}
   ) {
     super();
@@ -16,6 +17,8 @@ module.exports = class PlayerStatus extends EventEmitter {
     this._state = state;
     this._shuffleMode = Boolean(shuffleMode);
     this._nowPlayingIdx = Number(nowPlayingIdx);
+    this._volumeValue = Number(volumeValue);
+    this._prevVolumeValue = this._volumeValue;
   }
 
   get loopMode() {
@@ -34,12 +37,32 @@ module.exports = class PlayerStatus extends EventEmitter {
     return this._nowPlayingIdx;
   }
 
+  get volume() {
+    return this._volumeValue;
+  }
+
+  set volume(val) {
+    if (val > 0) {
+      this.prevVolume = val;
+    }
+    this._volumeValue = val;
+  }
+
+  get prevVolume() {
+    return this._prevVolumeValue;
+  }
+
+  set prevVolume(val) {
+    this._prevVolumeValue = val;
+  }
+
   toJson() {
     return {
       loopMode: this._loopMode,
       state: this._state,
       shuffleMode: this._shuffleMode,
-      nowPlayingIdx: this._nowPlayingIdx
+      nowPlayingIdx: this._nowPlayingIdx,
+      volume: this._volumeValue
     };
   }
 

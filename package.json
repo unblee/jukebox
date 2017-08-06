@@ -42,6 +42,7 @@
     "lodash.random": "^3.2.0",
     "lodash.shuffle": "^4.2.0",
     "lodash.throttle": "^4.1.1",
+    "node-mpg123-util": "0.0.3",
     "promise-memorize": "^1.1.0",
     "request": "^2.81.0",
     "request-promise": "^4.2.1",

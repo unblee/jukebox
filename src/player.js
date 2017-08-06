@@ -1,5 +1,6 @@
 const Provider = require('./provider');
 const speaker = require('speaker');
+const mpg123Util = require('node-mpg123-util');
 const decoder = require('lame').Decoder;
 const LoopMode = require('./loop_mode');
 const State = require('./state');
@@ -12,7 +13,6 @@ module.exports = class Player {
     this.audioStream = null;
     this.decodedStream = null;
     this.spkr = null;
-
     this.playlist.on('removed', ({ index }) => {
       const nowIdx = this.status.nowPlayingIdx;
       if (index === nowIdx) {
@@ -183,7 +183,10 @@ module.exports = class Player {
     const stream = provider.createStream(content.link);
 
     // audio output to the speaker
+    this.nowPlaying = true;
+    this.ev.emit('update-status');
     this.decodedStream = stream.pipe(decoder());
+    mpg123Util.setVolume(this.decodedStream.mh, this.status.volume);
     this.spkr = speaker();
     this.audioStream = this.decodedStream.pipe(this.spkr);
     this.audioStream.on('close', () => {
@@ -200,5 +203,11 @@ module.exports = class Player {
   get nowPlayingContent() {
     const idx = this.status.nowPlayingIdx;
     return idx < this.playlist.length() ? this.playlist.pull(idx) : null;
+  }
+
+  setVolume(vol) {
+    this.status.volume = vol;
+    mpg123Util.setVolume(this.decodedStream.mh, this.status.volume);
+    this.ev.emit('update-status');
   }
 };

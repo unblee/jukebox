@@ -15,7 +15,8 @@ new Vue({
         loopMode: this.playerStatus.loopMode,
         shuffleMode: this.playerStatus.shuffleMode,
         nowPlayingIdx: this.playerStatus.nowPlayingIdx,
-        nowPlayingContent: this.nowPlayingContent
+        nowPlayingContent: this.nowPlayingContent,
+        volume: this.playerStatus.volume
       };
     },
     bindPlaylist() {
