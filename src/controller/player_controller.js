@@ -62,7 +62,7 @@ module.exports = class PlayerController {
   }
 
   async volumeOn(ctx) {
-    this.player.setVolume(this.player.status.prevVolumeValue);
+    this.player.setVolume(this.player.status.prevVolume);
     ctx.status = 200;
   }
 };

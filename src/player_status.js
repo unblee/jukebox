@@ -43,7 +43,7 @@ module.exports = class PlayerStatus extends EventEmitter {
 
   set volume(val) {
     if (val > 0) {
-      this.prevVolue = val;
+      this.prevVolume = val;
     }
     this._volumeValue = val;
   }
