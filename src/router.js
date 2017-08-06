@@ -23,10 +23,7 @@ module.exports = class Router extends KoaRouter {
     this.post('/player/volume', c.volume.bind(c));
     this.post('/player/volume/on', c.volumeOn.bind(c));
     this.post('/player/volume/off', c.volumeOff.bind(c));
-    this.post('/player/loop/one/on', c.oneLoopOn.bind(c));
-    this.post('/player/loop/one/off', c.oneLoopOff.bind(c));
-    this.post('/player/loop/playlist/on', c.playlistLoopOn.bind(c));
-    this.post('/player/loop/playlist/off', c.playlistLoopOff.bind(c));
+    this.post('/player/loop/:mode', c.setLoopMode.bind(c));
     this.post('/player/loop/shuffle/on', c.shuffleModeOn.bind(c));
     this.post('/player/loop/shuffle/off', c.shuffleModeOff.bind(c));
   }

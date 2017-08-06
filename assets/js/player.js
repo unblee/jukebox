@@ -17,19 +17,11 @@ Vue.component('player', {
     playerPrev() {
       fetch('/player/prev', { method: 'POST' });
     },
-    playerLoopOneToggle() {
-      if (this.player.oneLoop) {
-        fetch('/player/loop/one/off', { method: 'POST' });
-      } else {
-        fetch('/player/loop/one/on', { method: 'POST' });
-      }
-    },
-    playerLoopPlaylistToggle() {
-      if (this.player.playlistLoop) {
-        fetch('/player/loop/playlist/off', { method: 'POST' });
-      } else {
-        fetch('/player/loop/playlist/on', { method: 'POST' });
-      }
+    playerLoopModeToggle() {
+      const kinds = ['none', 'one', 'playlist'];
+      const current = kinds.indexOf(this.player.loopMode);
+      const next = typeof current === 'number' ? kinds[(current + 1) % kinds.length] : 'none';
+      fetch(`/player/loop/${next}`, { method: 'POST' });
     },
     playerShuffleModeToggle() {
       if (this.player.shuffleMode) {
@@ -83,12 +75,12 @@ Vue.component('player', {
       <div class="player-main-controller has-text-centered">
         <div class="columns is-mobile">
           <div class="column">
-            <a title="Prev" :class="{ 'deactivate': !player.playlistLoop || isPlaylistEmpty() }" @click="playerPrev()">
+            <a title="Prev" :class="{ 'deactivate': player.loopMode !== 'playlist' || isPlaylistEmpty() }" @click="playerPrev()">
               <i class="material-icons is-large is-pushable">skip_previous</i>
             </a>
           </div>
           <div class="column">
-            <div v-if="player.nowPlaying">
+            <div v-if="player.state === 'playing'">
               <a title="Pause" @click="playerPause()" :class="{ 'deactivate': isPlaylistEmpty() && !player.nowPlayingContent }">
                 <i class="material-icons is-large is-pushable">pause</i>
               </a>
@@ -107,19 +99,22 @@ Vue.component('player', {
         </div>
       </div>
       <div class="player-other-controller">
-        <a class="icon" @click="mute = !mute">
-          <i class="material-icons" v-if="!mute">volume_up</i>
-          <i class="material-icons" v-else>volume_off</i>
-        </a>
-        <input type="range" v-model.number="volume" max="1.5" min="0" step="0.01" @dblclick="volume = 1">
         <div class="columns has-text-centered is-mobile">
           <div class="column">
-            <a title="One Loop" :class="[{ 'is-loop-active': player.oneLoop }, { 'deactivate': isPlaylistEmpty() && !player.nowPlayingContent }]" @click="playerLoopOneToggle()">
-              <i class="material-icons is-medium">repeat_one</i>
+            <a @click="mute = !mute">
+              <i class="material-icons is-medium" v-if="!mute">volume_up</i>
+              <i class="material-icons is-medium" v-else>volume_off</i>
             </a>
+            <input type="range" v-model.number="volume" max="1.5" min="0" step="0.01" @dblclick="volume = 1" class="player-volume-bar">
           </div>
           <div class="column">
-            <a title="Playlist Loop" :class="[{ 'is-loop-active': player.playlistLoop }, { 'deactivate': isPlaylistEmpty() }]" @click="playerLoopPlaylistToggle()">
+            <a title="Queue" v-if="player.loopMode === 'none'" @click="playerLoopModeToggle()">
+              <i class="material-icons is-medium">arrow_forward</i>
+            </a>
+            <a title="One Loop" class="is-loop-active" v-if="player.loopMode === 'one'" @click="playerLoopModeToggle()">
+              <i class="material-icons is-medium">repeat_one</i>
+            </a>
+            <a title="Playlist Loop" class="is-loop-active" v-if="player.loopMode === 'playlist'" @click="playerLoopModeToggle()">
               <i class="material-icons is-medium">repeat</i>
             </a>
           </div>

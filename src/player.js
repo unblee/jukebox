@@ -1,96 +1,113 @@
-const Playlist = require('./playlist.js');
 const Provider = require('./provider');
 const speaker = require('speaker');
-const lame = require('lame');
 const mpg123Util = require('node-mpg123-util');
-
-const { Decoder } = lame;
+const decoder = require('lame').Decoder;
+const LoopMode = require('./loop_mode');
+const State = require('./state');
 
 module.exports = class Player {
-  constructor(playlist = new Playlist(), ev) {
+  constructor(playlist, playerStatus, ev) {
     this.playlist = playlist;
+    this.status = playerStatus;
     this.ev = ev;
     this.audioStream = null;
     this.decodedStream = null;
-    this.oneLoop = false;
-    this.playlistLoop = false;
-    this.shuffleMode = false;
-    this.nowPlaying = false;
-    this.pausing = false;
-    this.nowPlayingIdx = 0;
-    this.nowPlayingContent = null;
-    this.nextPlayContent = null;
     this.spkr = null;
-    this.volumeValue = 1;
-    this.prevVolumeValue = this.volumeValue;
     this.playlist.on('removed', ({ index }) => {
-      if (index === this.nowPlayingIdx) {
+      const nowIdx = this.status.nowPlayingIdx;
+      if (index === nowIdx) {
         // stop and move playing index to the next music
         this.destroy();
-        this._updatePlayingContent();
-      } else if (index < this.nowPlayingIdx) {
+      } else if (index < nowIdx) {
         // adjust playing index
-        --this.nowPlayingIdx;
+        this.status.setNowPlayingIdx(nowIdx - 1);
         this.ev.emit('update-status');
       }
+    });
+
+    this.status.on('updated', () => {
+      this.ev.emit('update-status');
     });
   }
 
   start() {
-    if (this.nowPlaying) return;
-    if (this.pausing) {
-      this.resume();
-      return;
+    switch (this.status.state) {
+      case State.PLAYING:
+        // pass
+        return;
+
+      case State.PAUSING:
+        this.resume();
+        return;
+
+      case State.STOPPED:
+        this._playMusic();
+        return;
+
+      default:
+        throw new Error(`invalid state: ${this.status.state}`);
     }
-
-    this._updatePlayingContent();
-    if (!this.nowPlayingContent) return;
-
-    this._playMusic();
-  }
-
-  startNext() {
-    if (this.oneLoop) {
-      // pass
-    } else if (this.playlistLoop) {
-      this._incPlayingIdx();
-      if (this.shuffleMode && !this.nowPlayingIdx) {
-        this.playlist.shuffle();
-      }
-    } else {
-      this.playlist.dequeue();
-    }
-    this.start();
-  }
-
-  startPrev() {
-    if (this.oneLoop) {
-      // pass
-    } else if (this.playlistLoop) {
-      this._decPlayingIdx();
-    } else {
-      return; // disabled
-    }
-    this.start();
   }
 
   startSpecific(index) {
     // always not consume queue.
-    this.nowPlayingIdx = +index;
+    this.status.setNowPlayingIdx(index);
     this.start();
+  }
+
+  startNext() {
+    switch (this.status.loopMode) {
+      case LoopMode.NONE:
+        this.playlist.dequeue();
+        this.start();
+        return;
+
+      case LoopMode.ONE:
+        this.start();
+        return;
+
+      case LoopMode.PLAYLIST:
+        this._incPlayingIdx();
+        if (this.status.shuffleMode && !this.status.nowPlayingIdx) {
+          this.playlist.shuffle();
+        }
+        this.start();
+        return;
+
+      default:
+        throw new Error(`invalid loop mode: ${this.status.loopMode}`);
+    }
+  }
+
+  startPrev() {
+    switch (this.status.loopMode) {
+      case LoopMode.NONE:
+        // disabled
+        return;
+
+      case LoopMode.ONE:
+        this.start();
+        return;
+
+      case LoopMode.PLAYLIST:
+        this._decPlayingIdx();
+        this.start();
+        return;
+
+      default:
+        throw new Error(`invalid loop mode: ${this.status.loopMode}`);
+    }
   }
 
   pause() {
     this.decodedStream.unpipe(this.spkr);
-    this.nowPlaying = false;
-    this.pausing = true;
+    this.status.pause();
     this.ev.emit('update-status');
   }
 
   resume() {
-    this.pausing = false;
-    this.nowPlaying = true;
     this.decodedStream.pipe(this.spkr);
+    this.status.resume();
     this.ev.emit('update-status');
   }
 
@@ -103,128 +120,95 @@ module.exports = class Player {
         console.error(e);
       }
     }
-    this.nowPlaying = false;
-    this.pausing = false;
+    this.status.stop();
     this.ev.emit('update-status');
   }
 
-  setOneLoop(value) {
-    this.oneLoop = !!value;
-    this.ev.emit('update-status');
-  }
+  setLoopMode(loopMode) {
+    switch (loopMode) {
+      case LoopMode.ONE:
+        this.status.oneLoopMode();
+        return;
 
-  setPlaylistLoop(value) {
-    this.playlistLoop = !!value;
-    this.ev.emit('update-status');
+      case LoopMode.PLAYLIST:
+        this.status.playlistLoopMode();
+        return;
+
+      case LoopMode.NONE:
+        this.status.noLoopMode();
+        return;
+
+      default:
+        throw new Error(`invalid loop mode: ${loopMode}`);
+    }
   }
 
   setShuffleMode(value) {
-    this.shuffleMode = !!value;
-    if (this.shuffleMode) {
+    if (value) {
+      this.status.enableShuffleMode();
       this.playlist.shuffle();
-      this.nowPlayingIdx = 0;
 
       // current playing content moves to top if playing music
-      if (this.nowPlaying) {
-        const nowContentIdx = this.playlist.queue.indexOf(this.nowPlayingContent);
-        if (nowContentIdx) {
-          this.playlist.queue.splice(nowContentIdx, 1);
-          this.playlist.queue.unshift(this.nowPlayingContent);
-        }
+      if ([State.PLAYING, State.PAUSING].includes(this.status.state)) {
+        this.playlist.moveToTop(this.status.nowPlayingIdx);
+        this.status.setNowPlayingIdx(0);
       }
+    } else {
+      this.status.disableShuffleMode();
     }
+
     this.ev.emit('update-status');
   }
 
   fetchStatus() {
-    return {
-      oneLoop: this.oneLoop,
-      playlistLoop: this.playlistLoop,
-      shuffleMode: this.shuffleMode,
-      nowPlaying: this.nowPlaying,
-      nowPlayingIdx: this.nowPlayingIdx,
-      nowPlayingContent: this.nowPlayingContent,
-      volume: this.volumeValue,
+    return Object.assign(this.status.toJson(), {
       playlist: this.playlist.toJson()
-    };
-  }
-
-  setStatus(status) {
-    this.setOneLoop(status.oneLoop);
-    this.setPlaylistLoop(status.playlistLoop);
-    this.setShuffleMode(status.shuffleMode);
-    this.playlist.replace(status.playlist);
-
-    // set update nowPlaying, nowPlayingIdx and nowPlayingContent
-    if (status.nowPlayingIdx) {
-      this.nowPlayingIdx = status.nowPlayingIdx;
-      this.nowPlayingContent = status.nowPlayingContent;
-      if (status.nowPlaying) {
-        this.startSpecific(this.nowPlayingIdx);
-      }
-    }
+    });
   }
 
   _incPlayingIdx() {
-    if (this.oneLoop) return;
-    this.nowPlayingIdx = (this.nowPlayingIdx + 1) % this.playlist.length();
+    this.status.setNowPlayingIdx((this.status.nowPlayingIdx + 1) % this.playlist.length());
   }
 
   _decPlayingIdx() {
-    if (this.oneLoop) return;
-    this.nowPlayingIdx =
-      (this.nowPlayingIdx + (this.playlist.length() - 1)) % this.playlist.length();
-  }
-
-  _updatePlayingContent(playContent = null) {
-    if (playContent) {
-      this.nowPlayingContent = this.nextPlayContent;
-    } else if (this.playlist.isEmpty()) {
-      this.nowPlayingContent = null;
-    } else {
-      this.nowPlayingContent = this.playlist.pull(this.nowPlayingIdx);
-    }
-    this.ev.emit('update-status');
+    this.status.setNowPlayingIdx(
+      (this.status.nowPlayingIdx + (this.playlist.length() - 1)) % this.playlist.length()
+    );
   }
 
   _playMusic() {
-    const provider = Provider.findByName(this.nowPlayingContent.provider);
-    const stream = provider.createStream(this.nowPlayingContent.link);
+    const content = this.nowPlayingContent;
+    if (!content) return;
+    const provider = Provider.findByName(content.provider);
+    const stream = provider.createStream(content.link);
 
     // audio output to the speaker
     this.nowPlaying = true;
     this.ev.emit('update-status');
-    const decoder = new Decoder({
-      channels: 2,
-      bitDepth: 16,
-      sampleRate: 44100,
-      bitRate: 128,
-      outSampleRate: 22050,
-      mode: lame.STEREO
-    });
-    mpg123Util.setVolume(decoder.mh, this.volumeValue);
-    this.decodedStream = stream.pipe(decoder);
+    this.decodedStream = stream.pipe(decoder());
+    mpg123Util.setVolume(this.decodedStream.mh, this.status.volume);
     this.spkr = speaker();
     this.audioStream = this.decodedStream.pipe(this.spkr);
     this.audioStream.on('close', () => {
-      this.nowPlaying = false;
-      this.pausing = false;
       this.destroy();
+      this.status.stop();
       this.ev.emit('update-status');
       this.startNext();
     });
+
+    this.status.play();
+    this.ev.emit('update-status');
   }
 
-  get volume() {
-    return this.volumeValue;
+  get nowPlayingContent() {
+    const idx = this.status.nowPlayingIdx;
+    return idx < this.playlist.length() ? this.playlist.pull(idx) : null;
   }
 
-  set volume(vol) {
-    if (this.volumeValue > 0) {
-      this.prevVolumeValue = this.volumeValue;
-    }
-    this.volumeValue = vol;
-    mpg123Util.setVolume(this.decodedStream.mh, this.volumeValue);
+  setVolume(vol) {
+    console.log('called setvolume');
+    this.status.volume = vol;
+    mpg123Util.setVolume(this.decodedStream.mh, this.status.volume);
     this.ev.emit('update-status');
   }
 };
