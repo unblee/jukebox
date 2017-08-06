@@ -3,6 +3,7 @@ const path = require('path');
 
 const ENCODE_TYPE = 'utf8';
 const Track = require('./track');
+const State = require('./state');
 
 module.exports = class PlayerStatusStore {
   readSync() {
@@ -10,6 +11,10 @@ module.exports = class PlayerStatusStore {
     if (status.playlist) {
       status.playlist = status.playlist.map(x => new Track(x));
     }
+
+    // force stop music
+    status.state = State.STOPPED;
+
     return status;
   }
 

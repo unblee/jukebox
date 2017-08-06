@@ -26,10 +26,10 @@ module.exports = class PlaylistController {
   }
 
   get _addOpts() {
-    if (this.player.shuffleMode) {
+    if (this.player.status.shuffleMode) {
       return {
         shuffleAdd: true,
-        shuffleStartPos: this.player.nowPlayingIdx + 1
+        shuffleStartPos: this.player.status.nowPlayingIdx + 1
       };
     }
     return {};

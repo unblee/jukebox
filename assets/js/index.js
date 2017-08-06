@@ -1,9 +1,30 @@
 new Vue({
   el: '#app',
   data: {
-    playerStatus: {},
-    bindPlayer: {},
-    bindPlaylist: {}
+    playerStatus: {}
+  },
+  computed: {
+    nowPlayingContent() {
+      const { nowPlayingIdx: idx, playlist } = this.playerStatus;
+      return (playlist && idx < playlist.length && playlist[idx]) || null;
+    },
+    bindPlayer() {
+      return {
+        playlist: this.playerStatus.playlist,
+        state: this.playerStatus.state,
+        loopMode: this.playerStatus.loopMode,
+        shuffleMode: this.playerStatus.shuffleMode,
+        nowPlayingIdx: this.playerStatus.nowPlayingIdx,
+        nowPlayingContent: this.nowPlayingContent
+      };
+    },
+    bindPlaylist() {
+      return {
+        contents: this.playerStatus.playlist,
+        nowPlayingIdx: this.playerStatus.nowPlayingIdx,
+        nowPlayingContent: this.nowPlayingContent
+      };
+    }
   },
   async created() {
     await this.init();
@@ -23,35 +44,15 @@ new Vue({
     async init() {
       const res = await fetch('/player/status');
       this.playerStatus = await res.json();
-      this.bindUpdate();
-    },
-    bindUpdate() {
-      this.bindPlayer = {
-        oneLoop: this.playerStatus.oneLoop,
-        playlistLoop: this.playerStatus.playlistLoop,
-        shuffleMode: this.playerStatus.shuffleMode,
-        nowPlaying: this.playerStatus.nowPlaying,
-        nowPlayingIdx: this.playerStatus.nowPlayingIdx,
-        nowPlayingContent: this.playerStatus.nowPlayingContent,
-        playlist: this.playerStatus.playlist
-      };
-      this.bindPlaylist = {
-        contents: this.playerStatus.playlist,
-        nowPlayingContent: this.playerStatus.nowPlayingContent,
-        nowPlayingIdx: this.playerStatus.nowPlayingIdx
-      };
     },
     teardown() {
       this.playerStatus = {};
-      this.bindPlayer = {};
-      this.bindPlaylist = {};
     },
     setupSocket() {
       const socket = new WebSocket(`ws://${location.host}/socket`);
 
       socket.addEventListener('message', event => {
         this.playerStatus = JSON.parse(event.data);
-        this.bindUpdate();
       });
       socket.addEventListener('close', () => {
         this.teardown();

@@ -59,6 +59,11 @@ module.exports = class Playlist extends EventEmitter {
     this.emit('removed', { index });
   }
 
+  moveToTop(index) {
+    const [content] = this.queue.splice(index, 1);
+    this.queue.unshift(content);
+  }
+
   shuffle() {
     this.queue = shuffle(this.queue);
     this.ev.emit('update-status');
