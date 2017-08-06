@@ -81,4 +81,5 @@
 .player-volume-bar {
   position: relative;
   top: -5px;
+  width: 75%;
 }
