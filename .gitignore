@@ -61,7 +61,4 @@ typings/
 !/store/.gitkeep
 
 # e2e test
-/bin/selenium-server-standalone-3.4.0.jar
-/bin/geckodriver
-/bin/chromedriver
 /e2e/reports
