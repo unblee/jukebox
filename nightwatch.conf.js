@@ -11,6 +11,15 @@ const testSettings = {
     }
   },
 
+  'chrome-headless': {
+    desiredCapabilities: {
+      browserName: 'chrome',
+      chromeOptions: {
+        args: ['headless']
+      }
+    }
+  },
+
   firefox: {
     desiredCapabilities: {
       browserName: 'firefox'
@@ -42,6 +51,7 @@ module.exports = {
     },
 
     chrome: testSettings.chrome,
+    'chrome-headless': testSettings['chrome-headless'],
     firefox: testSettings.firefox
   }
 };
