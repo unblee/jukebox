@@ -55,7 +55,7 @@
 }
 
 
-.player-overlay:hover {
+.player-overlay.player-overlay--stop, .player-overlay:hover {
   background: rgba(0, 0, 0, .6);
 }
 
@@ -70,7 +70,7 @@
   transition: opacity .2s ease;
 }
 
-.player-overlay:hover .player-main-controller {
+.player-overlay.player-overlay--stop .player-main-controller, .player-overlay:hover .player-main-controller {
   opacity: 1;
 }
 
