@@ -57,5 +57,7 @@ typings/
 # dotenv environment variables file
 .env
 
+# Project local
+package-lock.json
 /store/*
 !/store/.gitkeep

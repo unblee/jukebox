@@ -26,6 +26,18 @@ I am checking the operation with the latest version of `chrome` and `firefox`.
 
 ## Prerequisites
 
+### [yarn](https://yarnpkg.com)
+
+This project uses `yarn` for package management and task runner.
+
+On Debian/Ubuntu:
+
+```console
+$ curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+$ echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+$ sudo apt-get update && sudo apt-get install yarn
+```
+
 ### for [speaker](https://www.npmjs.com/package/speaker) package
 
 `speaker` package requires `alsa.h` header file.
@@ -53,8 +65,8 @@ Next, comment out `<script src="https://unpkg.com/vue"></script>` in the same fi
 
 ```console
 $ export NODE_ENV=production
-$ npm install
-$ npm start
+$ yarn install
+$ yarn start
 ```
 
 Let's access to [http://localhost:8888](http://localhost:8888)
@@ -62,8 +74,8 @@ Let's access to [http://localhost:8888](http://localhost:8888)
 ## for Developers
 
 ```console
-$ npm install
-$ npm run dev // start nodemon
+$ yarn install
+$ yarn run dev // start nodemon
 ```
 
 Let's access to [http://localhost:8888](http://localhost:8888)
