@@ -146,12 +146,14 @@ module.exports = class Player {
 
   setShuffleMode(value) {
     if (value) {
+      const nowContent = this.nowPlayingContent;
+
       this.status.enableShuffleMode();
       this.playlist.shuffle();
 
       // current playing content moves to top if playing music
       if ([State.PLAYING, State.PAUSING].includes(this.status.state)) {
-        this.playlist.moveToTop(this.status.nowPlayingIdx);
+        this.playlist.moveToTop(nowContent);
         this.status.setNowPlayingIdx(0);
       }
     } else {
