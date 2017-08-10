@@ -8,29 +8,15 @@ const throttle = require('lodash.throttle');
 const websockify = require('koa-websocket');
 const favicon = require('koa-favicon');
 const Router = require('./router');
-const Playlist = require('./playlist.js');
-const Player = require('./player.js');
-const PlayerStatus = require('./player_status.js');
-const PlayerStatusStore = require('./player_status_store.js');
+const JukeBox = require('./jukebox');
 
 const app = websockify(new Koa());
+const jukebox = new JukeBox();
 
-const playlist = new Playlist();
+// provide application objects
+app.context.jukebox = jukebox;
 
-const playerStatusStore = new PlayerStatusStore();
-let playerStatus;
-if (playerStatusStore.existsSync()) {
-  const x = playerStatusStore.readSync();
-  playlist.replace(x.playlist);
-  playerStatus = new PlayerStatus(x);
-} else {
-  playerStatus = new PlayerStatus();
-}
-
-const player = new Player(playlist, playerStatus);
-
-const router = new Router();
-router.allBind(player, playlist);
+const router = new Router(jukebox);
 
 // use body parser
 app.use(bodyParser());
@@ -51,14 +37,14 @@ app.ws.broadcast = data => {
   });
 };
 
-player.on(
+jukebox.player.on(
   'updated-status',
   throttle(() => {
-    const status = player.fetchStatus();
+    const status = jukebox.player.fetchStatus();
     app.ws.broadcast(JSON.stringify(status));
 
     // save status
-    playerStatusStore.writeSync(status, {
+    jukebox.playerStatusStore.writeSync(status, {
       pretty: process.env.NODE_ENV !== 'production'
     });
   }, 200)
