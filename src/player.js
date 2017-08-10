@@ -40,6 +40,7 @@ module.exports = class Player {
         return;
 
       case State.STOPPED:
+        if (!this.nowPlayingStream) return;
         this.speaker.start(this.nowPlayingStream);
         this.speaker.on('stopped', this._onSpeakerStoppedEventBinded);
         this.status.play();
@@ -141,12 +142,14 @@ module.exports = class Player {
 
   setShuffleMode(value) {
     if (value) {
+      const nowContent = this.nowPlayingContent;
+
       this.status.enableShuffleMode();
       this.playlist.shuffle();
 
       // current playing content moves to top if playing music
       if ([State.PLAYING, State.PAUSING].includes(this.status.state)) {
-        this.playlist.moveToTop(this.status.nowPlayingIdx);
+        this.playlist.moveToTop(nowContent);
         this.status.setNowPlayingIdx(0);
       }
     } else {
@@ -191,7 +194,7 @@ module.exports = class Player {
   }
 
   _onSpeakerStopped() {
-    this.status.stop();
+    this.stop();
     this.startNext();
   }
 };
