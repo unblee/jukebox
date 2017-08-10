@@ -33,7 +33,7 @@ Vue.component('clear-playlist-modal', {
         <p>If you click the clear button, all of tracks in the playlist will be removed.</p>
       </section>
       <footer class="modal-card-foot">
-        <a class="button is-danger" @click="onSubmit">Clear</a>
+        <a class="button is-danger submit-clear-button" @click="onSubmit">Clear</a>
         <a class="button" @click="close">Cancel</a>
       </footer>
     </div>

@@ -10,7 +10,9 @@ module.exports = {
     pauseButton: 'a[title=Pause]',
     nextButton: 'a[title=Next]',
     prevButton: 'a[title=Prev]',
-    clearButton: 'button[title="Clear Playlist"]',
+    openClearModalButton: 'button[title="Clear Playlist"]',
+    clearModal: '.clear-playlist-modal',
+    clearButton: '.clear-playlist-modal .submit-clear-button',
     noLoopButton: 'a[title=Queue]',
     oneLoopButton: 'a[title="One Loop"]',
     playlistLoopButton: 'a[title="Playlist Loop"]'

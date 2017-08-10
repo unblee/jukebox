@@ -99,6 +99,8 @@ module.exports = {
     // clear
     page
       .log('clear')
+      .click('@openClearModalButton')
+      .waitForElementPresent('@clearModal', PRESENT_WAIT_TIME)
       .click('@clearButton')
       .waitForElementNotPresent('a.playlist-content', PRESENT_WAIT_TIME)
       .assert.hasPlaylistLength(0)
@@ -175,6 +177,8 @@ module.exports = {
     // clear
     page
       .log('clear')
+      .click('@openClearModalButton')
+      .waitForElementPresent('@clearModal', PRESENT_WAIT_TIME)
       .click('@clearButton')
       .waitForElementNotPresent('a.playlist-content', PRESENT_WAIT_TIME)
       .api.pause(E2E_WAIT_TIME);
@@ -273,6 +277,8 @@ module.exports = {
     // clear
     page
       .log('clear')
+      .click('@openClearModalButton')
+      .waitForElementPresent('@clearModal', PRESENT_WAIT_TIME)
       .click('@clearButton')
       .waitForElementNotPresent('a.playlist-content', PRESENT_WAIT_TIME)
       .api.pause(E2E_WAIT_TIME);
