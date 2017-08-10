@@ -45,8 +45,11 @@ new Vue({
   },
   methods: {
     async init() {
-      const res = await fetch('/player/status');
-      this.playerStatus = await res.json();
+      const status = await fetch('/player/status');
+      this.playerStatus = await status.json();
+
+      const history = await fetch('/history');
+      this.history = await history.json();
     },
     teardown() {
       this.playerStatus = {};
@@ -58,7 +61,6 @@ new Vue({
         const { name, data } = JSON.parse(event.data);
         if (name === 'update-history') {
           this.history = data;
-          console.log(this.history);
         } else if (name === 'update-status') {
           this.playerStatus = data;
         }

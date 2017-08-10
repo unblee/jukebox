@@ -35,7 +35,7 @@ if (playerStatusStore.existsSync()) {
 const player = new Player(playlist, playerStatus, history, ev);
 
 const router = new Router();
-router.allBind(player, playlist);
+router.allBind(player, playlist, history);
 
 // use body parser
 app.use(bodyParser());
