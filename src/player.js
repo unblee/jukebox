@@ -193,7 +193,7 @@ module.exports = class Player {
   }
 
   _onSpeakerStopped() {
-    this.status.stop();
+    this.stop();
     this.startNext();
   }
 };
