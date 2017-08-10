@@ -83,9 +83,3 @@
   top: -5px;
   width: 75%;
 }
-
-.player--no-content:before {
-  content: '';
-  display: block;
-  padding-top: 75%; /* 4:3 */
-}

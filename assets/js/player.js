@@ -64,8 +64,9 @@ Vue.component('player', {
   },
 
   template: `
-  <div class="player is-flex black-background" :class="{ 'player--no-content': isPlaylistEmpty }">
+  <div class="player black-background" :class="{ 'player--no-content': isPlaylistEmpty }">
     <img v-if="existThumbnail" :src="player.nowPlayingContent.thumbnailLink" alt="Image" class="player-thumbnail is-block">
+    <div class="image is-16by9 is-hidden-tablet" v-if="isPlaylistEmpty"></div>
     <div class="player-overlay is-flex" :class="{ 'player-overlay--stop': existThumbnail &&  player.state !== 'playing' }">
       <h1 class="title is-4 player-title is-marginless">
         <a :href="player.nowPlayingContent.link" target="_blank"
