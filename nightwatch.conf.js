@@ -7,7 +7,10 @@ const chromeDriver = require('chromedriver');
 const testSettings = {
   chrome: {
     desiredCapabilities: {
-      browserName: 'chrome'
+      browserName: 'chrome',
+      chromeOptions: {
+        args: ['window-size=1280,800']
+      }
     }
   },
 
@@ -15,7 +18,7 @@ const testSettings = {
     desiredCapabilities: {
       browserName: 'chrome',
       chromeOptions: {
-        args: ['headless']
+        args: ['headless', 'window-size=1280,800']
       }
     }
   },
