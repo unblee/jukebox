@@ -25,6 +25,11 @@ module.exports = class PlayerController {
     ctx.status = 200;
   }
 
+  async restart(ctx) {
+    this.player.restart();
+    ctx.status = 200;
+  }
+
   async setLoopMode(ctx) {
     this.player.setLoopMode(ctx.params.mode);
     ctx.status = 200;
