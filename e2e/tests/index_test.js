@@ -29,7 +29,7 @@ module.exports = {
   basicTest(browser) {
     const page = browser.page.index();
 
-    page.navigate().waitForElementVisible('body', 1000).assert.containsText('body', 'jukebox');
+    page.navigate().waitForElementVisible('body', 1000);
 
     // add musics
     page
