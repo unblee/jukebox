@@ -11,6 +11,7 @@ const sampleUrls = [
 let app;
 
 const E2E_WAIT_TIME = Number(process.env.E2E_WAIT_TIME) || 5000;
+const PRESENT_WAIT_TIME = 5000;
 
 module.exports = {
   before() {
@@ -29,13 +30,13 @@ module.exports = {
   basicTest(browser) {
     const page = browser.page.index();
 
-    page.navigate().waitForElementVisible('body', 1000);
+    page.navigate().waitForElementVisible('body', PRESENT_WAIT_TIME);
 
     // add musics
     page
       .setValue('@trackUrlField', sampleUrls.join(','))
       .submitForm('@trackSubmitButton')
-      .waitForElementPresent('a.playlist-content:nth-child(5)', 10000)
+      .waitForElementPresent('a.playlist-content:nth-child(5)', PRESENT_WAIT_TIME)
       .assert.elementPresent('@playButton')
       .assert.hasPlaylistLength(5);
 
@@ -45,7 +46,7 @@ module.exports = {
     page
       .moveToElement('@playerBlock', 10, 10)
       .click('@playButton')
-      .waitForElementPresent('@pauseButton', 5000)
+      .waitForElementPresent('@pauseButton', PRESENT_WAIT_TIME)
       .assert.elementPresent('@pauseButton')
       .assert.hasPlaylistLength(5)
       .assert.currentTrackNumEquals(1);
@@ -55,7 +56,7 @@ module.exports = {
     // next music
     page
       .click('@nextButton')
-      .waitForElementNotPresent('a.playlist-content:nth-child(5)', 5000) // dequeue
+      .waitForElementNotPresent('a.playlist-content:nth-child(5)', PRESENT_WAIT_TIME) // dequeue
       .assert.elementPresent('@pauseButton')
       .assert.hasPlaylistLength(4)
       .assert.currentTrackNumEquals(1);
@@ -68,7 +69,7 @@ module.exports = {
     // stop music
     page
       .click('@pauseButton')
-      .waitForElementPresent('@playButton', 5000)
+      .waitForElementPresent('@playButton', PRESENT_WAIT_TIME)
       .assert.elementPresent('@playButton')
       .assert.hasPlaylistLength(4)
       .assert.currentTrackNumEquals(1);
@@ -78,7 +79,7 @@ module.exports = {
     // play specified music
     page
       .click('a.playlist-content:nth-child(3)')
-      .waitForElementPresent('@pauseButton', 5000)
+      .waitForElementPresent('@pauseButton', PRESENT_WAIT_TIME)
       .assert.elementPresent('@pauseButton')
       .assert.hasPlaylistLength(4)
       .assert.currentTrackNumEquals(3);
@@ -88,7 +89,7 @@ module.exports = {
     // delete current track
     page
       .click('a.playlist-content:nth-child(3) i[title=Delete]')
-      .waitForElementPresent('@playButton', 5000)
+      .waitForElementPresent('@playButton', PRESENT_WAIT_TIME)
       .assert.elementPresent('@playButton')
       .assert.hasPlaylistLength(3)
       .assert.currentTrackNumEquals(3);
@@ -98,7 +99,7 @@ module.exports = {
     // clear
     page
       .click('@clearButton')
-      .waitForElementNotPresent('a.playlist-content', 5000)
+      .waitForElementNotPresent('a.playlist-content', PRESENT_WAIT_TIME)
       .assert.hasPlaylistLength(0);
 
     browser.pause(E2E_WAIT_TIME);
@@ -121,14 +122,14 @@ module.exports = {
     // set one loop mode
     page
       .click('@noLoopButton')
-      .waitForElementPresent('@oneLoopButton', 5000)
+      .waitForElementPresent('@oneLoopButton', PRESENT_WAIT_TIME)
       .assert.elementPresent('@oneLoopButton');
 
     // play music
     page
       .moveToElement('@playerBlock', 10, 10)
       .click('@playButton')
-      .waitForElementPresent('@pauseButton', 5000)
+      .waitForElementPresent('@pauseButton', PRESENT_WAIT_TIME)
       .assert.hasPlaylistLength(5)
       .assert.currentTrackNumEquals(1);
 
@@ -150,7 +151,7 @@ module.exports = {
     // play specified music
     page
       .click('a.playlist-content:nth-child(3)')
-      .waitForElementPresent('@pauseButton', 5000)
+      .waitForElementPresent('@pauseButton', PRESENT_WAIT_TIME)
       .assert.elementPresent('@pauseButton')
       .assert.hasPlaylistLength(5)
       .assert.currentTrackNumEquals(3);
@@ -160,7 +161,7 @@ module.exports = {
     // delete current track
     page
       .click('a.playlist-content:nth-child(3) i[title=Delete]')
-      .waitForElementPresent('@playButton', 5000)
+      .waitForElementPresent('@playButton', PRESENT_WAIT_TIME)
       .assert.elementPresent('@playButton')
       .assert.hasPlaylistLength(4)
       .assert.currentTrackNumEquals(3);
@@ -168,7 +169,7 @@ module.exports = {
     browser.pause(E2E_WAIT_TIME);
 
     // clear
-    page.click('@clearButton').waitForElementNotPresent('a.playlist-content', 5000);
+    page.click('@clearButton').waitForElementNotPresent('a.playlist-content', PRESENT_WAIT_TIME);
 
     browser.pause(E2E_WAIT_TIME);
     browser.end();
@@ -177,29 +178,29 @@ module.exports = {
   playlistLoopTest(browser) {
     const page = browser.page.index();
 
-    page.navigate().waitForElementVisible('body', 1000);
+    page.navigate().waitForElementVisible('body', PRESENT_WAIT_TIME);
 
     // add musics
     page
       .setValue('@trackUrlField', sampleUrls.join(','))
       .submitForm('@trackSubmitButton')
-      .waitForElementPresent('a.playlist-content:nth-child(5)', 10000);
+      .waitForElementPresent('a.playlist-content:nth-child(5)', PRESENT_WAIT_TIME);
 
     browser.pause(E2E_WAIT_TIME);
 
     // set shuffle loop mode
     page
       // .click('@noLoopButton')   // settings of oneLoopTest are remained...
-      // .waitForElementPresent('@oneLoopButton', 5000)
+      // .waitForElementPresent('@oneLoopButton', PRESENT_WAIT_TIME)
       .click('@oneLoopButton')
-      .waitForElementPresent('@playlistLoopButton', 5000)
+      .waitForElementPresent('@playlistLoopButton', PRESENT_WAIT_TIME)
       .assert.elementPresent('@playlistLoopButton');
 
     // play music
     page
       .moveToElement('@playerBlock', 10, 10)
       .click('@playButton')
-      .waitForElementPresent('@pauseButton', 5000)
+      .waitForElementPresent('@pauseButton', PRESENT_WAIT_TIME)
       .assert.hasPlaylistLength(5)
       .assert.currentTrackNumEquals(1);
 
@@ -228,14 +229,20 @@ module.exports = {
     // go to last music, next and prev
     page
       .click('a.playlist-content:nth-child(5)')
-      .waitForElementPresent('.playlist-content:nth-child(5) .thumbnail-wrapper i', 5000)
+      .waitForElementPresent(
+        '.playlist-content:nth-child(5) .thumbnail-wrapper i',
+        PRESENT_WAIT_TIME
+      )
       .assert.currentTrackNumEquals(5);
 
     browser.pause(E2E_WAIT_TIME);
 
     page
       .click('@nextButton')
-      .waitForElementPresent('.playlist-content:nth-child(1) .thumbnail-wrapper i', 5000)
+      .waitForElementPresent(
+        '.playlist-content:nth-child(1) .thumbnail-wrapper i',
+        PRESENT_WAIT_TIME
+      )
       .assert.elementPresent('@pauseButton')
       .assert.hasPlaylistLength(5)
       .assert.currentTrackNumEquals(1);
@@ -244,7 +251,10 @@ module.exports = {
 
     page
       .click('@prevButton')
-      .waitForElementPresent('.playlist-content:nth-child(5) .thumbnail-wrapper i', 5000)
+      .waitForElementPresent(
+        '.playlist-content:nth-child(5) .thumbnail-wrapper i',
+        PRESENT_WAIT_TIME
+      )
       .assert.elementPresent('@pauseButton')
       .assert.hasPlaylistLength(5)
       .assert.currentTrackNumEquals(5);
@@ -252,7 +262,7 @@ module.exports = {
     browser.pause(E2E_WAIT_TIME);
 
     // clear
-    page.click('@clearButton').waitForElementNotPresent('a.playlist-content', 5000);
+    page.click('@clearButton').waitForElementNotPresent('a.playlist-content', PRESENT_WAIT_TIME);
 
     browser.pause(E2E_WAIT_TIME);
     browser.end();
