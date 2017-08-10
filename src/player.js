@@ -2,12 +2,13 @@ const Provider = require('./provider');
 const LoopMode = require('./loop_mode');
 const State = require('./state');
 const Speaker = require('./speaker');
+const EventEmitter = require('events').EventEmitter;
 
-module.exports = class Player {
-  constructor(playlist, playerStatus, ev) {
+module.exports = class Player extends EventEmitter {
+  constructor(playlist, playerStatus) {
+    super();
     this.playlist = playlist;
     this.status = playerStatus;
-    this.ev = ev;
     this.speaker = new Speaker({ volume: this.status.volume });
 
     this._onSpeakerStoppedEventBinded = () => this._onSpeakerStopped();
@@ -20,7 +21,7 @@ module.exports = class Player {
       } else if (index < nowIdx) {
         // adjust playing index
         this.status.setNowPlayingIdx(nowIdx - 1);
-        this.ev.emit('update-status');
+        this.emit('updated-status');
       }
     });
 
@@ -29,8 +30,12 @@ module.exports = class Player {
       this.status.setNowPlayingIdx(0);
     });
 
+    this.playlist.on('updated', () => {
+      this.emit('updated-status');
+    });
+
     this.status.on('updated', () => {
-      this.ev.emit('update-status');
+      this.emit('updated-status');
     });
   }
 
@@ -49,7 +54,7 @@ module.exports = class Player {
         this.speaker.start(this.nowPlayingStream);
         this.speaker.on('stopped', this._onSpeakerStoppedEventBinded);
         this.status.play();
-        this.ev.emit('update-status');
+        this.emit('updated-status');
         return;
 
       default:
@@ -110,20 +115,20 @@ module.exports = class Player {
   pause() {
     this.speaker.pause();
     this.status.pause();
-    this.ev.emit('update-status');
+    this.emit('updated-status');
   }
 
   resume() {
     this.speaker.resume();
     this.status.resume();
-    this.ev.emit('update-status');
+    this.emit('updated-status');
   }
 
   stop() {
     this.speaker.removeListener('stopped', this._onSpeakerStoppedEventBinded);
     this.speaker.stop();
     this.status.stop();
-    this.ev.emit('update-status');
+    this.emit('updated-status');
   }
 
   restart() {
@@ -166,7 +171,7 @@ module.exports = class Player {
       this.status.disableShuffleMode();
     }
 
-    this.ev.emit('update-status');
+    this.emit('updated-status');
   }
 
   fetchStatus() {
@@ -200,7 +205,7 @@ module.exports = class Player {
   setVolume(vol) {
     this.speaker.volume = vol;
     this.status.volume = vol;
-    this.ev.emit('update-status');
+    this.emit('updated-status');
   }
 
   _onSpeakerStopped() {

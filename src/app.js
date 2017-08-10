@@ -7,7 +7,6 @@ const path = require('path');
 const throttle = require('lodash.throttle');
 const websockify = require('koa-websocket');
 const favicon = require('koa-favicon');
-const Event = require('events');
 const Router = require('./router');
 const Playlist = require('./playlist.js');
 const Player = require('./player.js');
@@ -16,9 +15,7 @@ const PlayerStatusStore = require('./player_status_store.js');
 
 const app = websockify(new Koa());
 
-const ev = new Event.EventEmitter();
-
-const playlist = new Playlist(ev);
+const playlist = new Playlist();
 
 const playerStatusStore = new PlayerStatusStore();
 let playerStatus;
@@ -30,7 +27,7 @@ if (playerStatusStore.existsSync()) {
   playerStatus = new PlayerStatus();
 }
 
-const player = new Player(playlist, playerStatus, ev);
+const player = new Player(playlist, playerStatus);
 
 const router = new Router();
 router.allBind(player, playlist);
@@ -54,8 +51,8 @@ app.ws.broadcast = data => {
   });
 };
 
-ev.on(
-  'update-status',
+player.on(
+  'updated-status',
   throttle(() => {
     const status = player.fetchStatus();
     app.ws.broadcast(JSON.stringify(status));
