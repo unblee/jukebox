@@ -6,6 +6,7 @@ const bodyParser = require('koa-bodyparser');
 const path = require('path');
 const throttle = require('lodash.throttle');
 const websockify = require('koa-websocket');
+const favicon = require('koa-favicon');
 const Event = require('events');
 const Router = require('./router');
 const Playlist = require('./playlist.js');
@@ -39,6 +40,7 @@ app.use(bodyParser());
 
 if (!process.env.JUKEBOX_NO_WEB_UI) {
   // static files
+  app.use(favicon(path.join(__dirname, '../assets/favicon.ico')));
   app.use(mount('/', serve(path.join(__dirname, '../assets/'))));
 }
 
@@ -67,7 +69,6 @@ ev.on(
 
 // websocket connection
 app.ws.use(socketRoute.get('/socket', () => {}));
-
 app.use(router.routes());
 app.use(router.allowedMethods());
 

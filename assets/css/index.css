@@ -6,36 +6,9 @@ html, body {
   display: none;
 }
 
-.app-title {
-  font-weight: bold;
-  color: gray;
-  font-size: 4em;
-  position: relative;
-  animation: title 1s ease;
-}
-
-.app-title-u {
-  display: inline-block;
-  animation: u 1s ease 1s forwards;
-  transform: rotate(180deg) translateY(-.9rem);
-}
-
-@keyframes title {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes u {
-  from {
-    transform: rotate(180deg) translateY(-.9rem);
-  }
-  to {
-    transform: rotate(0deg) translateY(0);
-  }
+.app-title svg {
+  max-width: 300px;
+  height: auto;
 }
 
 .material-icons.is-large {
