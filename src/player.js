@@ -25,6 +25,11 @@ module.exports = class Player {
       }
     });
 
+    this.playlist.on('cleared', () => {
+      this.stop();
+      this.status.setNowPlayingIdx(0);
+    });
+
     this.status.on('updated', () => {
       this.ev.emit('update-status');
     });
@@ -121,6 +126,11 @@ module.exports = class Player {
     this.speaker.stop();
     this.status.stop();
     this.ev.emit('update-status');
+  }
+
+  restart() {
+    this.stop();
+    this.start();
   }
 
   setLoopMode(loopMode) {
