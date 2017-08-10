@@ -53,6 +53,7 @@ new Vue({
     },
     teardown() {
       this.playerStatus = {};
+      this.history = [];
     },
     setupSocket() {
       const socket = new WebSocket(`ws://${location.host}/socket`);

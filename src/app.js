@@ -14,12 +14,12 @@ const Playlist = require('./playlist.js');
 const Player = require('./player.js');
 const PlayerStatus = require('./player_status.js');
 const PlayerStatusStore = require('./player_status_store.js');
+const HistoryStore = require('./history_store.js');
 
 const app = websockify(new Koa());
 
 const ev = new Event.EventEmitter();
 
-const history = new History();
 const playlist = new Playlist(ev);
 
 const playerStatusStore = new PlayerStatusStore();
@@ -31,6 +31,14 @@ if (playerStatusStore.existsSync()) {
 } else {
   playerStatus = new PlayerStatus();
 }
+
+const historyStore = new HistoryStore();
+let initialHistoryItems = [];
+if (historyStore.existsSync()) {
+  initialHistoryItems = historyStore.readSync();
+}
+
+const history = new History(initialHistoryItems, { maxLength: process.env.MAX_HISTORY_LENGTH });
 
 const player = new Player(playlist, playerStatus, history, ev);
 
@@ -85,7 +93,10 @@ history.on(
       })
     );
 
-    // TODO: save history
+    // save history
+    historyStore.writeSync(history.toJson(), {
+      pretty: process.env.NODE_ENV !== 'production'
+    });
   }, 1000)
 );
 
