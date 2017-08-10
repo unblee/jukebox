@@ -2,9 +2,6 @@ Vue.component('player', {
   props: ['player'],
 
   methods: {
-    isPlaylistEmpty() {
-      return !this.player.playlist || this.player.playlist.length === 0;
-    },
     playerStart() {
       fetch('/player/start', { method: 'POST' });
     },
@@ -35,6 +32,9 @@ Vue.component('player', {
     existThumbnail() {
       return this.player.nowPlayingContent && this.player.nowPlayingContent.thumbnailLink;
     },
+    isPlaylistEmpty() {
+      return !this.player.playlist || this.player.playlist.length === 0;
+    },
     mute: {
       get() {
         return !this.volume;
@@ -61,7 +61,7 @@ Vue.component('player', {
   },
 
   template: `
-  <div class="player is-flex black-background">
+  <div class="player is-flex black-background" :class="{ 'player--no-content': isPlaylistEmpty }">
     <img v-if="existThumbnail" :src="player.nowPlayingContent.thumbnailLink" alt="Image" class="player-thumbnail is-block">
     <div class="player-overlay is-flex" :class="{ 'player-overlay--stop': existThumbnail &&  player.state !== 'playing' }">
       <h1 class="title is-4 player-title is-marginless">
@@ -75,24 +75,24 @@ Vue.component('player', {
       <div class="player-main-controller has-text-centered">
         <div class="columns is-mobile">
           <div class="column">
-            <a title="Prev" :class="{ 'deactivate': player.loopMode !== 'playlist' || isPlaylistEmpty() }" @click="playerPrev()">
+            <a title="Prev" :class="{ 'deactivate': player.loopMode !== 'playlist' || isPlaylistEmpty }" @click="playerPrev()">
               <i class="material-icons is-large is-pushable">skip_previous</i>
             </a>
           </div>
           <div class="column">
             <div v-if="player.state === 'playing'">
-              <a title="Pause" @click="playerPause()" :class="{ 'deactivate': isPlaylistEmpty() && !player.nowPlayingContent }">
+              <a title="Pause" @click="playerPause()" :class="{ 'deactivate': isPlaylistEmpty && !player.nowPlayingContent }">
                 <i class="material-icons is-large is-pushable">pause</i>
               </a>
             </div>
             <div v-else>
-              <a title="Play" @click="playerStart()" :class="{ 'deactivate': isPlaylistEmpty() && !player.nowPlayingContent }">
+              <a title="Play" @click="playerStart()" :class="{ 'deactivate': isPlaylistEmpty && !player.nowPlayingContent }">
                 <i class="material-icons is-large is-pushable">play_arrow</i>
               </a>
             </div>
           </div>
           <div class="column">
-            <a title="Next" @click="playerNext()" :class="{ 'deactivate': isPlaylistEmpty() }">
+            <a title="Next" @click="playerNext()" :class="{ 'deactivate': isPlaylistEmpty }">
               <i class="material-icons is-large is-pushable">skip_next</i>
             </a>
           </div>
@@ -119,7 +119,7 @@ Vue.component('player', {
             </a>
           </div>
           <div class="column">
-            <a title="Shuffle" :class="[{ 'is-loop-active': player.shuffleMode }, { 'deactivate': isPlaylistEmpty() }]" @click="playerShuffleModeToggle()">
+            <a title="Shuffle" :class="[{ 'is-loop-active': player.shuffleMode }, { 'deactivate': isPlaylistEmpty }]" @click="playerShuffleModeToggle()">
               <i class="material-icons is-medium">shuffle</i>
             </a>
           </div>
