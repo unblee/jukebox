@@ -22,8 +22,8 @@ Vue.component('playlist', {
     isNowPlayingContent(idx) {
       return this.playlist.nowPlayingContent && this.playlist.nowPlayingIdx === idx;
     },
-    playlistClear() {
-      fetch('/playlist', { method: 'DELETE' });
+    openClearPlaylistModal() {
+      this.$refs.clearPlaylistModal.open();
     },
     deleteContent(index) {
       fetch(`/playlist/${index}`, { method: 'DELETE' });
@@ -81,7 +81,7 @@ Vue.component('playlist', {
           title="Clear Playlist"
           class="button playlist-clear-button is-outlined is-fullwidth is-paddingless"
           :disabled="isPlaylistEmpty"
-          @click="playlistClear">
+          @click="openClearPlaylistModal">
           <i class="material-icons icon">delete_sweep</i>
         </button>
       </div>
@@ -91,6 +91,7 @@ Vue.component('playlist', {
         </p>
       </div>
     </div>
+    <clear-playlist-modal ref="clearPlaylistModal"></clear-playlist-modal>
   </div>
   `
 });
