@@ -45,6 +45,7 @@ module.exports = class Player {
         return;
 
       case State.STOPPED:
+        if (!this.nowPlayingStream) return;
         this.speaker.start(this.nowPlayingStream);
         this.speaker.on('stopped', this._onSpeakerStoppedEventBinded);
         this.status.play();
@@ -198,7 +199,7 @@ module.exports = class Player {
   }
 
   _onSpeakerStopped() {
-    this.status.stop();
+    this.stop();
     this.startNext();
   }
 };
