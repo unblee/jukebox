@@ -57,7 +57,7 @@ Vue.component('history', {
               </a>
             </div>
             <div class="column is-1 has-text-centered align-self-center is-paddingless-vertical">
-              <a class="is-flex in-content-button" @click.prevent.stop="addContent(idx)">
+              <a class="is-flex in-content-button add-content-button" @click.prevent.stop="addContent(idx)">
                 <i class="material-icons icon" title="Add to Playlist">library_add</i>
               </a>
             </div>

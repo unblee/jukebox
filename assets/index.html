@@ -68,13 +68,13 @@
             <div class="tabs is-small is-boxed">
               <ul>
                 <li :class="{'is-active': activeTab === 'playlist'}">
-                  <a @click.prevent.stop="activePlayerTab">
+                  <a class="playlist-tab-button" @click.prevent.stop="activePlayerTab">
                     <i class="material-icons icon">queue_music</i>
                     <span>Playlist</span>
                   </a>
                 </li>
                 <li :class="{'is-active': activeTab === 'history'}">
-                  <a @click.prevent.stop="activeHistoryTab">
+                  <a class="history-tab-button" @click.prevent.stop="activeHistoryTab">
                     <i class="material-icons icon">history</i>
                     <span>History</span>
                   </a>
