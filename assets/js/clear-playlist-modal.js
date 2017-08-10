@@ -26,7 +26,7 @@ Vue.component('clear-playlist-modal', {
     <div class="modal-card">
       <header class="modal-card-head">
         <p class="modal-card-title">Confirmation</p>
-        <button class="delete"></button>
+        <button class="delete" @click="close"></button>
       </header>
       <section class="modal-card-body">
         <p><strong>Do you really want to clear the playlist?</strong></p>
