@@ -53,7 +53,12 @@ new Vue({
       const socket = new WebSocket(`ws://${location.host}/socket`);
 
       socket.addEventListener('message', event => {
-        this.playerStatus = JSON.parse(event.data);
+        const { name, data } = JSON.parse(event.data);
+        if (name === 'update-history') {
+          console.log(data);
+        } else if (name === 'update-status') {
+          this.playerStatus = data;
+        }
       });
       socket.addEventListener('close', () => {
         this.teardown();

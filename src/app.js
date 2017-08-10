@@ -9,6 +9,7 @@ const websockify = require('koa-websocket');
 const favicon = require('koa-favicon');
 const Event = require('events');
 const Router = require('./router');
+const History = require('./history');
 const Playlist = require('./playlist.js');
 const Player = require('./player.js');
 const PlayerStatus = require('./player_status.js');
@@ -18,6 +19,7 @@ const app = websockify(new Koa());
 
 const ev = new Event.EventEmitter();
 
+const history = new History();
 const playlist = new Playlist(ev);
 
 const playerStatusStore = new PlayerStatusStore();
@@ -30,7 +32,7 @@ if (playerStatusStore.existsSync()) {
   playerStatus = new PlayerStatus();
 }
 
-const player = new Player(playlist, playerStatus, ev);
+const player = new Player(playlist, playerStatus, history, ev);
 
 const router = new Router();
 router.allBind(player, playlist);
@@ -58,13 +60,33 @@ ev.on(
   'update-status',
   throttle(() => {
     const status = player.fetchStatus();
-    app.ws.broadcast(JSON.stringify(status));
+    app.ws.broadcast(
+      JSON.stringify({
+        name: 'update-status',
+        data: status
+      })
+    );
 
     // save status
     playerStatusStore.writeSync(status, {
       pretty: process.env.NODE_ENV !== 'production'
     });
   }, 200)
+);
+
+history.on(
+  'updated',
+  throttle(() => {
+    const historyData = history.toJson();
+    app.ws.broadcast(
+      JSON.stringify({
+        name: 'update-history',
+        data: historyData
+      })
+    );
+
+    // TODO: save history
+  }, 1000)
 );
 
 // websocket connection
