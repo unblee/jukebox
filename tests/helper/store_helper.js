@@ -7,7 +7,6 @@ const testPlayerStatusStorePath = path.join(
   __dirname,
   '..',
   '..',
-  '..',
   'store',
   'test_player_status.json'
 );
@@ -24,7 +23,7 @@ module.exports = {
     };
   },
   clearStore() {
-    if (fs.existsSync()) {
+    if (fs.existsSync(testPlayerStatusStorePath)) {
       fs.unlinkSync(testPlayerStatusStorePath);
     }
   }
