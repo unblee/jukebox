@@ -103,21 +103,17 @@ Vue.component('player', {
       </div>
       <div class="player-other-controller">
         <div class="columns has-text-centered is-mobile">
-          <div class="column is-8">
-            <div class="columns is-mobile">
-              <div class="column is-2">
-                <a @click="restart">
-                  <i class="material-icons is-medium">replay</i>
-                </a>
-              </div>
-              <div class="column has-text-left">
-                <a @click="mute = !mute">
-                  <i class="material-icons is-medium" v-if="!mute">volume_up</i>
-                  <i class="material-icons is-medium" v-else>volume_off</i>
-                </a>
-                <input type="range" v-model.number="volume" max="1.5" min="0" step="0.01" @dblclick="volume = 1" class="player-volume-bar">
-              </div>
-            </div>
+          <div class="column is-2">
+            <a @click="restart">
+              <i class="material-icons is-medium">replay</i>
+            </a>
+          </div>
+          <div class="column is-6 has-text-left">
+            <a @click="mute = !mute">
+              <i class="material-icons is-medium" v-if="!mute">volume_up</i>
+              <i class="material-icons is-medium" v-else>volume_off</i>
+            </a>
+            <input type="range" v-model.number="volume" max="1.5" min="0" step="0.01" @dblclick="volume = 1" class="player-volume-bar">
           </div>
           <div class="column is-2">
             <a title="Queue" v-if="player.loopMode === 'none'" @click="playerLoopModeToggle()">
