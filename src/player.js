@@ -121,6 +121,11 @@ module.exports = class Player {
     this.ev.emit('update-status');
   }
 
+  restart() {
+    this.stop();
+    this.start();
+  }
+
   setLoopMode(loopMode) {
     switch (loopMode) {
       case LoopMode.ONE:
