@@ -64,7 +64,25 @@
             <player :player="bindPlayer" v-if="bindPlayer"></player>
           </div>
           <div class="column is-6">
-            <playlist :playlist="bindPlaylist" v-if="bindPlaylist"></playlist>
+            <div class="tabs is-small is-boxed">
+              <ul>
+                <li :class="{'is-active': activeTab === 'playlist'}">
+                  <a @click.prevent.stop="activePlayerTab">
+                    <i class="material-icons icon">queue_music</i>
+                    <span>Playlist</span>
+                  </a>
+                </li>
+                <li :class="{'is-active': activeTab === 'history'}">
+                  <a @click.prevent.stop="activeHistoryTab">
+                    <i class="material-icons icon">history</i>
+                    <span>History</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <playlist :playlist="bindPlaylist" v-if="bindPlaylist && activeTab === 'playlist'"></playlist>
+            <history :history="history" v-if="bindPlaylist && activeTab === 'history'"></history>
           </div>
         </div>
       </div>
@@ -75,6 +93,7 @@
   <!-- <script src="https://unpkg.com/vue/dist/vue.min.js"></script> -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
   <script src="js/clear-playlist-modal.js"></script>
+  <script src="js/history.js"></script>
   <script src="js/playlist.js"></script>
   <script src="js/player.js"></script>
   <script src="js/links-sender.js"></script>

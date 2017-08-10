@@ -1,7 +1,9 @@
 new Vue({
   el: '#app',
   data: {
-    playerStatus: {}
+    playerStatus: {},
+    history: [],
+    activeTab: 'playlist'
   },
   computed: {
     nowPlayingContent() {
@@ -55,7 +57,8 @@ new Vue({
       socket.addEventListener('message', event => {
         const { name, data } = JSON.parse(event.data);
         if (name === 'update-history') {
-          console.log(data);
+          this.history = data;
+          console.log(this.history);
         } else if (name === 'update-status') {
           this.playerStatus = data;
         }
@@ -67,6 +70,12 @@ new Vue({
           this.setupSocket();
         }, 1000);
       });
+    },
+    activePlayerTab() {
+      this.activeTab = 'playlist';
+    },
+    activeHistoryTab() {
+      this.activeTab = 'history';
     }
   }
 });
