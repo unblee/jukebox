@@ -61,3 +61,6 @@ typings/
 package-lock.json
 /store/*
 !/store/.gitkeep
+
+# e2e test
+/e2e/reports
