@@ -33,6 +33,7 @@ module.exports = {
   globals_path: 'e2e/global.js',
   page_objects_path: 'e2e/pages/',
   custom_assertions_path: 'e2e/custom_assertions/',
+  custom_commands_path: 'e2e/custom_commands/',
 
   selenium: {
     start_process: true,
