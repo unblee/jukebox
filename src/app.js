@@ -53,7 +53,7 @@ jukebox.player.on(
   }, 200)
 );
 
-history.on(
+jukebox.history.on(
   'updated',
   throttle(() => {
     const historyData = jukebox.history.toJson();
@@ -65,9 +65,7 @@ history.on(
     );
 
     // save history
-    jukebox.historyStore.writeSync(history.toJson(), {
-      pretty: process.env.NODE_ENV !== 'production'
-    });
+    jukebox.history.save();
   }, 1000)
 );
 

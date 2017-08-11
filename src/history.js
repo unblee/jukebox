@@ -1,11 +1,13 @@
 const EventEmitter = require('events').EventEmitter;
 const HistoryItem = require('./history_item');
+const HistoryStore = require('./history_store.js');
 
 module.exports = class History extends EventEmitter {
   constructor(items = [], { maxLength = 100 } = {}) {
     super();
     this.items = items;
     this.maxLength = maxLength;
+    this.store = new HistoryStore();
   }
 
   adds(tracks = []) {
@@ -15,6 +17,14 @@ module.exports = class History extends EventEmitter {
 
   add(track) {
     this._add(track);
+    this.emit('updated');
+  }
+
+  replace(items = []) {
+    this.items = items;
+    if (!items.length) {
+      this.emit('cleared');
+    }
     this.emit('updated');
   }
 
@@ -46,5 +56,20 @@ module.exports = class History extends EventEmitter {
 
     // fix item length
     this.items.splice(this.maxLength);
+  }
+
+  load() {
+    if (this.store.existsSync()) {
+      const xs = this.store.readSync();
+      this.replace(xs);
+    } else {
+      this.replace([]);
+    }
+  }
+
+  save() {
+    this.store.writeSync(this.toJson(), {
+      pretty: process.env.NODE_ENV !== 'production'
+    });
   }
 };
