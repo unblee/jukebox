@@ -79,6 +79,9 @@ if (process.env.JUKEBOX_PORT) {
   port = process.env.JUKEBOX_PORT;
 }
 
-app.listen(port);
+const server = app.listen(port);
 
-module.exports = app;
+module.exports = {
+  app,
+  server
+};
