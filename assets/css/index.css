@@ -30,3 +30,7 @@ html, body {
 .tabs:not(:last-child) {
   margin-bottom: 0;
 }
+
+.tabs li.is-active a {
+  color: #75b0ba;
+}
