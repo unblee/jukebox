@@ -37,6 +37,7 @@ module.exports = class Router extends KoaRouter {
     this.post('/playlist', c.add.bind(c));
     this.delete('/playlist', c.clear.bind(c));
     this.delete('/playlist/:index', c.remove.bind(c));
+    this.post('/playlist/:index/move/:newIndex', c.move.bind(c));
   }
 
   bindHistory(history) {

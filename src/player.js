@@ -37,6 +37,19 @@ module.exports = class Player extends EventEmitter {
       this.emit('updated-status');
     });
 
+    this.playlist.on('moved', ({ oldIndex, newIndex }) => {
+      const playingIndex = this.status.nowPlayingIdx;
+      if (playingIndex === oldIndex) {
+        this.status.setNowPlayingIdx(newIndex);
+      } else if (newIndex <= playingIndex && playingIndex < oldIndex) {
+        this.status.setNowPlayingIdx(playingIndex + 1);
+      } else if (oldIndex < playingIndex && playingIndex <= newIndex) {
+        this.status.setNowPlayingIdx(playingIndex - 1);
+      }
+
+      this.emit('updated-status');
+    });
+
     this.status.on('updated', () => {
       this.emit('updated-status');
     });

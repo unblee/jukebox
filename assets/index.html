@@ -82,7 +82,7 @@
               </ul>
             </div>
 
-            <playlist :playlist="bindPlaylist" v-if="bindPlaylist && activeTab === 'playlist'"></playlist>
+            <playlist :playlist="bindPlaylist" v-if="bindPlaylist && activeTab === 'playlist'" @moved-playlist="movedPlaylist"></playlist>
             <history :history="history" v-if="bindPlaylist && activeTab === 'history'"></history>
           </div>
         </div>

@@ -72,6 +72,14 @@ module.exports = class Playlist extends EventEmitter {
     this.emit('updated');
   }
 
+  move(oldIndex, newIndex) {
+    if (oldIndex === newIndex) return;
+    const [content] = this.queue.splice(oldIndex, 1);
+    this.queue.splice(newIndex, 0, content);
+    this.emit('updated');
+    this.emit('moved', { oldIndex, newIndex, content });
+  }
+
   length() {
     return this.queue.length;
   }

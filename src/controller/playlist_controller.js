@@ -25,6 +25,11 @@ module.exports = class PlaylistController {
     ctx.status = 200;
   }
 
+  async move(ctx) {
+    this.playlist.move(Number(ctx.params.index), Number(ctx.params.newIndex));
+    ctx.status = 200;
+  }
+
   get _addOpts() {
     if (this.player.status.shuffleMode) {
       return {
