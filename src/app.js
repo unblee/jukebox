@@ -9,10 +9,12 @@ const websockify = require('koa-websocket');
 const favicon = require('koa-favicon');
 const Event = require('events');
 const Router = require('./router');
+const History = require('./history');
 const Playlist = require('./playlist.js');
 const Player = require('./player.js');
 const PlayerStatus = require('./player_status.js');
 const PlayerStatusStore = require('./player_status_store.js');
+const HistoryStore = require('./history_store.js');
 
 const app = websockify(new Koa());
 
@@ -30,10 +32,18 @@ if (playerStatusStore.existsSync()) {
   playerStatus = new PlayerStatus();
 }
 
-const player = new Player(playlist, playerStatus, ev);
+const historyStore = new HistoryStore();
+let initialHistoryItems = [];
+if (historyStore.existsSync()) {
+  initialHistoryItems = historyStore.readSync();
+}
+
+const history = new History(initialHistoryItems, { maxLength: process.env.MAX_HISTORY_LENGTH });
+
+const player = new Player(playlist, playerStatus, history, ev);
 
 const router = new Router();
-router.allBind(player, playlist);
+router.allBind(player, playlist, history);
 
 // use body parser
 app.use(bodyParser());
@@ -58,13 +68,36 @@ ev.on(
   'update-status',
   throttle(() => {
     const status = player.fetchStatus();
-    app.ws.broadcast(JSON.stringify(status));
+    app.ws.broadcast(
+      JSON.stringify({
+        name: 'update-status',
+        data: status
+      })
+    );
 
     // save status
     playerStatusStore.writeSync(status, {
       pretty: process.env.NODE_ENV !== 'production'
     });
   }, 200)
+);
+
+history.on(
+  'updated',
+  throttle(() => {
+    const historyData = history.toJson();
+    app.ws.broadcast(
+      JSON.stringify({
+        name: 'update-history',
+        data: historyData
+      })
+    );
+
+    // save history
+    historyStore.writeSync(history.toJson(), {
+      pretty: process.env.NODE_ENV !== 'production'
+    });
+  }, 1000)
 );
 
 // websocket connection

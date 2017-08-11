@@ -4,9 +4,10 @@ const State = require('./state');
 const Speaker = require('./speaker');
 
 module.exports = class Player {
-  constructor(playlist, playerStatus, ev) {
+  constructor(playlist, playerStatus, history, ev) {
     this.playlist = playlist;
     this.status = playerStatus;
+    this.history = history;
     this.ev = ev;
     this.speaker = new Speaker({ volume: this.status.volume });
 
@@ -49,6 +50,7 @@ module.exports = class Player {
         this.speaker.start(this.nowPlayingStream);
         this.speaker.on('stopped', this._onSpeakerStoppedEventBinded);
         this.status.play();
+        this.history.add(this.nowPlayingContent);
         this.ev.emit('update-status');
         return;
 

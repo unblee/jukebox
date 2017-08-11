@@ -15,6 +15,11 @@ module.exports = {
     clearButton: '.clear-playlist-modal .submit-clear-button',
     noLoopButton: 'a[title=Queue]',
     oneLoopButton: 'a[title="One Loop"]',
-    playlistLoopButton: 'a[title="Playlist Loop"]'
+    playlistLoopButton: 'a[title="Playlist Loop"]',
+    history: '.history',
+    playlist: '.playlist',
+    tabs: '.tabs',
+    historyTabButton: '.history-tab-button',
+    playlistTabButton: '.playlist-tab-button'
   }
 };

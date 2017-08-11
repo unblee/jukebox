@@ -1,0 +1,33 @@
+.history {
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+}
+
+.history.has-content {
+  justify-content: space-between;
+}
+
+.history-content-title-wrapper {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.history .scroll-view {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.in-content-button {
+  opacity: 0;
+  transition: all .2s ease;
+}
+
+.history-content:hover .in-content-button {
+  opacity: 1;
+}
+
+.history-content-title-wrapper .play-count {
+  margin-right: 4px;
+}

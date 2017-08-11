@@ -1,7 +1,9 @@
 new Vue({
   el: '#app',
   data: {
-    playerStatus: {}
+    playerStatus: {},
+    history: [],
+    activeTab: 'playlist'
   },
   computed: {
     nowPlayingContent() {
@@ -43,17 +45,26 @@ new Vue({
   },
   methods: {
     async init() {
-      const res = await fetch('/player/status');
-      this.playerStatus = await res.json();
+      const status = await fetch('/player/status');
+      this.playerStatus = await status.json();
+
+      const history = await fetch('/history');
+      this.history = await history.json();
     },
     teardown() {
       this.playerStatus = {};
+      this.history = [];
     },
     setupSocket() {
       const socket = new WebSocket(`ws://${location.host}/socket`);
 
       socket.addEventListener('message', event => {
-        this.playerStatus = JSON.parse(event.data);
+        const { name, data } = JSON.parse(event.data);
+        if (name === 'update-history') {
+          this.history = data;
+        } else if (name === 'update-status') {
+          this.playerStatus = data;
+        }
       });
       socket.addEventListener('close', () => {
         this.teardown();
@@ -62,6 +73,12 @@ new Vue({
           this.setupSocket();
         }, 1000);
       });
+    },
+    activePlayerTab() {
+      this.activeTab = 'playlist';
+    },
+    activeHistoryTab() {
+      this.activeTab = 'history';
     }
   }
 });

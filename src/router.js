@@ -1,13 +1,16 @@
 const KoaRouter = require('koa-router');
 const PlayerController = require('./controller/player_controller');
 const PlaylistController = require('./controller/playlist_controller');
+const HistoryController = require('./controller/history_controller');
 
 module.exports = class Router extends KoaRouter {
-  allBind(player, playlist) {
+  allBind(player, playlist, history) {
     this.player = player;
     this.playlist = playlist;
+    this.history = history;
     this.bindPlayer(player);
     this.bindPlaylist(player, playlist);
+    this.bindHistory(history);
   }
 
   bindPlayer(player) {
@@ -36,5 +39,12 @@ module.exports = class Router extends KoaRouter {
     this.post('/playlist', c.add.bind(c));
     this.delete('/playlist', c.clear.bind(c));
     this.delete('/playlist/:index', c.remove.bind(c));
+  }
+
+  bindHistory(history) {
+    const c = new HistoryController(history);
+    this.historyController = c;
+
+    this.get('/history', c.getAll.bind(c));
   }
 };
