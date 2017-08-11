@@ -2,7 +2,7 @@ require('../../tests/helper');
 const sampleUrls = require('../../tests/helper/sample_urls');
 
 const E2E_WAIT_TIME = Number(process.env.E2E_WAIT_TIME) || 5000;
-const PRESENT_WAIT_TIME = 5000;
+const PRESENT_WAIT_TIME = 10000;
 
 module.exports = {
   historyTest(browser) {

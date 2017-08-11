@@ -7,43 +7,17 @@ const path = require('path');
 const throttle = require('lodash.throttle');
 const websockify = require('koa-websocket');
 const favicon = require('koa-favicon');
-const Event = require('events');
 const Router = require('./router');
-const History = require('./history');
-const Playlist = require('./playlist.js');
-const Player = require('./player.js');
-const PlayerStatus = require('./player_status.js');
-const PlayerStatusStore = require('./player_status_store.js');
-const HistoryStore = require('./history_store.js');
+const JukeBox = require('./jukebox');
 
 const app = websockify(new Koa());
+const jukebox = new JukeBox();
 
-const ev = new Event.EventEmitter();
-
-const playlist = new Playlist(ev);
-
-const playerStatusStore = new PlayerStatusStore();
-let playerStatus;
-if (playerStatusStore.existsSync()) {
-  const x = playerStatusStore.readSync();
-  playlist.replace(x.playlist);
-  playerStatus = new PlayerStatus(x);
-} else {
-  playerStatus = new PlayerStatus();
-}
-
-const historyStore = new HistoryStore();
-let initialHistoryItems = [];
-if (historyStore.existsSync()) {
-  initialHistoryItems = historyStore.readSync();
-}
-
-const history = new History(initialHistoryItems, { maxLength: process.env.MAX_HISTORY_LENGTH });
-
-const player = new Player(playlist, playerStatus, history, ev);
+// provide application objects
+app.context.jukebox = jukebox;
 
 const router = new Router();
-router.allBind(player, playlist, history);
+router.allBind(jukebox);
 
 // use body parser
 app.use(bodyParser());
@@ -64,10 +38,10 @@ app.ws.broadcast = data => {
   });
 };
 
-ev.on(
-  'update-status',
+jukebox.player.on(
+  'updated-status',
   throttle(() => {
-    const status = player.fetchStatus();
+    const status = jukebox.player.fetchStatus();
     app.ws.broadcast(
       JSON.stringify({
         name: 'update-status',
@@ -75,17 +49,14 @@ ev.on(
       })
     );
 
-    // save status
-    playerStatusStore.writeSync(status, {
-      pretty: process.env.NODE_ENV !== 'production'
-    });
+    jukebox.player.save();
   }, 200)
 );
 
-history.on(
+jukebox.history.on(
   'updated',
   throttle(() => {
-    const historyData = history.toJson();
+    const historyData = jukebox.history.toJson();
     app.ws.broadcast(
       JSON.stringify({
         name: 'update-history',
@@ -94,9 +65,7 @@ history.on(
     );
 
     // save history
-    historyStore.writeSync(history.toJson(), {
-      pretty: process.env.NODE_ENV !== 'production'
-    });
+    jukebox.history.save();
   }, 1000)
 );
 
@@ -110,4 +79,6 @@ if (process.env.JUKEBOX_PORT) {
   port = process.env.JUKEBOX_PORT;
 }
 
-module.exports = app.listen(port);
+app.listen(port);
+
+module.exports = app;
