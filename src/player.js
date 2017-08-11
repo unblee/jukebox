@@ -6,10 +6,11 @@ const PlayerStatusStore = require('./player_status_store.js');
 const EventEmitter = require('events').EventEmitter;
 
 module.exports = class Player extends EventEmitter {
-  constructor(playlist, playerStatus) {
+  constructor(playlist, playerStatus, history) {
     super();
     this.playlist = playlist;
     this.status = playerStatus;
+    this.history = history;
     this.speaker = new Speaker({ volume: this.status.volume });
     this.store = new PlayerStatusStore();
 
@@ -56,6 +57,7 @@ module.exports = class Player extends EventEmitter {
         this.speaker.start(this.nowPlayingStream);
         this.speaker.on('stopped', this._onSpeakerStoppedEventBinded);
         this.status.play();
+        this.history.add(this.nowPlayingContent);
         this.emit('updated-status');
         return;
 

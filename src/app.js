@@ -42,10 +42,33 @@ jukebox.player.on(
   'updated-status',
   throttle(() => {
     const status = jukebox.player.fetchStatus();
-    app.ws.broadcast(JSON.stringify(status));
+    app.ws.broadcast(
+      JSON.stringify({
+        name: 'update-status',
+        data: status
+      })
+    );
 
     jukebox.player.save();
   }, 200)
+);
+
+history.on(
+  'updated',
+  throttle(() => {
+    const historyData = jukebox.history.toJson();
+    app.ws.broadcast(
+      JSON.stringify({
+        name: 'update-history',
+        data: historyData
+      })
+    );
+
+    // save history
+    jukebox.historyStore.writeSync(history.toJson(), {
+      pretty: process.env.NODE_ENV !== 'production'
+    });
+  }, 1000)
 );
 
 // websocket connection
