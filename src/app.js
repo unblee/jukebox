@@ -4,7 +4,7 @@ const socketRoute = require('koa-route');
 const mount = require('koa-mount');
 const bodyParser = require('koa-bodyparser');
 const path = require('path');
-const throttle = require('lodash.throttle');
+const debounce = require('lodash.debounce');
 const websockify = require('koa-websocket');
 const favicon = require('koa-favicon');
 const Router = require('./router');
@@ -40,7 +40,7 @@ app.ws.broadcast = data => {
 
 jukebox.player.on(
   'updated-status',
-  throttle(() => {
+  debounce(() => {
     const status = jukebox.player.fetchStatus();
     app.ws.broadcast(
       JSON.stringify({
@@ -55,7 +55,7 @@ jukebox.player.on(
 
 jukebox.history.on(
   'updated',
-  throttle(() => {
+  debounce(() => {
     const historyData = jukebox.history.toJson();
     app.ws.broadcast(
       JSON.stringify({
