@@ -83,3 +83,8 @@
   top: -5px;
   width: 75%;
 }
+
+.player-no-content {
+  /* 24px is bulma's gap. 4:3 */
+  min-height: calc((100vw - 24px * 2) * 0.75)
+}
