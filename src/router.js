@@ -5,8 +5,8 @@ const PlaylistController = require('./controller/playlist_controller');
 module.exports = class Router extends KoaRouter {
   allBind(jukebox) {
     this.jukebox = jukebox;
-    this.bindPlayer(this.player);
-    this.bindPlaylist(this.player, this.playlist);
+    this.bindPlayer(jukebox.player);
+    this.bindPlaylist(jukebox.player, jukebox.playlist);
   }
 
   bindPlayer(player) {

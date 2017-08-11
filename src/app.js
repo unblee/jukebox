@@ -16,7 +16,8 @@ const jukebox = new JukeBox();
 // provide application objects
 app.context.jukebox = jukebox;
 
-const router = new Router(jukebox);
+const router = new Router();
+router.allBind(jukebox);
 
 // use body parser
 app.use(bodyParser());
@@ -43,10 +44,7 @@ jukebox.player.on(
     const status = jukebox.player.fetchStatus();
     app.ws.broadcast(JSON.stringify(status));
 
-    // save status
-    jukebox.playerStatusStore.writeSync(status, {
-      pretty: process.env.NODE_ENV !== 'production'
-    });
+    jukebox.player.save();
   }, 200)
 );
 
@@ -60,4 +58,6 @@ if (process.env.JUKEBOX_PORT) {
   port = process.env.JUKEBOX_PORT;
 }
 
-module.exports = app.listen(port);
+app.listen(port);
+
+module.exports = app;

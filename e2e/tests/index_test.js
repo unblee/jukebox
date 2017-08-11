@@ -1,4 +1,4 @@
-const storeHelper = require('../../tests/helper/store_helper');
+const { reload, storeHelper } = require('../../tests/helper');
 
 const sampleUrls = [
   'https://www.youtube.com/watch?v=P91pvMdoZ80',
@@ -8,23 +8,13 @@ const sampleUrls = [
   'https://www.youtube.com/watch?v=HLfZs-B_U6M'
 ];
 
-let app;
-
 const E2E_WAIT_TIME = Number(process.env.E2E_WAIT_TIME) || 5000;
 const PRESENT_WAIT_TIME = 5000;
 
 module.exports = {
-  before() {
+  beforeEach() {
     storeHelper.clearStore();
-    storeHelper.makeStub();
-    /* eslint-disable global-require */
-    app = require('../../src/app');
-    /* eslint-disable global-require */
-  },
-
-  after() {
-    storeHelper.clearStore();
-    app.close();
+    reload();
   },
 
   basicTest(browser) {
@@ -202,8 +192,8 @@ module.exports = {
     // set shuffle loop mode
     page
       .log('set shuffle loop mode')
-      // .click('@noLoopButton')   // settings of oneLoopTest are remained...
-      // .waitForElementPresent('@oneLoopButton', PRESENT_WAIT_TIME)
+      .click('@noLoopButton')
+      .waitForElementPresent('@oneLoopButton', PRESENT_WAIT_TIME)
       .click('@oneLoopButton')
       .waitForElementPresent('@playlistLoopButton', PRESENT_WAIT_TIME)
       .assert.elementPresent('@playlistLoopButton')

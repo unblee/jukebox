@@ -9,5 +9,8 @@ const app = require('../../src/app');
 module.exports = {
   app,
   request: supertest(app),
-  storeHelper
+  storeHelper,
+  reload() {
+    app.context.jukebox.reload();
+  }
 };

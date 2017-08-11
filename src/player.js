@@ -2,6 +2,7 @@ const Provider = require('./provider');
 const LoopMode = require('./loop_mode');
 const State = require('./state');
 const Speaker = require('./speaker');
+const PlayerStatusStore = require('./player_status_store.js');
 const EventEmitter = require('events').EventEmitter;
 
 module.exports = class Player extends EventEmitter {
@@ -10,6 +11,7 @@ module.exports = class Player extends EventEmitter {
     this.playlist = playlist;
     this.status = playerStatus;
     this.speaker = new Speaker({ volume: this.status.volume });
+    this.store = new PlayerStatusStore();
 
     this._onSpeakerStoppedEventBinded = () => this._onSpeakerStopped();
 
@@ -211,5 +213,22 @@ module.exports = class Player extends EventEmitter {
   _onSpeakerStopped() {
     this.stop();
     this.startNext();
+  }
+
+  load() {
+    if (this.store.existsSync()) {
+      const x = this.store.readSync();
+      this.playlist.replace(x.playlist);
+      this.status.init(x);
+    } else {
+      this.playlist.replace([]);
+      this.status.init();
+    }
+  }
+
+  save() {
+    this.store.writeSync(this.fetchStatus(), {
+      pretty: process.env.NODE_ENV !== 'production'
+    });
   }
 };
