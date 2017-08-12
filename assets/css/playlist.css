@@ -107,12 +107,14 @@
   z-index: 1;
 }
 
-.tracks {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  right: 0;
+@media screen and (min-width: 769px) {
+  .tracks {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+  }
 }
 
 .panel-tabs a:not(.is-active) {
