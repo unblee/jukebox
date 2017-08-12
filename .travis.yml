@@ -13,6 +13,7 @@ addons:
       - trusty-media
     packages:
       - ffmpeg
+      - libasound2-dev
 
 cache: yarn
 
