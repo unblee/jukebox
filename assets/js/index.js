@@ -27,6 +27,9 @@ new Vue({
         nowPlayingIdx: this.playerStatus.nowPlayingIdx,
         nowPlayingContent: this.nowPlayingContent
       };
+    },
+    tracks() {
+      return this.activeTab === 'playlist' ? this.bindPlaylist : this.history;
     }
   },
   async created() {
@@ -74,11 +77,19 @@ new Vue({
         }, 1000);
       });
     },
-    activePlayerTab() {
-      this.activeTab = 'playlist';
+    switchTab(componentName) {
+      this.activeTab = componentName;
     },
-    activeHistoryTab() {
-      this.activeTab = 'history';
+    movedPlaylist({ newIndex, oldIndex }) {
+      // this is for beautiful rendering, same as server side
+      const playingIndex = this.playerStatus.nowPlayingIdx;
+      if (playingIndex === oldIndex) {
+        this.playerStatus.nowPlayingIdx = newIndex;
+      } else if (newIndex <= playingIndex && playingIndex < oldIndex) {
+        this.playerStatus.nowPlayingIdx = playingIndex + 1;
+      } else if (oldIndex < playingIndex && playingIndex <= newIndex) {
+        this.playerStatus.nowPlayingIdx = playingIndex - 1;
+      }
     }
   }
 });

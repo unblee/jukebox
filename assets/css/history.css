@@ -19,11 +19,6 @@
   overflow-y: auto;
 }
 
-.in-content-button {
-  opacity: 0;
-  transition: all .2s ease;
-}
-
 .history-content:hover .in-content-button {
   opacity: 1;
 }
