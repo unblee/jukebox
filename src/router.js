@@ -13,7 +13,6 @@ module.exports = class Router extends KoaRouter {
 
   bindPlayer(player) {
     const c = new PlayerController(player);
-    this.playerController = c;
 
     this.get('/player/status', c.status.bind(c));
     this.post('/player/start', c.start.bind(c));
@@ -32,7 +31,6 @@ module.exports = class Router extends KoaRouter {
 
   bindPlaylist(player, playlist) {
     const c = new PlaylistController(player, playlist);
-    this.playlistController = c;
 
     this.post('/playlist', c.add.bind(c));
     this.delete('/playlist', c.clear.bind(c));
@@ -41,7 +39,6 @@ module.exports = class Router extends KoaRouter {
 
   bindHistory(history) {
     const c = new HistoryController(history);
-    this.historyController = c;
 
     this.get('/history', c.getAll.bind(c));
   }
