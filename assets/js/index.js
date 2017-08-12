@@ -27,6 +27,9 @@ new Vue({
         nowPlayingIdx: this.playerStatus.nowPlayingIdx,
         nowPlayingContent: this.nowPlayingContent
       };
+    },
+    tracks() {
+      return this.activeTab === 'playlist' ? this.bindPlaylist : this.history;
     }
   },
   async created() {
@@ -74,11 +77,8 @@ new Vue({
         }, 1000);
       });
     },
-    activePlayerTab() {
-      this.activeTab = 'playlist';
-    },
-    activeHistoryTab() {
-      this.activeTab = 'history';
+    switchTab(componentName) {
+      this.activeTab = componentName;
     }
   }
 });
