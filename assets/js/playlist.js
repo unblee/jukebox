@@ -42,7 +42,7 @@ Vue.component('playlist', {
   },
 
   template: `
-  <div class="scroll-view-wrapper">
+  <div class="scroll-view-wrapper playlist">
     <div class="scroll-view">
       <div class="tracks">
         <a v-for="(content,idx) in playlist.contents" class="panel-block playlist-content is-paddingless"

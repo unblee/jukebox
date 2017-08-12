@@ -40,7 +40,7 @@ Vue.component('history', {
   },
 
   template: `
-  <div class="scroll-view-wrapper">
+  <div class="scroll-view-wrapper history">
     <div class="scroll-view">
       <div class="tracks">
         <a v-for="(content,idx) in history" class="panel-block history-content is-paddingless"
