@@ -6,7 +6,9 @@ node_js:
 env:
   global:
     - NODE_ENV=test
-    - SDL_AUDIODRIVER=dummy # avoid ALSA errors
+    # avoid ALSA errors
+    - SDL_AUDIODRIVER=alsa
+    - AUDIODEV=null
 
 addons:
   apt:
