@@ -18,12 +18,18 @@ module.exports = {
   'Add musics': browser => {
     browser.page
       .index()
-      .log('add musics')
       .setValue('@trackUrlField', sampleUrls.join(','))
       .submitForm('@trackSubmitButton')
-      .waitForElementPresent('a.playlist-content:nth-child(5)', PRESENT_WAIT_TIME)
-      .assert.elementPresent('@playButton')
-      .assert.hasPlaylistLength(5)
+      .waitForElementPresent('a.playlist-content:nth-child(5)', 10000)
+      .api.pause(WAIT_TIME);
+  },
+
+  'Set one loop mode': browser => {
+    browser.page
+      .index()
+      .click('@noLoopButton')
+      .waitForElementPresent('@oneLoopButton', PRESENT_WAIT_TIME)
+      .assert.elementPresent('@oneLoopButton')
       .api.pause(WAIT_TIME);
   },
 
@@ -33,7 +39,6 @@ module.exports = {
       .moveToElement('@playerBlock', 10, 10)
       .click('@playButton')
       .waitForElementPresent('@pauseButton', PRESENT_WAIT_TIME)
-      .assert.elementPresent('@pauseButton')
       .assert.hasPlaylistLength(5)
       .assert.currentTrackNumEquals(1)
       .api.pause(WAIT_TIME);
@@ -43,9 +48,10 @@ module.exports = {
     browser.page
       .index()
       .click('@nextButton')
-      .waitForElementNotPresent('a.playlist-content:nth-child(5)', PRESENT_WAIT_TIME) // dequeue
+      .api.pause(2000)
+      .page.index()
       .assert.elementPresent('@pauseButton')
-      .assert.hasPlaylistLength(4)
+      .assert.hasPlaylistLength(5)
       .assert.currentTrackNumEquals(1)
       .api.pause(WAIT_TIME);
   },
@@ -54,24 +60,13 @@ module.exports = {
     browser.page.index().assert.cssClassPresent('@prevButton', 'deactivate');
   },
 
-  'Stop music': browser => {
-    browser.page
-      .index()
-      .click('@pauseButton')
-      .waitForElementPresent('@playButton', PRESENT_WAIT_TIME)
-      .assert.elementPresent('@playButton')
-      .assert.hasPlaylistLength(4)
-      .assert.currentTrackNumEquals(1)
-      .api.pause(WAIT_TIME);
-  },
-
   'Play specified music': browser => {
     browser.page
       .index()
       .click('a.playlist-content:nth-child(3)')
       .waitForElementPresent('@pauseButton', PRESENT_WAIT_TIME)
       .assert.elementPresent('@pauseButton')
-      .assert.hasPlaylistLength(4)
+      .assert.hasPlaylistLength(5)
       .assert.currentTrackNumEquals(3)
       .api.pause(WAIT_TIME);
   },
@@ -82,19 +77,8 @@ module.exports = {
       .click('a.playlist-content:nth-child(3) i[title=Delete]')
       .waitForElementPresent('@playButton', PRESENT_WAIT_TIME)
       .assert.elementPresent('@playButton')
-      .assert.hasPlaylistLength(3)
+      .assert.hasPlaylistLength(4)
       .assert.currentTrackNumEquals(3)
-      .api.pause(WAIT_TIME);
-  },
-
-  'Clear playlist': browser => {
-    browser.page
-      .index()
-      .click('@openClearModalButton')
-      .waitForElementPresent('@clearModal', PRESENT_WAIT_TIME)
-      .click('@clearButton')
-      .waitForElementNotPresent('a.playlist-content', PRESENT_WAIT_TIME)
-      .assert.hasPlaylistLength(0)
       .api.pause(WAIT_TIME);
   }
 };

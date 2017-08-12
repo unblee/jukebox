@@ -18,7 +18,14 @@ I am checking the operation with the latest version of `chrome` and `firefox`.
 |-|-|-|-|
 |JUKEBOX_NO_WEB_UI|''|'yes'|If you set the value, startup with no web UI.|
 |JUKEBOX_PORT|8888|3000|If you set the value, startup with the port of the set value.|
-|JUKEBOX_CACHE_TIME|60000|0|Request cache time (mill seconds)|
+|JUKEBOX_CACHE_TIME|60000|0|Request cache time (mill seconds).|
+
+### for E2E tests
+
+|Parameter|Default|Example|Description|
+|-|-|-|-|
+|E2E_WAIT_TIME|5000|1000|The number of milliseconds to wait to check behavior with our eyes and ears. This can be set as a small value in local tests, but care that a too small value causes bugs.|
+|E2E_PRESENT_WAIT_TIME|30000|60000|The maximum number of milliseconds to wait presentation. Please increase this value when the network speed is slow.|
 
 # Installation
 
