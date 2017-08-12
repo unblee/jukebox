@@ -1,15 +1,19 @@
 const speaker = require('speaker');
-const mpg123Util = require('node-mpg123-util');
-const decoder = require('lame').Decoder;
+const { Decoder: decoder } = require('lame');
 const EventEmitter = require('events').EventEmitter;
+const pcmVolume = require('pcm-volume');
+const AwaitLock = require('await-lock');
 
 module.exports = class Speaker extends EventEmitter {
   constructor({ volume = 1 } = {}) {
     super();
+    this.lock = new AwaitLock();
+
     this._volume = volume;
 
-    this._decodedStream = null;
-    this._audioStream = null;
+    this._stream = null;
+    this._decoder = null;
+    this._pcmVolume = null;
     this._speaker = null;
   }
 
@@ -18,46 +22,101 @@ module.exports = class Speaker extends EventEmitter {
   }
 
   set volume(volume) {
-    if (this._decodedStream) {
-      mpg123Util.setVolume(this._decodedStream.mh, volume);
+    if (this._pcmVolume) {
+      this._pcmVolume.setVolume(volume);
     }
     this._volume = volume;
   }
 
-  start(stream) {
-    this._decodedStream = stream.pipe(decoder());
-    mpg123Util.setVolume(this._decodedStream.mh, this.volume);
+  async start(stream) {
+    await this.lock.acquireAsync();
 
+    try {
+      this.startWithoutLock(stream);
+    } finally {
+      this.lock.release();
+    }
+  }
+
+  async pause() {
+    await this.lock.acquireAsync();
+
+    try {
+      this.pauseWithoutLock();
+    } finally {
+      this.lock.release();
+    }
+  }
+
+  async resume() {
+    await this.lock.acquireAsync();
+
+    try {
+      this.resumeWithoutLock();
+    } finally {
+      this.lock.release();
+    }
+  }
+
+  async stop() {
+    await this.lock.acquireAsync();
+
+    try {
+      this.stopWithoutLock();
+    } finally {
+      this.lock.release();
+    }
+  }
+
+  startWithoutLock(stream) {
+    this._stream = stream;
+    this._decoder = decoder();
+    this._pcmVolume = pcmVolume();
     this._speaker = speaker();
-    this._audioStream = this._decodedStream.pipe(this._speaker);
-    this._audioStream.on('close', () => {
-      this.stop();
-    });
+
+    this._pcmVolume.setVolume(this.volume);
+    this._decoder.on('format', data => this._speaker._format(data));
+
+    this._stream
+      .pipe(this._decoder)
+      .pipe(this._pcmVolume)
+      .pipe(this._speaker)
+      .on('close', () => this.stop());
 
     this.emit('start');
   }
 
-  pause() {
-    this._decodedStream.unpipe(this._speaker);
+  pauseWithoutLock() {
+    this._pcmVolume.unpipe(this._speaker);
     this.emit('paused');
   }
 
-  resume() {
-    this._decodedStream.pipe(this._speaker);
+  resumeWithoutLock() {
+    this._pcmVolume.pipe(this._speaker);
     this.emit('resumed');
   }
 
-  stop() {
-    if (this._decodedStream && this._speaker) {
-      try {
-        this._decodedStream.unpipe(this._speaker).end();
-      } catch (e) {
-        console.error(e);
-      }
-      this._decodedStream = null;
-      this._speaker = null;
+  stopWithoutLock() {
+    if (this._speaker) {
+      this._speaker.removeAllListeners();
     }
-    this._audioStream = null;
+
+    // unpipe and close streams in order of opening
+    const keys = ['_stream', '_decoder', '_pcmVolume', '_speaker'];
+    keys.forEach((key, i) => {
+      if (!this[key]) return;
+
+      if (i + 1 < keys.length) {
+        const nKey = keys[i + 1];
+        if (this[nKey]) {
+          this[key].unpipe(this[nKey]);
+        }
+      }
+
+      this[key].end();
+      this[key] = null;
+    });
+
     this.emit('stopped');
   }
 };

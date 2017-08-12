@@ -64,7 +64,10 @@ module.exports = {
     browser.page
       .index()
       .click('a.playlist-content:nth-child(3)')
-      .waitForElementPresent('@pauseButton', PRESENT_WAIT_TIME)
+      .waitForElementPresent(
+        '.playlist-content:nth-child(3) .thumbnail-wrapper i',
+        PRESENT_WAIT_TIME
+      )
       .assert.elementPresent('@pauseButton')
       .assert.hasPlaylistLength(5)
       .assert.currentTrackNumEquals(3)
