@@ -14,14 +14,14 @@ module.exports = class PlayerStatus extends EventEmitter {
       state = State.STOPPED,
       shuffleMode = false,
       nowPlayingIdx = null,
-      volumeValue = 1
+      volume = 1
     } = {}
   ) {
     this._loopMode = loopMode;
     this._state = state;
     this._shuffleMode = Boolean(shuffleMode);
     this._nowPlayingIdx = Number(nowPlayingIdx);
-    this._volumeValue = Number(volumeValue);
+    this._volumeValue = Number(volume);
     this._prevVolumeValue = this._volumeValue;
     this.emit('updated', this.toJson());
   }

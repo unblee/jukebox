@@ -226,6 +226,7 @@ module.exports = class Player extends EventEmitter {
       this.playlist.replace([]);
       this.status.init();
     }
+    this.speaker.volume = this.status.volume;
   }
 
   save() {
