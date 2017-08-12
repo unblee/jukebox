@@ -1,6 +1,5 @@
 const ytdl = require('ytdl-core');
 const FFmpeg = require('fluent-ffmpeg');
-const Stream = require('stream');
 const request = require('request-promise');
 const memorize = require('promise-memorize');
 
@@ -63,9 +62,6 @@ module.exports = {
 
     const audio = ytdl(link, opts);
     const ffmpeg = new FFmpeg(audio);
-
-    const stream = new Stream.PassThrough();
-    ffmpeg.format('mp3').pipe(stream);
-    return stream;
+    return ffmpeg.format('mp3').pipe();
   }
 };
