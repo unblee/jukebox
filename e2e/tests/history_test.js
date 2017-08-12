@@ -1,88 +1,86 @@
-require('../../tests/helper');
-const sampleUrls = require('../../tests/helper/sample_urls');
+/* eslint-disable func-names */
 
-const E2E_WAIT_TIME = Number(process.env.E2E_WAIT_TIME) || 5000;
-const PRESENT_WAIT_TIME = 5000;
+const {
+  sampleUrls,
+  E2E_WAIT_TIME: WAIT_TIME,
+  E2E_PRESENT_WAIT_TIME: PRESENT_WAIT_TIME
+} = require('../e2e_helper');
 
 module.exports = {
-  historyTest(browser) {
-    const page = browser.page.index();
+  after(browser) {
+    browser.end();
+  },
 
-    page.navigate().waitForElementVisible('body', PRESENT_WAIT_TIME);
+  'Go to top page': browser => {
+    browser.page.index().navigate().waitForElementVisible('body', PRESENT_WAIT_TIME);
+  },
 
-    // set playlist loop mode
-    page
-      .log('set playlist loop mode')
+  'Set playlist loop mode': browser => {
+    browser.page
+      .index()
       .click('@noLoopButton')
       .waitForElementPresent('@oneLoopButton', PRESENT_WAIT_TIME)
       .click('@oneLoopButton')
       .waitForElementPresent('@playlistLoopButton', PRESENT_WAIT_TIME);
+  },
 
-    // add musics
-    page
-      .log('add musics')
+  'Add musics': browser => {
+    browser.page
+      .index()
       .setValue('@trackUrlField', sampleUrls.join(','))
       .submitForm('@trackSubmitButton')
       .waitForElementPresent('a.playlist-content:nth-child(5)', PRESENT_WAIT_TIME);
+  },
 
-    // open history tab
-    page
-      .log('open history tab')
+  'Open history tab': browser => {
+    browser.page
+      .index()
       .click('@historyTabButton')
       .waitForElementPresent('@history', PRESENT_WAIT_TIME)
       .assert.elementPresent('@history')
       .assert.elementNotPresent('@playlist')
-      .api.pause(E2E_WAIT_TIME);
+      .api.pause(WAIT_TIME);
+  },
 
-    // play music and next twice
-    page
-      .log('play music and next twice')
+  'Play music and play next music twice': browser => {
+    browser.page
+      .index()
       .moveToElement('@playerBlock', 10, 10)
       .click('@playButton')
       .waitForElementPresent('@pauseButton', PRESENT_WAIT_TIME)
-      .api.pause(E2E_WAIT_TIME)
+      .api.pause(WAIT_TIME)
       .page.index()
       .click('@nextButton')
-      .api.pause(E2E_WAIT_TIME)
+      .api.pause(WAIT_TIME)
       .page.index()
       .click('@nextButton')
-      .api.pause(E2E_WAIT_TIME)
+      .api.pause(WAIT_TIME)
       .page.index()
       .assert.elementPresent('.history-content:nth-child(3)')
       .assert.containsText('.history-content:nth-child(1) .play-count', '1')
       .assert.containsText('.history-content:nth-child(2) .play-count', '1')
       .assert.containsText('.history-content:nth-child(3) .play-count', '1');
+  },
 
-    // prev music
-    page
-      .log('prev music')
+  'Play prev music': browser => {
+    browser.page
+      .index()
       .click('@prevButton')
-      .api.pause(E2E_WAIT_TIME)
+      .api.pause(WAIT_TIME)
       .page.index()
       .assert.elementPresent('.history-content:nth-child(3)')
       .assert.containsText('.history-content:nth-child(1) .play-count', '2') // sorted
       .assert.containsText('.history-content:nth-child(2) .play-count', '1')
       .assert.containsText('.history-content:nth-child(3) .play-count', '1');
+  },
 
-    // add music from history
-    page
-      .log('add music from history')
+  'Add music from history': browser => {
+    browser.page
+      .index()
       .click('.history-content:nth-child(1) .add-content-button')
       .click('@playlistTabButton')
       .waitForElementPresent('@playlist', PRESENT_WAIT_TIME)
       .waitForElementPresent('a.playlist-content:nth-child(6)', PRESENT_WAIT_TIME)
-      .api.pause(E2E_WAIT_TIME);
-
-    // clear and reset loop mode
-    page
-      .log('clear and reset loop mode')
-      .click('@playlistLoopButton')
-      .click('@openClearModalButton')
-      .waitForElementPresent('@clearModal', PRESENT_WAIT_TIME)
-      .click('@clearButton')
-      .waitForElementNotPresent('a.playlist-content', PRESENT_WAIT_TIME)
-      .api.pause(E2E_WAIT_TIME);
-
-    browser.end();
+      .api.pause(WAIT_TIME);
   }
 };

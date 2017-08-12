@@ -25,6 +25,12 @@ Vue.component('playlist', {
     openClearPlaylistModal() {
       this.$refs.clearPlaylistModal.open();
     },
+    movedPlaylist({ newIndex, oldIndex }) {
+      if (newIndex !== oldIndex) {
+        fetch(`/playlist/${oldIndex}/move/${newIndex}`, { method: 'POST' });
+        this.$emit('moved-playlist', { newIndex, oldIndex });
+      }
+    },
     deleteContent(index) {
       fetch(`/playlist/${index}`, { method: 'DELETE' });
     },
@@ -45,39 +51,45 @@ Vue.component('playlist', {
   <div class="scroll-view-wrapper playlist">
     <div class="scroll-view">
       <div class="tracks">
-        <a v-for="(content,idx) in playlist.contents" class="panel-block playlist-content is-paddingless"
-          :class="{'now-playing-content is-active':isNowPlayingContent(idx)}"
-          :title="content.title"
-          @click="playMusic(idx)"
-          >
-          <div class="control columns is-marginless is-mobile">
-            <div class="column is-1 align-self-center has-text-centered is-paddingless-vertical thumbnail-wrapper">
-              <span class="panel-icon" v-if="isNowPlayingContent(idx)">
-                <i class="material-icons icon">equalizer</i>
-              </span>
-              <img :src="content.thumbnailLink" v-else class="is-block">
-            </div>
-            <div class="column is-7 playlist-content-title-wrapper">
-              {{ content.title }}
-            </div>
-            <div class="column has-text-centered is-2">
-              {{ humanizeTime(content.lengthSeconds) }}
-            </div>
-            <div class="column is-1 has-text-centered align-self-center is-paddingless-vertical">
-              <a class="is-flex in-content-button copy-link-button" @click.prevent.stop="copyUrl" :data-clipboard-text="content.link">
-                <i class="material-icons icon" title="Copy Link">link</i>
-              </a>
-            </div>
-            <div class="column is-1 has-text-centered align-self-center is-paddingless-vertical">
-              <a class="is-flex in-content-button" @click.prevent.stop="deleteContent(idx)">
-                <i class="material-icons icon" title="Delete">&#xE872;</i>
-              </a>
-            </div>
-          </div>
-        </a>
+        <draggable class="panel scroll-view"
+                  v-show="playlist && playlist.contents && playlist.contents.length"
+                  :list="playlist.contents"
+                  @end="movedPlaylist">
+          <a v-for="(content,idx) in playlist.contents" class="panel-block playlist-content is-paddingless"
+              :class="{'now-playing-content is-active':isNowPlayingContent(idx)}"
+              :title="content.title"
+              @click="playMusic(idx)"
+              >
+              <div class="control columns is-marginless is-mobile">
+                <div class="column is-1 align-self-center has-text-centered is-paddingless-vertical thumbnail-wrapper">
+                  <span class="panel-icon" v-if="isNowPlayingContent(idx)">
+                    <i class="material-icons icon">equalizer</i>
+                  </span>
+                  <img :src="content.thumbnailLink" v-else class="is-block">
+                </div>
+                <div class="column is-7 playlist-content-title-wrapper">
+                  {{ content.title }}
+                </div>
+                <div class="column has-text-centered is-2">
+                  {{ humanizeTime(content.lengthSeconds) }}
+                </div>
+                <div class="column is-1 has-text-centered align-self-center is-paddingless-vertical">
+                  <a class="is-flex in-content-button copy-link-button" @click.prevent.stop="copyUrl" :data-clipboard-text="content.link">
+                    <i class="material-icons icon" title="Copy Link">link</i>
+                  </a>
+                </div>
+                <div class="column is-1 has-text-centered align-self-center is-paddingless-vertical">
+                  <a class="is-flex in-content-button" @click.prevent.stop="deleteContent(idx)">
+                    <i class="material-icons icon" title="Delete">&#xE872;</i>
+                  </a>
+                </div>
+              </div>
+            </a>
+          </draggable>
       </div>
     </div>
     <div class="panel playlist-controller">
+    <div class="panel">
       <div class="panel-block playlist-border-top">
         <clear-playlist-modal ref="clearPlaylistModal"></clear-playlist-modal>
         <button

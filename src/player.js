@@ -2,14 +2,17 @@ const Provider = require('./provider');
 const LoopMode = require('./loop_mode');
 const State = require('./state');
 const Speaker = require('./speaker');
+const PlayerStatusStore = require('./player_status_store.js');
+const EventEmitter = require('events').EventEmitter;
 
-module.exports = class Player {
-  constructor(playlist, playerStatus, history, ev) {
+module.exports = class Player extends EventEmitter {
+  constructor(playlist, playerStatus, history) {
+    super();
     this.playlist = playlist;
     this.status = playerStatus;
     this.history = history;
-    this.ev = ev;
     this.speaker = new Speaker({ volume: this.status.volume });
+    this.store = new PlayerStatusStore();
 
     this._onSpeakerStoppedEventBinded = () => this._onSpeakerStopped();
 
@@ -21,7 +24,7 @@ module.exports = class Player {
       } else if (index < nowIdx) {
         // adjust playing index
         this.status.setNowPlayingIdx(nowIdx - 1);
-        this.ev.emit('update-status');
+        this.emit('updated-status');
       }
     });
 
@@ -30,8 +33,25 @@ module.exports = class Player {
       this.status.setNowPlayingIdx(0);
     });
 
+    this.playlist.on('updated', () => {
+      this.emit('updated-status');
+    });
+
+    this.playlist.on('moved', ({ oldIndex, newIndex }) => {
+      const playingIndex = this.status.nowPlayingIdx;
+      if (playingIndex === oldIndex) {
+        this.status.setNowPlayingIdx(newIndex);
+      } else if (newIndex <= playingIndex && playingIndex < oldIndex) {
+        this.status.setNowPlayingIdx(playingIndex + 1);
+      } else if (oldIndex < playingIndex && playingIndex <= newIndex) {
+        this.status.setNowPlayingIdx(playingIndex - 1);
+      }
+
+      this.emit('updated-status');
+    });
+
     this.status.on('updated', () => {
-      this.ev.emit('update-status');
+      this.emit('updated-status');
     });
   }
 
@@ -51,7 +71,7 @@ module.exports = class Player {
         this.speaker.on('stopped', this._onSpeakerStoppedEventBinded);
         this.status.play();
         this.history.add(this.nowPlayingContent);
-        this.ev.emit('update-status');
+        this.emit('updated-status');
         return;
 
       default:
@@ -112,20 +132,20 @@ module.exports = class Player {
   pause() {
     this.speaker.pause();
     this.status.pause();
-    this.ev.emit('update-status');
+    this.emit('updated-status');
   }
 
   resume() {
     this.speaker.resume();
     this.status.resume();
-    this.ev.emit('update-status');
+    this.emit('updated-status');
   }
 
   stop() {
     this.speaker.removeListener('stopped', this._onSpeakerStoppedEventBinded);
     this.speaker.stop();
     this.status.stop();
-    this.ev.emit('update-status');
+    this.emit('updated-status');
   }
 
   restart() {
@@ -168,7 +188,7 @@ module.exports = class Player {
       this.status.disableShuffleMode();
     }
 
-    this.ev.emit('update-status');
+    this.emit('updated-status');
   }
 
   fetchStatus() {
@@ -202,11 +222,29 @@ module.exports = class Player {
   setVolume(vol) {
     this.speaker.volume = vol;
     this.status.volume = vol;
-    this.ev.emit('update-status');
+    this.emit('updated-status');
   }
 
   _onSpeakerStopped() {
     this.stop();
     this.startNext();
+  }
+
+  load() {
+    if (this.store.existsSync()) {
+      const x = this.store.readSync();
+      this.playlist.replace(x.playlist);
+      this.status.init(x);
+    } else {
+      this.playlist.replace([]);
+      this.status.init();
+    }
+    this.speaker.volume = this.status.volume;
+  }
+
+  save() {
+    this.store.writeSync(this.fetchStatus(), {
+      pretty: process.env.NODE_ENV !== 'production'
+    });
   }
 };

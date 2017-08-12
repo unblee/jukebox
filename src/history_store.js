@@ -8,11 +8,14 @@ const HistoryItem = require('./history_item');
 module.exports = class HistoryStore {
   readSync() {
     const items = JSON.parse(fs.readFileSync(this.constructor.storePath, ENCODE_TYPE));
-    return items.map(item => new HistoryItem(
-      Object.assign(item, {
-        track: new Track(item.track)
-      })
-    ));
+    return items.map(
+      item =>
+        new HistoryItem(
+          Object.assign(item, {
+            track: new Track(item.track)
+          })
+        )
+    );
   }
 
   writeSync(content, { pretty = false } = {}) {

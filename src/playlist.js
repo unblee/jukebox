@@ -3,9 +3,8 @@ const random = require('lodash.random');
 const EventEmitter = require('events').EventEmitter;
 
 module.exports = class Playlist extends EventEmitter {
-  constructor(ev, queue = []) {
+  constructor(queue = []) {
     super();
-    this.ev = ev;
     this.queue = queue;
   }
 
@@ -24,7 +23,7 @@ module.exports = class Playlist extends EventEmitter {
 
   dequeue() {
     this.queue.shift();
-    this.ev.emit('update-status');
+    this.emit('updated');
   }
 
   pullAll() {
@@ -45,7 +44,7 @@ module.exports = class Playlist extends EventEmitter {
     } else {
       this.queue.splice(pos, 0, content);
     }
-    this.ev.emit('update-status');
+    this.emit('updated');
   }
 
   replace(queue = []) {
@@ -53,12 +52,12 @@ module.exports = class Playlist extends EventEmitter {
     if (!queue.length) {
       this.emit('cleared');
     }
-    this.ev.emit('update-status');
+    this.emit('updated');
   }
 
   remove(index) {
     this.queue.splice(index, 1);
-    this.ev.emit('update-status');
+    this.emit('updated');
     this.emit('removed', { index });
   }
 
@@ -70,7 +69,15 @@ module.exports = class Playlist extends EventEmitter {
 
   shuffle() {
     this.queue = shuffle(this.queue);
-    this.ev.emit('update-status');
+    this.emit('updated');
+  }
+
+  move(oldIndex, newIndex) {
+    if (oldIndex === newIndex) return;
+    const [content] = this.queue.splice(oldIndex, 1);
+    this.queue.splice(newIndex, 0, content);
+    this.emit('updated');
+    this.emit('moved', { oldIndex, newIndex, content });
   }
 
   length() {

@@ -3,22 +3,27 @@ const State = require('./state');
 const EventEmitter = require('events').EventEmitter;
 
 module.exports = class PlayerStatus extends EventEmitter {
-  constructor(
+  constructor(params) {
+    super();
+    this.init(params);
+  }
+
+  init(
     {
       loopMode = LoopMode.NONE,
       state = State.STOPPED,
       shuffleMode = false,
       nowPlayingIdx = null,
-      volumeValue = 1
+      volume = 1
     } = {}
   ) {
-    super();
     this._loopMode = loopMode;
     this._state = state;
     this._shuffleMode = Boolean(shuffleMode);
     this._nowPlayingIdx = Number(nowPlayingIdx);
-    this._volumeValue = Number(volumeValue);
+    this._volumeValue = Number(volume);
     this._prevVolumeValue = this._volumeValue;
+    this.emit('updated', this.toJson());
   }
 
   get loopMode() {
