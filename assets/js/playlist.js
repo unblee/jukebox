@@ -1,5 +1,5 @@
 Vue.component('playlist', {
-  props: ['playlist'],
+  props: ['data'],
   data() {
     return {
       clipboard: null
@@ -35,16 +35,17 @@ Vue.component('playlist', {
   computed: {
     isPlaylistEmpty() {
       return !this.playlist.contents || this.playlist.contents.length === 0;
+    },
+    playlist() {
+      return this.data;
     }
   },
 
   template: `
-  <div class="playlist is-flex"
-    :class="{
-      'has-content': playlist && playlist.contents && playlist.contents.length
-    }">
-    <div class="panel scroll-view" v-show="playlist && playlist.contents && playlist.contents.length">
-      <a v-for="(content,idx) in playlist.contents" class="panel-block playlist-content is-paddingless"
+  <div class="scroll-view-wrapper">
+    <div class="scroll-view">
+      <div class="tracks">
+        <a v-for="(content,idx) in playlist.contents" class="panel-block playlist-content is-paddingless"
           :class="{'now-playing-content is-active':isNowPlayingContent(idx)}"
           :title="content.title"
           @click="playMusic(idx)"
@@ -74,9 +75,11 @@ Vue.component('playlist', {
             </div>
           </div>
         </a>
+      </div>
     </div>
-    <div class="panel">
+    <div class="panel playlist-controller">
       <div class="panel-block playlist-border-top">
+        <clear-playlist-modal ref="clearPlaylistModal"></clear-playlist-modal>
         <button
           title="Clear Playlist"
           class="button playlist-clear-button is-outlined is-fullwidth is-paddingless"
@@ -91,7 +94,6 @@ Vue.component('playlist', {
         </p>
       </div>
     </div>
-    <clear-playlist-modal ref="clearPlaylistModal"></clear-playlist-modal>
   </div>
   `
 });
