@@ -38,11 +38,12 @@ new Vue({
   },
   watch: {
     /* eslint-disable no-useless-computed-key, object-shorthand */
-    ['playerStatus.nowPlaying'](nowPlaying) {
+    ['playerStatus.nowPlayingIdx'](nowPlayingIdx) {
       const appName = 'jukebox';
-      document.title = nowPlaying
-        ? `${this.playerStatus.nowPlayingContent.title} - ${appName}`
-        : appName;
+      document.title =
+        nowPlayingIdx >= 0
+          ? `${this.playerStatus.playlist[nowPlayingIdx].title} - ${appName}`
+          : appName;
     }
     /* eslint-enable no-useless-computed-key, object-shorthand */
   },
