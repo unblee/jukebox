@@ -65,26 +65,37 @@
           <div class="column is-6">
             <player :player="bindPlayer" v-if="bindPlayer"></player>
           </div>
-          <div class="column is-6">
-            <div class="tabs is-small is-boxed">
-              <ul>
-                <li :class="{'is-active': activeTab === 'playlist'}">
-                  <a class="playlist-tab-button" @click.prevent.stop="activePlayerTab">
-                    <i class="material-icons icon">queue_music</i>
-                    <span>Playlist</span>
-                  </a>
-                </li>
-                <li :class="{'is-active': activeTab === 'history'}">
-                  <a class="history-tab-button" @click.prevent.stop="activeHistoryTab">
-                    <i class="material-icons icon">history</i>
-                    <span>History</span>
-                  </a>
-                </li>
-              </ul>
+          <div class="column is-6 tab-wrapper">
+            <div class="panel is-marginless">
+              <div class="panel-tabs">
+                <a
+                  :class="{'is-active': activeTab === 'playlist'}"
+                  class="playlist-tab-button tab-with-icon"
+                  @click.prevent="switchTab('playlist')">
+                  <span class="icon is-marginless is-small">
+                    <i class="material-icons is-small">queue_music</i>
+                  </span>
+                  <span>Playlist</span>
+                </a>
+                <a
+                 :class="{'is-active': activeTab === 'history'}"
+                  class="history-tab-button tab-with-icon"
+                  @click.prevent="switchTab('history')">
+                  <span class="icon is-marginless is-small">
+                    <i class="material-icons is-small">history</i>
+                  </span>
+                  <span>History</span>
+                </a>
+              </div>
             </div>
-
-            <playlist :playlist="bindPlaylist" v-if="bindPlaylist && activeTab === 'playlist'" @moved-playlist="movedPlaylist"></playlist>
-            <history :history="history" v-if="bindPlaylist && activeTab === 'history'"></history>
+            <div class="panel tab-content">
+              <component
+                :is="activeTab"
+                :data="tracks"
+                @moved-playlist="movedPlaylist"
+                v-if="bindPlaylist">
+              </component>
+            </div>
           </div>
         </div>
       </div>

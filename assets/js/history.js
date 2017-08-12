@@ -1,5 +1,5 @@
 Vue.component('history', {
-  props: ['history'],
+  props: ['data'],
   data() {
     return {
       clipboard: null
@@ -33,11 +33,17 @@ Vue.component('history', {
       }
     }
   },
+  computed: {
+    history() {
+      return this.data;
+    }
+  },
 
   template: `
-  <div class="history is-flex" :class="{'has-content': history && history.length}">
-    <div class="panel scroll-view" v-show="history && history.length">
-      <a v-for="(content,idx) in history" class="panel-block history-content is-paddingless"
+  <div class="scroll-view-wrapper history">
+    <div class="scroll-view">
+      <div class="tracks">
+        <a v-for="(content,idx) in history" class="panel-block history-content is-paddingless"
           :title="content.track.title"
           >
           <div class="control columns is-marginless is-mobile">
@@ -63,6 +69,7 @@ Vue.component('history', {
             </div>
           </div>
         </a>
+      </div>
     </div>
   </div>
   `
