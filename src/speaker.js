@@ -75,7 +75,14 @@ module.exports = class Speaker extends EventEmitter {
     this._speaker = speaker();
 
     this._pcmVolume.setVolume(this.volume);
-    this._decoder.on('format', data => this._speaker._format(data));
+    this._decoder.on('format', data => {
+      this._speaker._format(data);
+    });
+
+    this._stream.on('error', err => console.error('error on stream, ', err));
+    this._decoder.on('error', err => console.error('error on decoder, ', err));
+    this._pcmVolume.on('error', err => console.error('error on pcmVolume, ', err));
+    this._speaker.on('error', err => console.error('error on speaker, ', err));
 
     this._stream
       .pipe(this._decoder)
@@ -97,26 +104,10 @@ module.exports = class Speaker extends EventEmitter {
   }
 
   stopWithoutLock() {
-    if (this._speaker) {
-      this._speaker.removeAllListeners();
+    if (this._stream && this._pcmVolume) {
+      this._stream.end();
+      this._pcmVolume.unpipe(this._speaker);
     }
-
-    // unpipe and close streams in order of opening
-    const keys = ['_stream', '_decoder', '_pcmVolume', '_speaker'];
-    keys.forEach((key, i) => {
-      if (!this[key]) return;
-
-      if (i + 1 < keys.length) {
-        const nKey = keys[i + 1];
-        if (this[nKey]) {
-          this[key].unpipe(this[nKey]);
-        }
-      }
-
-      this[key].end();
-      this[key] = null;
-    });
-
     this.emit('stopped');
   }
 };
