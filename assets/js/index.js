@@ -79,6 +79,17 @@ new Vue({
     },
     activeHistoryTab() {
       this.activeTab = 'history';
+    },
+    movedPlaylist({ newIndex, oldIndex }) {
+      // this is for beautiful rendering, same as server side
+      const playingIndex = this.playerStatus.nowPlayingIdx;
+      if (playingIndex === oldIndex) {
+        this.playerStatus.nowPlayingIdx = newIndex;
+      } else if (newIndex <= playingIndex && playingIndex < oldIndex) {
+        this.playerStatus.nowPlayingIdx = playingIndex + 1;
+      } else if (oldIndex < playingIndex && playingIndex <= newIndex) {
+        this.playerStatus.nowPlayingIdx = playingIndex - 1;
+      }
     }
   }
 });

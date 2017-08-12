@@ -82,7 +82,7 @@
               </ul>
             </div>
 
-            <playlist :playlist="bindPlaylist" v-if="bindPlaylist && activeTab === 'playlist'"></playlist>
+            <playlist :playlist="bindPlaylist" v-if="bindPlaylist && activeTab === 'playlist'" @moved-playlist="movedPlaylist"></playlist>
             <history :history="history" v-if="bindPlaylist && activeTab === 'history'"></history>
           </div>
         </div>
@@ -92,6 +92,8 @@
 
   <script src="https://unpkg.com/vue"></script>
   <!-- <script src="https://unpkg.com/vue/dist/vue.min.js"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.6.0/Sortable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.14.1/vuedraggable.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
   <script src="js/clear-playlist-modal.js"></script>
   <script src="js/history.js"></script>

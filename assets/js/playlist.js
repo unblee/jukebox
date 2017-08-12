@@ -25,6 +25,12 @@ Vue.component('playlist', {
     openClearPlaylistModal() {
       this.$refs.clearPlaylistModal.open();
     },
+    movedPlaylist({ newIndex, oldIndex }) {
+      if (newIndex !== oldIndex) {
+        fetch(`/playlist/${oldIndex}/move/${newIndex}`, { method: 'POST' });
+        this.$emit('moved-playlist', { newIndex, oldIndex });
+      }
+    },
     deleteContent(index) {
       fetch(`/playlist/${index}`, { method: 'DELETE' });
     },
@@ -43,7 +49,10 @@ Vue.component('playlist', {
     :class="{
       'has-content': playlist && playlist.contents && playlist.contents.length
     }">
-    <div class="panel scroll-view" v-show="playlist && playlist.contents && playlist.contents.length">
+    <draggable class="panel scroll-view"
+               v-show="playlist && playlist.contents && playlist.contents.length" 
+               :list="playlist.contents"
+               @end="movedPlaylist">
       <a v-for="(content,idx) in playlist.contents" class="panel-block playlist-content is-paddingless"
           :class="{'now-playing-content is-active':isNowPlayingContent(idx)}"
           :title="content.title"
@@ -74,7 +83,7 @@ Vue.component('playlist', {
             </div>
           </div>
         </a>
-    </div>
+    </draggable>
     <div class="panel">
       <div class="panel-block playlist-border-top">
         <button
