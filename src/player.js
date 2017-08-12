@@ -42,7 +42,7 @@ module.exports = class Player extends EventEmitter {
     });
   }
 
-  start() {
+  async start() {
     switch (this.status.state) {
       case State.PLAYING:
         // pass
@@ -54,7 +54,7 @@ module.exports = class Player extends EventEmitter {
 
       case State.STOPPED:
         if (!this.nowPlayingStream) return;
-        this.speaker.start(this.nowPlayingStream);
+        await this.speaker.start(this.nowPlayingStream);
         this.speaker.on('stopped', this._onSpeakerStoppedEventBinded);
         this.status.play();
         this.history.add(this.nowPlayingContent);
@@ -66,21 +66,21 @@ module.exports = class Player extends EventEmitter {
     }
   }
 
-  startSpecific(index) {
+  async startSpecific(index) {
     // always not consume queue.
     this.status.setNowPlayingIdx(index);
-    this.start();
+    await this.start();
   }
 
-  startNext() {
+  async startNext() {
     switch (this.status.loopMode) {
       case LoopMode.NONE:
         this.playlist.dequeue();
-        this.start();
+        await this.start();
         return;
 
       case LoopMode.ONE:
-        this.start();
+        await this.start();
         return;
 
       case LoopMode.PLAYLIST:
@@ -88,7 +88,7 @@ module.exports = class Player extends EventEmitter {
         if (this.status.shuffleMode && !this.status.nowPlayingIdx) {
           this.playlist.shuffle();
         }
-        this.start();
+        await this.start();
         return;
 
       default:
@@ -96,19 +96,19 @@ module.exports = class Player extends EventEmitter {
     }
   }
 
-  startPrev() {
+  async startPrev() {
     switch (this.status.loopMode) {
       case LoopMode.NONE:
         // disabled
         return;
 
       case LoopMode.ONE:
-        this.start();
+        await this.start();
         return;
 
       case LoopMode.PLAYLIST:
         this._decPlayingIdx();
-        this.start();
+        await this.start();
         return;
 
       default:
@@ -116,28 +116,28 @@ module.exports = class Player extends EventEmitter {
     }
   }
 
-  pause() {
-    this.speaker.pause();
+  async pause() {
+    await this.speaker.pause();
     this.status.pause();
     this.emit('updated-status');
   }
 
-  resume() {
-    this.speaker.resume();
+  async resume() {
+    await this.speaker.resume();
     this.status.resume();
     this.emit('updated-status');
   }
 
-  stop() {
+  async stop() {
     this.speaker.removeListener('stopped', this._onSpeakerStoppedEventBinded);
-    this.speaker.stop();
+    await this.speaker.stop();
     this.status.stop();
     this.emit('updated-status');
   }
 
-  restart() {
-    this.stop();
-    this.start();
+  async restart() {
+    await this.stop();
+    await this.start();
   }
 
   setLoopMode(loopMode) {
@@ -212,9 +212,9 @@ module.exports = class Player extends EventEmitter {
     this.emit('updated-status');
   }
 
-  _onSpeakerStopped() {
-    this.stop();
-    this.startNext();
+  async _onSpeakerStopped() {
+    await this.stop();
+    await this.startNext();
   }
 
   load() {

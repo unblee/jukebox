@@ -4,29 +4,29 @@ module.exports = class PlayerController {
   }
 
   async start(ctx) {
-    this.player.start();
+    await this.player.start();
     ctx.status = 200;
   }
 
   async next(ctx) {
-    this.player.stop();
-    this.player.startNext();
+    await this.player.stop();
+    await this.player.startNext();
     ctx.status = 200;
   }
 
   async prev(ctx) {
-    this.player.stop();
-    this.player.startPrev();
+    await this.player.stop();
+    await this.player.startPrev();
     ctx.status = 200;
   }
 
   async pause(ctx) {
-    this.player.pause();
+    await this.player.pause();
     ctx.status = 200;
   }
 
   async restart(ctx) {
-    this.player.restart();
+    await this.player.restart();
     ctx.status = 200;
   }
 
@@ -51,8 +51,8 @@ module.exports = class PlayerController {
   }
 
   async seek(ctx) {
-    this.player.stop();
-    this.player.startSpecific(Number(ctx.params.index));
+    await this.player.stop();
+    await this.player.startSpecific(Number(ctx.params.index));
     ctx.status = 200;
   }
 
