@@ -1,0 +1,20 @@
+language: node_js
+
+node_js:
+  - "8"
+
+env:
+  global:
+    - NODE_ENV=test
+
+before_install:
+  - sudo apt-get install libasound2-dev
+  - sudo apt-get install ffmpeg
+
+cache: yarn
+
+script:
+  - yarn install
+  - yarn run lint:all
+  - yarn run test:all
+  - yarn run e2e -- -e chrome-headless
