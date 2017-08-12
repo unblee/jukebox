@@ -3,10 +3,6 @@ language: node_js
 node_js:
   - "8"
 
-env:
-  global:
-    - NODE_ENV=test
-
 addons:
   apt:
     sources:
@@ -17,9 +13,10 @@ addons:
 
 cache: yarn
 
+before_install:
+  - yarn config set mpg123-backend dummy
+
 script:
-  - yarn config set mpg123-backend dummy # avoid sound card errors
-  - yarn install
   - yarn run lint:all
-  - yarn run test:all
+  # - yarn run test:all # hasn't test
   - yarn run e2e -- -e chrome-headless
