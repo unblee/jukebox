@@ -48,16 +48,28 @@ module.exports = {
     browser.page
       .index()
       .click('@nextButton')
-      .api.pause(2000)
-      .page.index()
+      .waitForElementPresent(
+        '.playlist-content:nth-child(2) .thumbnail-wrapper i',
+        PRESENT_WAIT_TIME
+      )
+      .assert.elementPresent('@pauseButton')
+      .assert.hasPlaylistLength(5)
+      .assert.currentTrackNumEquals(2)
+      .api.pause(WAIT_TIME);
+  },
+
+  'Play prev music': browser => {
+    browser.page
+      .index()
+      .click('@prevButton')
+      .waitForElementPresent(
+        '.playlist-content:nth-child(1) .thumbnail-wrapper i',
+        PRESENT_WAIT_TIME
+      )
       .assert.elementPresent('@pauseButton')
       .assert.hasPlaylistLength(5)
       .assert.currentTrackNumEquals(1)
       .api.pause(WAIT_TIME);
-  },
-
-  'Has play prev music button?': browser => {
-    browser.page.index().assert.cssClassPresent('@prevButton', 'deactivate');
   },
 
   'Play specified music': browser => {
