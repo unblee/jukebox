@@ -11,7 +11,7 @@ module.exports = class Player extends EventEmitter {
     this.playlist = playlist;
     this.status = playerStatus;
     this.history = history;
-    this.speaker = new Speaker({ volume: this.status.volume });
+    this.speaker = null;
     this.store = new PlayerStatusStore();
 
     this._onSpeakerStoppedEventBinded = () => this._onSpeakerStopped();
@@ -67,6 +67,7 @@ module.exports = class Player extends EventEmitter {
 
       case State.STOPPED:
         if (!this.nowPlayingStream) return;
+        this.speaker = new Speaker({ volume: this.status.volume });
         await this.speaker.start(this.nowPlayingStream);
         this.speaker.on('stopped', this._onSpeakerStoppedEventBinded);
         this.status.play();
@@ -142,8 +143,11 @@ module.exports = class Player extends EventEmitter {
   }
 
   async stop() {
-    this.speaker.removeListener('stopped', this._onSpeakerStoppedEventBinded);
-    await this.speaker.stop();
+    if (this.speaker) {
+      this.speaker.removeListener('stopped', this._onSpeakerStoppedEventBinded);
+      await this.speaker.stop();
+      this.speaker = null;
+    }
     this.status.stop();
     this.emit('updated-status');
   }
@@ -239,7 +243,6 @@ module.exports = class Player extends EventEmitter {
       this.playlist.replace([]);
       this.status.init();
     }
-    this.speaker.volume = this.status.volume;
   }
 
   save() {

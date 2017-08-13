@@ -1,0 +1,25 @@
+language: node_js
+
+node_js:
+  - "8"
+
+addons:
+  apt:
+    sources:
+      - trusty-media
+    packages:
+      - ffmpeg
+      - libasound2-dev
+
+cache: yarn
+
+env:
+  - E2E_USE_DUMMY_SPEAKER=1 E2E_WAIT_TIME=1000
+
+before_install:
+  - yarn config set mpg123-backend dummy
+
+script:
+  - yarn run lint:all
+  # - yarn run test:all # hasn't test
+  - yarn run e2e -- -e chrome-headless
