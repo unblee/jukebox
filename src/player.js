@@ -94,6 +94,7 @@ module.exports = class Player extends EventEmitter {
         return;
 
       case LoopMode.ONE:
+        this._incPlayingIdx();
         await this.start();
         return;
 
@@ -117,6 +118,7 @@ module.exports = class Player extends EventEmitter {
         return;
 
       case LoopMode.ONE:
+        this._decPlayingIdx();
         await this.start();
         return;
 
