@@ -4,6 +4,7 @@ const EventEmitter = require('events').EventEmitter;
 const pcmVolume = require('pcm-volume');
 const AwaitLock = require('await-lock');
 const TimedStream = require('timed-stream');
+const EvenizeStream = require('./util/evenize_stream');
 
 module.exports = class Speaker extends EventEmitter {
   constructor({ volume = 1 } = {}) {
@@ -91,12 +92,15 @@ module.exports = class Speaker extends EventEmitter {
         });
         this._timedStream.on('error', err => console.error('error on timedStream, ', err));
 
+        this._evenizeStream = new EvenizeStream();
+
         this._speaker = speaker();
         this._speaker.on('error', err => console.error('error on speaker, ', err));
         this._speaker._format(data);
 
         this._decoder
           .pipe(this._timedStream)
+          .pipe(this._evenizeStream)
           .pipe(this._pcmVolume)
           .pipe(this._speaker)
           .on('close', () => this.stop());
@@ -122,7 +126,7 @@ module.exports = class Speaker extends EventEmitter {
       this._stream.end();
     }
     if (this._timedStream) {
-      this._timedStream._destroy();
+      this._timedStream.destroy();
     }
     this.emit('stopped');
   }
