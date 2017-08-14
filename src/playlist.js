@@ -21,11 +21,6 @@ module.exports = class Playlist extends EventEmitter {
     }
   }
 
-  dequeue() {
-    this.queue.shift();
-    this.emit('updated');
-  }
-
   pullAll() {
     return this.queue;
   }

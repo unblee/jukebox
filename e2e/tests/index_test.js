@@ -108,12 +108,11 @@ module.exports = {
     browser.page
       .index()
       .waitForElementNotPresent(
-        '.playlist-content:nth-child(3) .thumbnail-wrapper i',
+        '.playlist-content:nth-child(4) .thumbnail-wrapper i',
         PRESENT_WAIT_TIME
       )
-      .assert.elementPresent('@pauseButton')
-      .assert.hasPlaylistLength(3)
-      .assert.currentTrackNumEquals(-1);
+      .assert.elementPresent('@playButton')
+      .assert.hasPlaylistLength(3);
   },
 
   'Clear playlist': browser => {
