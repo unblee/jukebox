@@ -4,7 +4,7 @@ module.exports = class HistoryController {
   }
 
   async getAll(ctx) {
-    ctx.body = this.history.toJson();
+    ctx.body = this.history.serialize();
     ctx.status = 200;
   }
 };

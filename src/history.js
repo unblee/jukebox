@@ -37,8 +37,8 @@ module.exports = class History extends EventEmitter {
     return this.items.length;
   }
 
-  toJson() {
-    return this.items.map(x => x.toJson());
+  serialize() {
+    return this.items.map(x => x.serialize());
   }
 
   _add(track) {
@@ -68,7 +68,7 @@ module.exports = class History extends EventEmitter {
   }
 
   save() {
-    this.store.writeSync(this.toJson(), {
+    this.store.writeSync(this.serialize(), {
       pretty: process.env.NODE_ENV !== 'production'
     });
   }
