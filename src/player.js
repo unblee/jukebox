@@ -95,6 +95,7 @@ module.exports = class Player extends EventEmitter {
         return;
 
       case LoopMode.ONE:
+        this._incPlayingIdx();
         await this.start();
         return;
 
@@ -118,6 +119,7 @@ module.exports = class Player extends EventEmitter {
         return;
 
       case LoopMode.ONE:
+        this._decPlayingIdx();
         await this.start();
         return;
 
@@ -232,7 +234,23 @@ module.exports = class Player extends EventEmitter {
 
   async _onSpeakerStopped() {
     await this.stop();
-    await this.startNext();
+
+    switch (this.status.loopMode) {
+      case LoopMode.NONE:
+        await this.startNext();
+        return;
+
+      case LoopMode.ONE:
+        await this.start();
+        return;
+
+      case LoopMode.PLAYLIST:
+        await this.startNext();
+        return;
+
+      default:
+        throw new Error(`invalid loop mode: ${this.status.loopMode}`);
+    }
   }
 
   load() {

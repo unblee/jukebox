@@ -79,7 +79,7 @@ Vue.component('player', {
       <div class="player-main-controller has-text-centered">
         <div class="columns is-mobile">
           <div class="column">
-            <a title="Prev" :class="{ 'deactivate': player.loopMode !== 'playlist' || isPlaylistEmpty }" @click="playerPrev()">
+            <a title="Prev" :class="{ 'deactivate': player.loopMode === 'none' || isPlaylistEmpty }" @click="playerPrev()">
               <i class="material-icons is-large is-pushable">skip_previous</i>
             </a>
           </div>
