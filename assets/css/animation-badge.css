@@ -8,8 +8,10 @@
 
 .animation-badge.is-changing {
   background-color: hsl(171, 100%, 41%);
+  color: #fff;
 }
 
 .animation-badge.is-decreasing {
   background-color: hsl(348, 100%, 61%);
+  color: #fff;
 }
