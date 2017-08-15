@@ -46,7 +46,7 @@ module.exports = class PlayerController {
   }
 
   async status(ctx) {
-    ctx.body = this.player.fetchStatus();
+    ctx.body = this.player.serialize();
     ctx.status = 200;
   }
 

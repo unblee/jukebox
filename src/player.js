@@ -197,9 +197,9 @@ module.exports = class Player extends EventEmitter {
     this.emit('updated-status');
   }
 
-  fetchStatus() {
-    return Object.assign(this.status.toJson(), {
-      playlist: this.playlist.toJson()
+  serialize() {
+    return Object.assign(this.status.serialize(), {
+      playlist: this.playlist.serialize()
     });
   }
 
@@ -264,7 +264,7 @@ module.exports = class Player extends EventEmitter {
   }
 
   save() {
-    this.store.writeSync(this.fetchStatus(), {
+    this.store.writeSync(this.serialize(), {
       pretty: process.env.NODE_ENV !== 'production'
     });
   }

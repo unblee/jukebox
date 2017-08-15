@@ -54,7 +54,7 @@ module.exports = class Track {
     };
   }
 
-  toJson() {
+  serialize() {
     return {
       provider: this.provider,
       link: this.link,

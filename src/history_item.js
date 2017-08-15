@@ -5,11 +5,11 @@ module.exports = class HistoryItem {
     this.updatedAt = updatedAt || Date.now();
   }
 
-  toJson() {
+  serialize() {
     return {
       playCount: this.playCount,
       updatedAt: this.updatedAt,
-      track: this.track.toJson()
+      track: this.track.serialize()
     };
   }
 };

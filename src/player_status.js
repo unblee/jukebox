@@ -23,7 +23,7 @@ module.exports = class PlayerStatus extends EventEmitter {
     this._nowPlayingIdx = Number(nowPlayingIdx);
     this._volumeValue = Number(volume);
     this._prevVolumeValue = this._volumeValue;
-    this.emit('updated', this.toJson());
+    this.emit('updated', this.serialize());
   }
 
   get loopMode() {
@@ -61,7 +61,7 @@ module.exports = class PlayerStatus extends EventEmitter {
     this._prevVolumeValue = val;
   }
 
-  toJson() {
+  serialize() {
     return {
       loopMode: this._loopMode,
       state: this._state,
@@ -122,6 +122,6 @@ module.exports = class PlayerStatus extends EventEmitter {
   }
 
   _emitUpdated() {
-    this.emit('updated', this.toJson());
+    this.emit('updated', this.serialize());
   }
 };

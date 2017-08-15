@@ -88,7 +88,7 @@ module.exports = class Playlist extends EventEmitter {
     return this.queue.length === 0;
   }
 
-  toJson() {
-    return this.queue.map(x => x.toJson());
+  serialize() {
+    return this.queue.map(x => x.serialize());
   }
 };
