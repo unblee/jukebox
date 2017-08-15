@@ -56,7 +56,6 @@
     "koa-router": "^7.2.1",
     "koa-static": "^4.0.1",
     "koa-websocket": "^4.0.0",
-    "lame": "^1.2.4",
     "lodash.debounce": "^4.0.8",
     "lodash.random": "^3.2.0",
     "lodash.shuffle": "^4.2.0",
