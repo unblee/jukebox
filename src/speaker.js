@@ -145,7 +145,7 @@ module.exports = class Speaker extends EventEmitter {
     return {
       sampleRate: 44100,
       bitDepth: 16,
-      byteDepth: 16 / 2,
+      byteDepth: 16 / 8,
       channels: 2
     };
   }
