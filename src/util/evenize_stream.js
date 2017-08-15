@@ -30,7 +30,7 @@ module.exports = class EvenizeStream extends Transform {
       // add
       const out = Buffer.allocUnsafe(buf.length + 1);
       buf.copy(out, 1, 0, buf.length);
-      out[9] = this._buf;
+      out[0] = this._buf;
       this._buf = null;
       this.push(out);
     }
