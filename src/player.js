@@ -226,7 +226,9 @@ module.exports = class Player extends EventEmitter {
   }
 
   setVolume(vol) {
-    this.speaker.volume = vol;
+    if (this.speaker) {
+      this.speaker.volume = vol;
+    }
     this.status.volume = vol;
     this.emit('updated-status');
   }
