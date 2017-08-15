@@ -36,6 +36,14 @@ a {
   color: #75b0ba;
 }
 
+.panel-tabs .track-count {
+  font-size: 0.7rem;
+  height: 1.2rem;
+  padding-left: 0.4rem;
+  padding-right: 0.4rem;
+  margin-left: 0.2rem;
+}
+
 .github-corner:hover .octo-arm {
   animation: octocat-wave 560ms ease-in-out;
 }
