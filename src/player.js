@@ -89,7 +89,7 @@ module.exports = class Player extends EventEmitter {
   async startNext() {
     switch (this.status.loopMode) {
       case LoopMode.NONE:
-        this.playlist.dequeue();
+        this.playlist.remove(this.status.nowPlayingIdx);
         await this.start();
         return;
 
