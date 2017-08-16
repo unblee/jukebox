@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="css/playlist.css">
   <link rel="stylesheet" href="css/history.css">
   <link rel="stylesheet" href="css/links-sender.css">
+  <link rel="stylesheet" href="css/animation-badge.css">
 </head>
 
 <body>
@@ -76,6 +77,7 @@
                     <i class="material-icons is-small">queue_music</i>
                   </span>
                   <span>Playlist</span>
+                  <animation-badge class="track-count-badge" :number="trackCount"></animation-badge>
                 </a>
                 <a
                  :class="{'is-active': activeTab === 'history'}"
@@ -107,6 +109,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.6.0/Sortable.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.14.1/vuedraggable.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+  <script src="js/animation-badge.js"></script>
   <script src="js/clear-playlist-modal.js"></script>
   <script src="js/history.js"></script>
   <script src="js/playlist.js"></script>
