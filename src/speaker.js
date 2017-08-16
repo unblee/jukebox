@@ -6,12 +6,16 @@ const TimedStream = require('timed-stream');
 const FFmpeg = require('fluent-ffmpeg');
 const FixedMultipleSizeStream = require('./util/fixed_multiple_size_stream');
 
+const DEFAULT_SPEAKER_BUFFER_TIME = 50;
+
 module.exports = class Speaker extends EventEmitter {
   constructor({ volume = 1 } = {}) {
     super();
     this.lock = new AwaitLock();
 
     this._volume = volume;
+    this._bufferTime =
+      Number(process.env.JUKEBOX_SPEAKER_BUFFER_TIME) || DEFAULT_SPEAKER_BUFFER_TIME;
 
     this._stream = null;
     this._pcmVolume = null;
@@ -111,16 +115,18 @@ module.exports = class Speaker extends EventEmitter {
         .pipe()
         .on('error', err => console.error('error on readableFFmpeg, ', err))
         .once('data', () => {
-          this._readableFFmpeg
-            .pipe(this._timedStream)
-            .pipe(this._fixedMultipleSizeStream)
-            .pipe(this._pcmVolume)
-            .pipe(this._speaker)
-            .on('close', () => this.stop());
+          this._readableFFmpeg.pipe(this._timedStream);
           this._timedStream.resumeStream();
+          setTimeout(() => {
+            this._timedStream
+              .pipe(this._fixedMultipleSizeStream)
+              .pipe(this._pcmVolume)
+              .pipe(this._speaker)
+              .on('close', () => this.stop());
 
-          this.emit('start');
-          resolve();
+            this.emit('start');
+            resolve();
+          }, this._bufferTime);
         });
     });
   }
