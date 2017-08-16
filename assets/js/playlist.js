@@ -1,17 +1,6 @@
 Vue.component('playlist', {
   props: ['data'],
-  data() {
-    return {
-      clipboard: null
-    };
-  },
-  created() {
-    this.clipboard = new Clipboard('.copy-link-button');
-  },
   methods: {
-    copyUrl(e) {
-      this.clipboard.onClick(e);
-    },
     humanizeTime(seconds) {
       const s = seconds % 60;
       const m = Math.floor(seconds / 60) % 60;
@@ -74,9 +63,7 @@ Vue.component('playlist', {
                   {{ humanizeTime(content.lengthSeconds) }}
                 </div>
                 <div class="column is-1 has-text-centered align-self-center is-paddingless-vertical">
-                  <a class="is-flex in-content-button copy-link-button" @click.prevent.stop="copyUrl" :data-clipboard-text="content.link">
-                    <i class="material-icons icon" title="Copy Link">link</i>
-                  </a>
+                  <copy-link-button class="is-flex" :link="content.link" tooltip-duration="1000"></copy-link-button>
                 </div>
                 <div class="column is-1 has-text-centered align-self-center is-paddingless-vertical">
                   <a class="is-flex in-content-button" @click.prevent.stop="deleteContent(idx)">

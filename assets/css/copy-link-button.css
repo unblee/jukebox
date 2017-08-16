@@ -1,0 +1,27 @@
+.copy-link-button {
+  position: relative;
+}
+
+.copied-tooltip::after {
+  content: "Copied!";
+  position: absolute;
+  background: #222;
+  border-radius: 5px;
+  top: 26px;
+  color: #fff;
+  left: calc(50% - 24px);
+  padding: 4px;
+  font-size: 0.75em;
+  width: 48px;
+  text-align: center;
+}
+
+.copied-tooltip::before {
+  content: "";
+  position: absolute;
+  border: solid;
+  border-color: #222 transparent;
+  border-width: 0 6px 6px 6px;
+  top: 20px;
+  left: calc(50% - 6px);
+}
