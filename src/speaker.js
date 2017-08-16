@@ -144,9 +144,9 @@ module.exports = class Speaker extends EventEmitter {
   stopWithoutLock() {
     if (this._stream) {
       this._stream.destroy();
-    }
-    if (this._timedStream) {
       this._timedStream.destroy();
+      this._pcmVolume.unpipe(this._speaker);
+      this._speaker.end();
     }
     this.emit('stopped');
   }
