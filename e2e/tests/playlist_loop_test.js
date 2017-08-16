@@ -2,6 +2,7 @@
 
 const {
   sampleUrls,
+  shortSampleUrls,
   E2E_WAIT_TIME: WAIT_TIME,
   E2E_PRESENT_WAIT_TIME: PRESENT_WAIT_TIME
 } = require('../e2e_helper');
@@ -100,5 +101,33 @@ module.exports = {
       .assert.hasPlaylistLength(5)
       .assert.currentTrackNumEquals(5)
       .api.pause(WAIT_TIME);
+  },
+
+  'Add short music': browser => {
+    browser.page
+      .index()
+      .setValue('@trackUrlField', shortSampleUrls[0])
+      .submitForm('@trackSubmitButton')
+      .waitForElementPresent('a.playlist-content:nth-child(6)', PRESENT_WAIT_TIME)
+      .assert.hasPlaylistLength(6);
+  },
+
+  'Play short music': browser => {
+    browser.page
+      .index()
+      .click('a.playlist-content:nth-child(6)')
+      .waitForElementPresent('@pauseButton', PRESENT_WAIT_TIME);
+  },
+
+  'Wait till end': browser => {
+    browser.page
+      .index()
+      .waitForElementPresent(
+        '.playlist-content:nth-child(1) .thumbnail-wrapper i',
+        PRESENT_WAIT_TIME
+      )
+      .assert.elementPresent('@pauseButton')
+      .assert.hasPlaylistLength(6)
+      .assert.currentTrackNumEquals(1);
   }
 };

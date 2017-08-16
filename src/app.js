@@ -57,7 +57,7 @@ app.ws.broadcast = data => {
 jukebox.player.on(
   'updated-status',
   debounce(() => {
-    const status = jukebox.player.fetchStatus();
+    const status = jukebox.player.serialize();
     app.ws.broadcast({
       name: 'update-status',
       data: status
@@ -70,7 +70,7 @@ jukebox.player.on(
 jukebox.history.on(
   'updated',
   debounce(() => {
-    const historyData = jukebox.history.toJson();
+    const historyData = jukebox.history.serialize();
     app.ws.broadcast({
       name: 'update-history',
       data: historyData
