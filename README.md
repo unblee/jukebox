@@ -16,7 +16,7 @@ I am checking the operation with the latest version of `chrome` and `firefox`.
 
 ## Environment value
 
-Writing each environment variables to `.env`, it is reflected.
+Writing each environment variable to `.env`, it is reflected.
 
 |Parameter|Default|Example|Description|
 |-|-|-|-|
