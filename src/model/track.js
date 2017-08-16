@@ -1,4 +1,4 @@
-const Provider = require('./provider');
+const Provider = require('../provider/index');
 
 module.exports = class Track {
   constructor({ provider, link, lengthSeconds, title, id, thumbnailLink }) {

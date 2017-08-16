@@ -1,8 +1,8 @@
-const Provider = require('./provider');
-const LoopMode = require('./loop_mode');
-const State = require('./state');
+const Provider = require('../provider/index');
+const LoopMode = require('../constant/loop_mode');
+const State = require('../constant/state');
 const Speaker = require('./speaker');
-const PlayerStatusStore = require('./player_status_store.js');
+const PlayerStatusStore = require('../store/player_status_store.js');
 const EventEmitter = require('events').EventEmitter;
 
 module.exports = class Player extends EventEmitter {

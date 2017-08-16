@@ -4,7 +4,7 @@ const pcmVolume = require('pcm-volume');
 const AwaitLock = require('await-lock');
 const TimedStream = require('timed-stream');
 const FFmpeg = require('fluent-ffmpeg');
-const FixedMultipleSizeStream = require('./util/fixed_multiple_size_stream');
+const FixedMultipleSizeStream = require('../util/fixed_multiple_size_stream');
 
 const DEFAULT_SPEAKER_BUFFER_TIME = 50;
 
