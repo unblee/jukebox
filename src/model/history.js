@@ -1,6 +1,6 @@
 const EventEmitter = require('events').EventEmitter;
 const HistoryItem = require('./history_item');
-const HistoryStore = require('./history_store.js');
+const HistoryStore = require('../store/history_store.js');
 
 module.exports = class History extends EventEmitter {
   constructor(items = [], { maxLength = 100 } = {}) {

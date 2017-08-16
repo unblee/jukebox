@@ -2,8 +2,8 @@ const fs = require('fs');
 const path = require('path');
 
 const ENCODE_TYPE = 'utf8';
-const Track = require('./track');
-const State = require('./state');
+const Track = require('../model/track');
+const State = require('../constant/state');
 
 module.exports = class PlayerStatusStore {
   readSync() {
@@ -28,6 +28,6 @@ module.exports = class PlayerStatusStore {
   }
 
   static get storePath() {
-    return path.join(__dirname, '..', 'store', 'player_status.json');
+    return path.join(__dirname, '..', '..', 'store', 'player_status.json');
   }
 };

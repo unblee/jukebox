@@ -8,7 +8,7 @@ const debounce = require('lodash.debounce');
 const websockify = require('koa-websocket');
 const favicon = require('koa-favicon');
 const Router = require('./router');
-const JukeBox = require('./jukebox');
+const JukeBox = require('./model/jukebox');
 require('dotenv').config();
 
 const app = websockify(new Koa());
