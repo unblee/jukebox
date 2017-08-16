@@ -4,7 +4,7 @@ const pcmVolume = require('pcm-volume');
 const AwaitLock = require('await-lock');
 const TimedStream = require('timed-stream');
 const FFmpeg = require('fluent-ffmpeg');
-const EvenizeStream = require('./util/evenize_stream');
+const FixedMultipleSizeStream = require('./util/fixed_multiple_size_stream');
 
 module.exports = class Speaker extends EventEmitter {
   constructor({ volume = 1 } = {}) {
@@ -92,8 +92,12 @@ module.exports = class Speaker extends EventEmitter {
       this._timedStream.on('error', err => console.error('error on timedStream, ', err));
       this._timedStream.pauseStream();
 
-      this._evenizeStream = new EvenizeStream();
-      this._evenizeStream.on('error', err => console.log('error on evenizeStream, ', err));
+      this._fixedMultipleSizeStream = new FixedMultipleSizeStream({
+        multipleNumber: byteDepth * channels
+      });
+      this._fixedMultipleSizeStream.on('error', err =>
+        console.log('error on fixedMultipleSizeStream, ', err)
+      );
 
       this._pcmVolume = pcmVolume();
       this._pcmVolume.setVolume(this.volume);
@@ -109,7 +113,7 @@ module.exports = class Speaker extends EventEmitter {
         .once('data', () => {
           this._readableFFmpeg
             .pipe(this._timedStream)
-            .pipe(this._evenizeStream)
+            .pipe(this._fixedMultipleSizeStream)
             .pipe(this._pcmVolume)
             .pipe(this._speaker)
             .on('close', () => this.stop());
