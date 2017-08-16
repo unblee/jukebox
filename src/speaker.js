@@ -60,7 +60,7 @@ module.exports = class Speaker extends EventEmitter {
     await this.lock.acquireAsync();
 
     try {
-      this.resumeWithoutLock();
+      await this.resumeWithoutLock();
     } finally {
       this.lock.release();
     }
@@ -133,12 +133,19 @@ module.exports = class Speaker extends EventEmitter {
 
   pauseWithoutLock() {
     this._timedStream.pauseStream();
+    this._timedStream.unpipe(this._fixedMultipleSizeStream);
     this.emit('paused');
   }
 
-  resumeWithoutLock() {
-    this._timedStream.resumeStream();
-    this.emit('resumed');
+  async resumeWithoutLock() {
+    return new Promise(resolve => {
+      this._timedStream.resumeStream();
+      setTimeout(() => {
+        this._timedStream.pipe(this._fixedMultipleSizeStream);
+        this.emit('resumed');
+        resolve();
+      }, this._bufferTime);
+    });
   }
 
   stopWithoutLock() {
