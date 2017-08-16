@@ -21,6 +21,7 @@ I am checking the operation with the latest version of `chrome` and `firefox`.
 |JUKEBOX_NO_WEB_UI|''|'yes'|If you set the value, startup with no web UI.|
 |JUKEBOX_PORT|8888|3000|If you set the value, startup with the port of the set value.|
 |JUKEBOX_CACHE_TIME|60000|0|Request cache time (mill seconds).|
+|JUKEBOX_SPEAKER_BUFFER_TIME|50|1000|Time to send data for internal buffering of speaker before music playback. This value relates to the response time of music stop and volume change. If noise is heard, increase this value.|
 
 ### for E2E tests
 
