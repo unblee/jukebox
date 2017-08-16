@@ -4,6 +4,8 @@ const geckoDriver = require('geckodriver');
 const chromeDriver = require('chromedriver');
 /* eslint-disable import/no-extraneous-dependencies */
 
+require('dotenv').config();
+
 const testSettings = {
   chrome: {
     desiredCapabilities: {

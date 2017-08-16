@@ -16,6 +16,8 @@ I am checking the operation with the latest version of `chrome` and `firefox`.
 
 ## Environment value
 
+Writing each environment variable to `.env`, it is reflected.
+
 |Parameter|Default|Example|Description|
 |-|-|-|-|
 |JUKEBOX_NO_WEB_UI|''|'yes'|If you set the value, startup with no web UI.|
