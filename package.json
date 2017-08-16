@@ -57,7 +57,6 @@
     "koa-router": "^7.2.1",
     "koa-static": "^4.0.1",
     "koa-websocket": "^4.0.0",
-    "lame": "^1.2.4",
     "lodash.debounce": "^4.0.8",
     "lodash.random": "^3.2.0",
     "lodash.shuffle": "^4.2.0",
@@ -67,6 +66,7 @@
     "request-promise": "^4.2.1",
     "server-destroy": "^1.0.1",
     "speaker": "^0.3.0",
+    "timed-stream": "^1.1.0",
     "ytdl-core": "^0.15.0"
   },
   "devDependencies": {

@@ -68,7 +68,8 @@ module.exports = class Player extends EventEmitter {
       case State.STOPPED:
         if (!this.nowPlayingStream) return;
         this.speaker = new Speaker({ volume: this.status.volume });
-        await this.speaker.start(this.nowPlayingStream);
+        // Call start async to early notify and improve UX
+        this.speaker.start(this.nowPlayingStream).catch(e => console.error(e));
         this.speaker.on('stopped', this._onSpeakerStoppedEventBinded);
         this.status.play();
         this.history.add(this.nowPlayingContent);
