@@ -1,9 +1,9 @@
 const debug = require('debug')('jukebox:player');
-const Provider = require('./provider');
-const LoopMode = require('./loop_mode');
-const State = require('./state');
+const Provider = require('../provider/index');
+const LoopMode = require('../constant/loop_mode');
+const State = require('../constant/state');
 const Speaker = require('./speaker');
-const PlayerStatusStore = require('./player_status_store.js');
+const PlayerStatusStore = require('../store/player_status_store.js');
 const EventEmitter = require('events').EventEmitter;
 
 module.exports = class Player extends EventEmitter {
@@ -73,7 +73,8 @@ module.exports = class Player extends EventEmitter {
         }
         debug('start music, %o', this.nowPlayingContent);
         this.speaker = new Speaker({ volume: this.status.volume });
-        await this.speaker.start(this.nowPlayingStream);
+        // Call start async to early notify and improve UX
+        this.speaker.start(this.nowPlayingStream).catch(e => console.error(e));
         this.speaker.on('stopped', this._onSpeakerStoppedEventBinded);
         this.status.play();
 

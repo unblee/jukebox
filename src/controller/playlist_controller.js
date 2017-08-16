@@ -1,4 +1,4 @@
-const Track = require('../track');
+const Track = require('../model/track');
 
 module.exports = class PlaylistController {
   constructor(player, playlist) {

@@ -2,8 +2,8 @@ const fs = require('fs');
 const path = require('path');
 
 const ENCODE_TYPE = 'utf8';
-const Track = require('./track');
-const HistoryItem = require('./history_item');
+const Track = require('../model/track');
+const HistoryItem = require('../model/history_item');
 
 module.exports = class HistoryStore {
   readSync() {
@@ -28,6 +28,6 @@ module.exports = class HistoryStore {
   }
 
   static get storePath() {
-    return path.join(__dirname, '..', 'store', 'history.json');
+    return path.join(__dirname, '..', '..', 'store', 'history.json');
   }
 };

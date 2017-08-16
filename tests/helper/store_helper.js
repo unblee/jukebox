@@ -1,8 +1,8 @@
 const sinon = require('sinon');
 const path = require('path');
 const fs = require('fs');
-const PlayerStatusStore = require('../../src/player_status_store');
-const HistoryStore = require('../../src/history_store');
+const PlayerStatusStore = require('../../src/store/player_status_store');
+const HistoryStore = require('../../src/store/history_store');
 
 const testStoreDir = path.join(__dirname, '..', '..', 'store');
 const testPlayerStatusStorePath = path.join(testStoreDir, 'test_player_status.json');

@@ -1,0 +1,17 @@
+.animation-badge {
+  transition: all .3s ease-in-out;
+}
+
+.animation-badge.is-changing {
+  transform: scale(1.2);
+}
+
+.animation-badge.is-increasing {
+  background-color: hsl(171, 100%, 41%);
+  color: #fff;
+}
+
+.animation-badge.is-decreasing {
+  background-color: hsl(348, 100%, 61%);
+  color: #fff;
+}

@@ -9,7 +9,8 @@ const websockify = require('koa-websocket');
 const favicon = require('koa-favicon');
 const Debug = require('debug');
 const Router = require('./router');
-const JukeBox = require('./jukebox');
+const JukeBox = require('./model/jukebox');
+require('dotenv').config();
 
 const debug = {
   server: Debug('jukebox:server'),

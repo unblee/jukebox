@@ -1,8 +1,6 @@
 const ytdl = require('ytdl-core');
-const FFmpeg = require('fluent-ffmpeg');
 const request = require('request-promise');
 const memorize = require('promise-memorize');
-const { PassThrough } = require('stream');
 
 const CACHE_TIME = Number(process.env.JUKEBOX_CACHE_TIME || 60 * 1000);
 
@@ -61,24 +59,6 @@ module.exports = {
       quality: 'lowest'
     };
 
-    const audio = ytdl(link, opts);
-    const ffmpeg = new FFmpeg(audio);
-    const cmd = ffmpeg.format('mp3').on('error', err => {
-      // ignore self kill message
-      if (cmd.isKilled && /was killed/.test(err.message)) return;
-      console.error('error on ffmpeg cmd for youtube', err);
-    });
-    cmd.isKilled = false;
-
-    const stream = new PassThrough();
-    stream.endOrig = stream.end;
-    stream.end = function endWrap(...args) {
-      cmd.isKilled = true;
-      cmd.kill();
-      // safe end
-      setTimeout(() => this.endOrig(...args), 3000);
-    };
-
-    return cmd.pipe(stream); // run
+    return ytdl(link, opts);
   }
 };

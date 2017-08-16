@@ -30,6 +30,11 @@ new Vue({
     },
     tracks() {
       return this.activeTab === 'playlist' ? this.bindPlaylist : this.history;
+    },
+    trackCount() {
+      return (
+        (this.playerStatus && this.playerStatus.playlist && this.playerStatus.playlist.length) || 0
+      );
     }
   },
   async created() {

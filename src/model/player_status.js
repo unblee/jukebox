@@ -1,5 +1,5 @@
-const LoopMode = require('./loop_mode');
-const State = require('./state');
+const LoopMode = require('../constant/loop_mode');
+const State = require('../constant/state');
 const EventEmitter = require('events').EventEmitter;
 
 module.exports = class PlayerStatus extends EventEmitter {
