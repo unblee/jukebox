@@ -17,12 +17,28 @@ module.exports = class Speaker extends EventEmitter {
     this._bufferTime =
       Number(process.env.JUKEBOX_SPEAKER_BUFFER_TIME) || DEFAULT_SPEAKER_BUFFER_TIME;
 
+    this._seekBuffer = 0;
+
     this._stream = null;
     this._pcmVolume = null;
     this._speaker = null;
     this._timedStream = null;
     this._ffmpeg = null;
     this._readableFFmpeg = null;
+  }
+
+  get seekSeconds() {
+    const { sampleRate, byteDepth, channels } = this.constructor.format;
+    return this._seekBuffer / byteDepth / channels / sampleRate;
+  }
+
+  get seekBuffer() {
+    return this._seekBuffer;
+  }
+
+  set seekBuffer(value) {
+    this._seekBuffer = value;
+    this.emit('updatedSeek', { seekSeconds: this.seekSeconds });
   }
 
   get volume() {
@@ -106,6 +122,11 @@ module.exports = class Speaker extends EventEmitter {
       this._pcmVolume = pcmVolume();
       this._pcmVolume.setVolume(this.volume);
       this._pcmVolume.on('error', err => console.error('error on pcmVolume, ', err));
+
+      this.seekBuffer = 0;
+      this._pcmVolume.on('data', data => {
+        this.seekBuffer += data.length;
+      });
 
       this._speaker = speaker();
       this._speaker.on('error', err => console.error('error on speaker, ', err));

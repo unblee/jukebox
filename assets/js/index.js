@@ -3,7 +3,8 @@ new Vue({
   data: {
     playerStatus: {},
     history: [],
-    activeTab: 'playlist'
+    activeTab: 'playlist',
+    seekSeconds: 0
   },
   computed: {
     nowPlayingContent() {
@@ -18,7 +19,8 @@ new Vue({
         shuffleMode: this.playerStatus.shuffleMode,
         nowPlayingIdx: this.playerStatus.nowPlayingIdx,
         nowPlayingContent: this.nowPlayingContent,
-        volume: this.playerStatus.volume
+        volume: this.playerStatus.volume,
+        seekSeconds: this.seekSeconds
       };
     },
     bindPlaylist() {
@@ -59,10 +61,14 @@ new Vue({
 
       const history = await fetch('/history');
       this.history = await history.json();
+
+      const seekTime = await fetch('/player/seek/time');
+      this.seekSeconds = (await seekTime.json()).seekSeconds;
     },
     teardown() {
       this.playerStatus = {};
       this.history = [];
+      this.seekSeconds = 0;
     },
     setupSocket() {
       const socket = new WebSocket(`ws://${location.host}/socket`);
@@ -73,6 +79,8 @@ new Vue({
           this.history = data;
         } else if (name === 'update-status') {
           this.playerStatus = data;
+        } else if (name === 'updated-seek') {
+          this.seekSeconds = data.seekSeconds;
         }
       });
       socket.addEventListener('close', () => {
