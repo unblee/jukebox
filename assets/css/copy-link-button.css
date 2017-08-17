@@ -6,12 +6,13 @@
   content: "Copied!";
   position: absolute;
   background: #222;
-  border-radius: 5px;
-  top: 26px;
+  border-radius: 7px;
+  right: 26px;
   color: #fff;
-  left: calc(50% - 24px);
+  top: calc(50% - 12px);
   padding: 4px;
   font-size: 0.75em;
+  height: 24px;
   width: 48px;
   text-align: center;
 }
@@ -20,8 +21,8 @@
   content: "";
   position: absolute;
   border: solid;
-  border-color: #222 transparent;
-  border-width: 0 6px 6px 6px;
-  top: 20px;
-  left: calc(50% - 6px);
+  border-color: transparent #222;
+  border-width: 6px 0 6px 6px;
+  right: 20px;
+  top: calc(50% - 6px);
 }
