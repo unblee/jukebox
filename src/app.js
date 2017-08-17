@@ -15,7 +15,7 @@ require('dotenv').config();
 const debug = {
   server: Debug('jukebox:server'),
   http: Debug('jukebox:server:http'),
-  ws: Debug('jukebox:server:http')
+  ws: Debug('jukebox:server:ws')
 };
 
 const app = websockify(new Koa());
