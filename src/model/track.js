@@ -1,4 +1,4 @@
-const debug = require('debug')('track');
+const debug = require('debug')('jukebox:track');
 const Provider = require('../provider/index');
 
 module.exports = class Track {

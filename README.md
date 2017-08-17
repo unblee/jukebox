@@ -25,6 +25,13 @@ Writing each environment variable to `.env`, it is reflected.
 |JUKEBOX_CACHE_TIME|60000|0|Request cache time (mill seconds).|
 |JUKEBOX_SPEAKER_BUFFER_TIME|50|1000|Time to send data for internal buffering of speaker before music playback. This value relates to the response time of music stop and volume change. If noise is heard, increase this value.|
 
+### for development
+
+|Parameter|Default|Example|Description|
+|-|-|-|-|
+|DEBUG|'jukebox:server:*'|'jukebox:*,-jukebox:speaker:stream:*'|Debugging namespaces. See [debug](https://github.com/visionmedia/debug).
+Supported namespaces can be by executing `find src -name \*.js -exec cat {} \; | grep -E "(require\('debug'\)\()|(Debug\()" | sed -E "s/.*\('(.*)'\).*/\1/"`|
+
 ### for E2E tests
 
 |Parameter|Default|Example|Description|
