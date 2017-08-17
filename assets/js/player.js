@@ -1,6 +1,19 @@
 Vue.component('player', {
   props: ['player'],
 
+  data() {
+    return {
+      seek: 0
+    };
+  },
+
+  created() {
+    setInterval(() => {
+      this.seek += 1;
+      console.log(this.seek);
+    }, 1000);
+  },
+
   methods: {
     playerStart() {
       fetch('/player/start', { method: 'POST' });
@@ -60,6 +73,20 @@ Vue.component('player', {
         fetch('/player/volume', { method: 'POST', body, headers });
         // }, 500);
       }
+    },
+    lengthSeconds() {
+      const player = this.player;
+      return player && player.nowPlayingContent && player.nowPlayingContent.lengthSeconds;
+    },
+    seekSeconds() {
+      console.log(this.seek);
+      return this.seek;
+    },
+    lengthTime() {
+      return '00:00:00';
+    },
+    seekTime() {
+      return '00:00:00';
     }
   },
 
@@ -103,6 +130,13 @@ Vue.component('player', {
         </div>
       </div>
       <div class="player-other-controller">
+        <div class="columns has-text-centered is-mobile progressbar-block" v-if="player.nowPlayingContent">
+          <div class="column is-3 seek-time has-text-right">{{ seekTime }}</div>
+          <div class="column is-6 ">
+            <progress class="progress" :value="seekSeconds" :max="lengthSeconds"></progress>
+          </div>
+          <div class="column is-3 length-time has-text-left">{{ lengthTime }}</div>
+        </div>
         <div class="columns has-text-centered is-mobile">
           <div class="column is-2">
             <a @click="restart">
