@@ -1,3 +1,4 @@
+const debug = require('debug')('jukebox:player_status');
 const LoopMode = require('../constant/loop_mode');
 const State = require('../constant/state');
 const EventEmitter = require('events').EventEmitter;
@@ -17,12 +18,13 @@ module.exports = class PlayerStatus extends EventEmitter {
       volume = 1
     } = {}
   ) {
+    debug('init(%o)', { loopMode, state, shuffleMode, nowPlayingIdx, volume });
     this._loopMode = loopMode;
     this._state = state;
     this._shuffleMode = Boolean(shuffleMode);
     this._nowPlayingIdx = Number(nowPlayingIdx);
-    this._volumeValue = Number(volume);
-    this._prevVolumeValue = this._volumeValue;
+    this._volume = Number(volume);
+    this._prevVolume = this._volume;
     this.emit('updated', this.serialize());
   }
 
@@ -30,95 +32,113 @@ module.exports = class PlayerStatus extends EventEmitter {
     return this._loopMode;
   }
 
+  set loopMode(val) {
+    debug('set loopMode = %s', val);
+    this._loopMode = val;
+    this._emitUpdated();
+  }
+
   get state() {
     return this._state;
+  }
+
+  set state(val) {
+    debug('set state = %s', val);
+    this._state = val;
+    this._emitUpdated();
   }
 
   get shuffleMode() {
     return this._shuffleMode;
   }
 
+  set shuffleMode(val) {
+    debug('set shuffleMode = %d', val);
+    this._shuffleMode = val;
+    this._emitUpdated();
+  }
+
   get nowPlayingIdx() {
     return this._nowPlayingIdx;
   }
 
+  set nowPlayingIdx(val) {
+    debug('set nowPlayingIdx = %d', val);
+    this._nowPlayingIdx = val;
+    this._emitUpdated();
+  }
+
   get volume() {
-    return this._volumeValue;
+    return this._volume;
   }
 
   set volume(val) {
+    debug('set volume = %d', val);
     if (val > 0) {
       this.prevVolume = val;
     }
-    this._volumeValue = val;
+    this._volume = val;
   }
 
   get prevVolume() {
-    return this._prevVolumeValue;
+    return this._prevVolume;
   }
 
   set prevVolume(val) {
-    this._prevVolumeValue = val;
+    debug('set preVolume = %d', val);
+    this._prevVolume = val;
   }
 
   serialize() {
     return {
-      loopMode: this._loopMode,
-      state: this._state,
-      shuffleMode: this._shuffleMode,
-      nowPlayingIdx: this._nowPlayingIdx,
-      volume: this._volumeValue
+      loopMode: this.loopMode,
+      state: this.state,
+      shuffleMode: this.shuffleMode,
+      nowPlayingIdx: this.nowPlayingIdx,
+      volume: this.volume
     };
   }
 
+  /** * helper methods ** */
+
   play() {
-    this._state = State.PLAYING;
-    this._emitUpdated();
+    this.state = State.PLAYING;
   }
 
   stop() {
-    this._state = State.STOPPED;
-    this._emitUpdated();
+    this.state = State.STOPPED;
   }
 
   pause() {
-    this._state = State.PAUSING;
-    this._emitUpdated();
+    this.state = State.PAUSING;
   }
 
   resume() {
-    this._state = State.PLAYING;
-    this._emitUpdated();
+    this.state = State.PLAYING;
   }
 
   noLoopMode() {
-    this._loopMode = LoopMode.NONE;
-    this._emitUpdated();
+    this.loopMode = LoopMode.NONE;
   }
 
   oneLoopMode() {
-    this._loopMode = LoopMode.ONE;
-    this._emitUpdated();
+    this.loopMode = LoopMode.ONE;
   }
 
   playlistLoopMode() {
-    this._loopMode = LoopMode.PLAYLIST;
-    this._emitUpdated();
+    this.loopMode = LoopMode.PLAYLIST;
   }
 
   enableShuffleMode() {
-    this._shuffleMode = true;
-    this._emitUpdated();
+    this.shuffleMode = true;
   }
 
   disableShuffleMode() {
-    this._shuffleMode = false;
-    this._emitUpdated();
+    this.shuffleMode = false;
   }
 
   setNowPlayingIdx(idx) {
-    this._nowPlayingIdx = idx;
-    this._emitUpdated();
+    this.nowPlayingIdx = idx;
   }
 
   _emitUpdated() {
