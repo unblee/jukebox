@@ -2,7 +2,7 @@
   <img src="https://raw.githubusercontent.com/unblee/jukebox/master/assets/img/logo.png">
 </div>
 
-[![Build Status](https://travis-ci.org/unblee/jukebox.svg?branch=master)](https://travis-ci.org/unblee/jukebox)
+[![Build Status](https://travis-ci.org/unblee/jukebox.svg?branch=master)](https://travis-ci.org/unblee/jukebox) [![Greenkeeper badge](https://badges.greenkeeper.io/unblee/jukebox.svg)](https://greenkeeper.io/)
 
 Remote audio player (on Raspberry Pi)?
 
