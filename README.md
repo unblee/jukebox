@@ -8,6 +8,8 @@ Remote audio player (on Raspberry Pi)?
 
 # ⚠️ Caution ⚠️
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/unblee/jukebox.svg)](https://greenkeeper.io/)
+
 `async/await`, `Fetch API`, `ES6 syntax` are used in this application.
 So please use the latest version web browser.  
 I am checking the operation with the latest version of `chrome` and `firefox`.
