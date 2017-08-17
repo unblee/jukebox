@@ -29,8 +29,7 @@ Writing each environment variable to `.env`, it is reflected.
 
 |Parameter|Default|Example|Description|
 |-|-|-|-|
-|DEBUG|'jukebox:server:*'|'jukebox:*,-jukebox:speaker:stream:*'|Debugging namespaces. See [debug](https://github.com/visionmedia/debug).
-Supported namespaces can be by executing `find src -name \*.js -exec cat {} \; | grep -E "(require\('debug'\)\()|(Debug\()" | sed -E "s/.*\('(.*)'\).*/\1/"`|
+|DEBUG|'jukebox\:server\:\*'|'jukebox\:\*,-jukebox\:speaker\:stream:\*'|Debugging namespaces. See [debug](https://github.com/visionmedia/debug). Supported namespaces can be confirmed by executing `find src -name \*.js -exec cat {} \; \| grep -E "(require\('debug'\)\()\|(Debug\()" \| sed -E "s/.*\('(.*)'\).*/\1/"` |
 
 ### for E2E tests
 
