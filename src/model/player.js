@@ -275,21 +275,20 @@ module.exports = class Player extends EventEmitter {
   }
 
   load() {
-    debug('load()');
     if (this.store.existsSync()) {
-      debug('set exists player status');
+      debug('load exists player status');
       const x = this.store.readSync();
       this.playlist.replace(x.playlist);
       this.status.init(x);
     } else {
-      debug('dset default player status');
+      debug('store is not found, load default player status');
       this.playlist.replace([]);
       this.status.init();
     }
   }
 
   save() {
-    debug('save');
+    debug('save player');
     this.store.writeSync(this.serialize(), {
       pretty: process.env.NODE_ENV !== 'production'
     });
