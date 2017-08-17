@@ -79,14 +79,13 @@ Vue.component('player', {
       return player && player.nowPlayingContent && player.nowPlayingContent.lengthSeconds;
     },
     seekSeconds() {
-      console.log(this.seek);
       return this.seek;
     },
     lengthTime() {
-      return '00:00:00';
+      return Util.humanizeTimeFromSeconds(this.lengthSeconds);
     },
     seekTime() {
-      return '00:00:00';
+      return Util.humanizeTimeFromSeconds(this.seekSeconds);
     }
   },
 
