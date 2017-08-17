@@ -25,6 +25,7 @@ Writing each environment variable to `.env`, it is reflected.
 |JUKEBOX_CACHE_TIME|60000|0|Request cache time (mill seconds).|
 |JUKEBOX_SPEAKER_BUFFER_TIME|50|1000|Time to send data for internal buffering of speaker before music playback. This value relates to the response time of music stop and volume change. If noise is heard, increase this value.|
 |JUKEBOX_FORCE_MUTE|''|'yes'|If you set `yes`, `true` or `1` to the value, the speaker don't sound (even if the volume is changed).|
+
 ### for E2E tests
 
 |Parameter|Default|Example|Description|
