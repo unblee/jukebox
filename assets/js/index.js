@@ -35,6 +35,12 @@ new Vue({
       return (
         (this.playerStatus && this.playerStatus.playlist && this.playerStatus.playlist.length) || 0
       );
+    },
+    title() {
+      const appName = 'jukebox';
+      return this.playerStatus && this.playerStatus.state === 'playing'
+        ? `${this.playerStatus.playlist[this.playerStatus.nowPlayingIdx].title} - ${appName}`
+        : appName;
     }
   },
   async created() {
@@ -42,15 +48,9 @@ new Vue({
     this.setupSocket();
   },
   watch: {
-    /* eslint-disable no-useless-computed-key, object-shorthand */
-    ['playerStatus.state'](state) {
-      const appName = 'jukebox';
-      document.title =
-        state === 'playing'
-          ? `${this.playerStatus.playlist[this.playerStatus.nowPlayingIdx].title} - ${appName}`
-          : appName;
+    title() {
+      document.title = this.title;
     }
-    /* eslint-enable no-useless-computed-key, object-shorthand */
   },
   methods: {
     async init() {
