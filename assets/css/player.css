@@ -88,3 +88,20 @@
   /* 24px is bulma's gap. 4:3 */
   min-height: calc((100vw - 24px * 2) * 0.75)
 }
+
+.progressbar-block .seek-time, .progressbar-block .length-time {
+  color: #fff;
+}
+
+.progressbar-block .progress {
+  height: 0.75rem;
+  margin-top: 0.45rem;
+}
+
+.progressbar-block .progress::-webkit-progress-bar {
+  background-color: hsl(0, 0%, 29%)
+}
+
+.progressbar-block .progress::-webkit-progress-value {
+  background-color: hsl(0, 0%, 86%);
+}

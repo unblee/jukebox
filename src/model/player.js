@@ -76,6 +76,9 @@ module.exports = class Player extends EventEmitter {
         // Call start async to early notify and improve UX
         this.speaker.start(this.nowPlayingStream).catch(e => console.error(e));
         this.speaker.on('stopped', this._onSpeakerStoppedEventBinded);
+        this.speaker.on('updatedSeek', ({ seekSeconds }) =>
+          this.emit('updatedSeek', { seekSeconds })
+        );
         this.status.play();
 
         debug('add history, %o', this.nowPlayingContent);
@@ -242,6 +245,10 @@ module.exports = class Player extends EventEmitter {
   get nowPlayingContent() {
     const idx = this.status.nowPlayingIdx;
     return idx < this.playlist.length() ? this.playlist.pull(idx) : null;
+  }
+
+  get seekSeconds() {
+    return this.speaker && this.speaker.seekSeconds;
   }
 
   setVolume(vol) {

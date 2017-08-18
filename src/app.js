@@ -5,6 +5,7 @@ const mount = require('koa-mount');
 const bodyParser = require('koa-bodyparser');
 const path = require('path');
 const debounce = require('lodash.debounce');
+const throttle = require('lodash.throttle');
 const websockify = require('koa-websocket');
 const favicon = require('koa-favicon');
 const Debug = require('debug');
@@ -80,6 +81,18 @@ jukebox.history.on(
     // save history
     jukebox.history.save();
   }, 1000)
+);
+
+jukebox.player.on(
+  'updatedSeek',
+  throttle(({ seekSeconds }) => {
+    app.ws.broadcast(
+      JSON.stringify({
+        name: 'updated-seek',
+        data: { seekSeconds }
+      })
+    );
+  }, 100)
 );
 
 // websocket connection

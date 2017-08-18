@@ -56,6 +56,11 @@ module.exports = class PlayerController {
     ctx.status = 200;
   }
 
+  async seekTime(ctx) {
+    ctx.body = { seekSeconds: this.player.seekSeconds };
+    ctx.status = 200;
+  }
+
   async volume(ctx) {
     this.player.setVolume(ctx.request.body.volume);
     ctx.status = 200;

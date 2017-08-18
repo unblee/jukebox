@@ -11,7 +11,8 @@
   },
   "globals": {
     "Vue": true,
-    "Clipboard": true
+    "Clipboard": true,
+    "Util": true
   },
   "rules": {
     "no-new": "off",
