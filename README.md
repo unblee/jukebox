@@ -26,6 +26,12 @@ Writing each environment variable to `.env`, it is reflected.
 |JUKEBOX_SPEAKER_BUFFER_TIME|50|1000|Time to send data for internal buffering of speaker before music playback. This value relates to the response time of music stop and volume change. If noise is heard, increase this value.|
 |JUKEBOX_FORCE_MUTE|''|'yes'|If you set `yes`, `true` or `1` to the value, the speaker don't sound (even if the volume is changed).|
 
+### for development
+
+|Parameter|Default|Example|Description|
+|-|-|-|-|
+|DEBUG|'jukebox\:server\:\*'|'jukebox\:\*,-jukebox\:speaker\:stream:\*'|Debugging namespaces. See [debug](https://github.com/visionmedia/debug). Supported namespaces can be confirmed by executing `find src -name \*.js -exec cat {} \; \| grep -E "(require\('debug'\)\()\|(Debug\()" \| sed -E "s/.*\('(.*)'\).*/\1/"` |
+
 ### for E2E tests
 
 |Parameter|Default|Example|Description|

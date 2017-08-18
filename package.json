@@ -47,6 +47,7 @@
   },
   "dependencies": {
     "await-lock": "^1.1.2",
+    "debug": "^3.0.0",
     "dotenv": "^4.0.0",
     "fluent-ffmpeg": "^2.1.2",
     "koa": "^2.3.0",
@@ -60,6 +61,7 @@
     "lodash.debounce": "^4.0.8",
     "lodash.random": "^3.2.0",
     "lodash.shuffle": "^4.2.0",
+    "lodash.throttle": "^4.1.1",
     "pcm-volume": "^1.0.0",
     "promise-memorize": "^1.1.0",
     "request": "^2.81.0",

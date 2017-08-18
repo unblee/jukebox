@@ -1,7 +1,9 @@
+const debug = require('debug')('jukebox:track');
 const Provider = require('../provider/index');
 
 module.exports = class Track {
   constructor({ provider, link, lengthSeconds, title, id, thumbnailLink }) {
+    debug('create track, %o', { provider, link, lengthSeconds, title, id, thumbnailLink });
     this.provider = provider;
     this.link = link;
     this.lengthSeconds = lengthSeconds;
@@ -11,26 +13,27 @@ module.exports = class Track {
   }
 
   static async createByLink(link) {
+    debug('create track by link, %s', link);
     const provider = Provider.findByLink(link);
     if (!provider) {
-      throw new Error('This link belongs to an unsupported provider');
+      throw new Error(`This link belongs to an unsupported provider ${link}`);
     }
 
     const providerName = provider.name;
-    const track = new this({
+    const lengthSeconds = await provider.getLengthSeconds(link);
+
+    if (!lengthSeconds) {
+      throw new Error(`This '${providerName}' link can not be played at the moment`);
+    }
+
+    return new this({
       provider: providerName,
       link,
-      lengthSeconds: await provider.getLengthSeconds(link),
+      lengthSeconds,
       title: await provider.getTitle(link),
       id: provider.getId(link),
       thumbnailLink: await provider.getThumbnailLink(link)
     });
-
-    if (!track.lengthSeconds) {
-      throw new Error(`This '${providerName}' link can not be played at the moment`);
-    }
-
-    return track;
   }
 
   static async createByLinks(links = []) {
@@ -40,6 +43,7 @@ module.exports = class Track {
         try {
           return await Track.createByLink(link);
         } catch (e) {
+          debug('warn: %s', e && e.message);
           return {
             link,
             errMsg: e && e.message

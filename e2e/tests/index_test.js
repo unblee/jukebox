@@ -37,6 +37,7 @@ module.exports = {
       .assert.elementPresent('@pauseButton')
       .assert.hasPlaylistLength(5)
       .assert.currentTrackNumEquals(1)
+      .assert.currentTitleEquals(1)
       .api.pause(WAIT_TIME);
   },
 
@@ -48,6 +49,7 @@ module.exports = {
       .assert.elementPresent('@pauseButton')
       .assert.hasPlaylistLength(4)
       .assert.currentTrackNumEquals(1)
+      .assert.currentTitleEquals(1)
       .api.pause(WAIT_TIME);
   },
 
@@ -63,6 +65,7 @@ module.exports = {
       .assert.elementPresent('@playButton')
       .assert.hasPlaylistLength(4)
       .assert.currentTrackNumEquals(1)
+      .assert.title('jukebox')
       .api.pause(WAIT_TIME);
   },
 
@@ -74,6 +77,7 @@ module.exports = {
       .assert.elementPresent('@pauseButton')
       .assert.hasPlaylistLength(4)
       .assert.currentTrackNumEquals(3)
+      .assert.currentTitleEquals(3)
       .api.pause(WAIT_TIME);
   },
 
@@ -85,6 +89,7 @@ module.exports = {
       .assert.elementPresent('@playButton')
       .assert.hasPlaylistLength(3)
       .assert.currentTrackNumEquals(3)
+      .assert.title('jukebox')
       .api.pause(WAIT_TIME);
   },
 

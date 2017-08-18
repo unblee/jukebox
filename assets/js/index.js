@@ -3,7 +3,8 @@ new Vue({
   data: {
     playerStatus: {},
     history: [],
-    activeTab: 'playlist'
+    activeTab: 'playlist',
+    seekSeconds: 0
   },
   computed: {
     nowPlayingContent() {
@@ -18,7 +19,8 @@ new Vue({
         shuffleMode: this.playerStatus.shuffleMode,
         nowPlayingIdx: this.playerStatus.nowPlayingIdx,
         nowPlayingContent: this.nowPlayingContent,
-        volume: this.playerStatus.volume
+        volume: this.playerStatus.volume,
+        seekSeconds: this.seekSeconds
       };
     },
     bindPlaylist() {
@@ -35,6 +37,12 @@ new Vue({
       return (
         (this.playerStatus && this.playerStatus.playlist && this.playerStatus.playlist.length) || 0
       );
+    },
+    title() {
+      const appName = 'jukebox';
+      return this.playerStatus && this.playerStatus.state === 'playing'
+        ? `${this.playerStatus.playlist[this.playerStatus.nowPlayingIdx].title} - ${appName}`
+        : appName;
     }
   },
   async created() {
@@ -42,15 +50,9 @@ new Vue({
     this.setupSocket();
   },
   watch: {
-    /* eslint-disable no-useless-computed-key, object-shorthand */
-    ['playerStatus.state'](state) {
-      const appName = 'jukebox';
-      document.title =
-        state === 'playing'
-          ? `${this.playerStatus.playlist[this.playerStatus.nowPlayingIdx].title} - ${appName}`
-          : appName;
+    title() {
+      document.title = this.title;
     }
-    /* eslint-enable no-useless-computed-key, object-shorthand */
   },
   methods: {
     async init() {
@@ -59,10 +61,14 @@ new Vue({
 
       const history = await fetch('/history');
       this.history = await history.json();
+
+      const seekTime = await fetch('/player/seek/time');
+      this.seekSeconds = (await seekTime.json()).seekSeconds;
     },
     teardown() {
       this.playerStatus = {};
       this.history = [];
+      this.seekSeconds = 0;
     },
     setupSocket() {
       const socket = new WebSocket(`ws://${location.host}/socket`);
@@ -73,6 +79,8 @@ new Vue({
           this.history = data;
         } else if (name === 'update-status') {
           this.playerStatus = data;
+        } else if (name === 'updated-seek') {
+          this.seekSeconds = data.seekSeconds;
         }
       });
       socket.addEventListener('close', () => {

@@ -1,3 +1,4 @@
+const debug = require('debug')('jukebox:player');
 const Provider = require('../provider/index');
 const LoopMode = require('../constant/loop_mode');
 const State = require('../constant/state');
@@ -22,7 +23,6 @@ module.exports = class Player extends EventEmitter {
         // start next track if loop mode is playlist
         this.stop();
       } else if (index < nowIdx) {
-        // adjust playing index
         this.status.setNowPlayingIdx(nowIdx - 1);
         this.emit('updated-status');
       }
@@ -56,9 +56,10 @@ module.exports = class Player extends EventEmitter {
   }
 
   async start() {
+    debug('start(), state is %s', this.status.state);
     switch (this.status.state) {
       case State.PLAYING:
-        // pass
+        debug('music is already playing (skip)');
         return;
 
       case State.PAUSING:
@@ -66,13 +67,23 @@ module.exports = class Player extends EventEmitter {
         return;
 
       case State.STOPPED:
-        if (!this.nowPlayingStream) return;
+        if (!this.nowPlayingStream) {
+          debug('music stream is not found, so skip start()');
+          return;
+        }
+        debug('start music, %o', this.nowPlayingContent);
         this.speaker = new Speaker({ volume: this.status.volume });
         // Call start async to early notify and improve UX
         this.speaker.start(this.nowPlayingStream).catch(e => console.error(e));
         this.speaker.on('stopped', this._onSpeakerStoppedEventBinded);
+        this.speaker.on('updatedSeek', ({ seekSeconds }) =>
+          this.emit('updatedSeek', { seekSeconds })
+        );
         this.status.play();
+
+        debug('add history, %o', this.nowPlayingContent);
         this.history.add(this.nowPlayingContent);
+
         this.emit('updated-status');
         return;
 
@@ -88,6 +99,7 @@ module.exports = class Player extends EventEmitter {
   }
 
   async startNext() {
+    debug('startNext(), loopMode is %s', this.status.loopMode);
     switch (this.status.loopMode) {
       case LoopMode.NONE:
         this.playlist.remove(this.status.nowPlayingIdx);
@@ -102,6 +114,7 @@ module.exports = class Player extends EventEmitter {
       case LoopMode.PLAYLIST:
         this._incPlayingIdx();
         if (this.status.shuffleMode && !this.status.nowPlayingIdx) {
+          debug('start playlist from the beginning and shuffle playlist');
           this.playlist.shuffle();
         }
         await this.start();
@@ -113,9 +126,10 @@ module.exports = class Player extends EventEmitter {
   }
 
   async startPrev() {
+    debug('startPrev(), loopMode is %s', this.status.loopMode);
     switch (this.status.loopMode) {
       case LoopMode.NONE:
-        // disabled
+        debug('startPrev() is disabled when loopMode is %s, so skip startPrev()', LoopMode.NONE);
         return;
 
       case LoopMode.ONE:
@@ -134,18 +148,21 @@ module.exports = class Player extends EventEmitter {
   }
 
   async pause() {
+    debug('pause()');
     await this.speaker.pause();
     this.status.pause();
     this.emit('updated-status');
   }
 
   async resume() {
+    debug('resume()');
     await this.speaker.resume();
     this.status.resume();
     this.emit('updated-status');
   }
 
   async stop() {
+    debug('stop()');
     if (this.speaker) {
       this.speaker.removeListener('stopped', this._onSpeakerStoppedEventBinded);
       await this.speaker.stop();
@@ -156,6 +173,7 @@ module.exports = class Player extends EventEmitter {
   }
 
   async restart() {
+    debug('restart()');
     await this.stop();
     await this.start();
   }
@@ -188,6 +206,9 @@ module.exports = class Player extends EventEmitter {
 
       // current playing content moves to top if playing music
       if ([State.PLAYING, State.PAUSING].includes(this.status.state)) {
+        debug(
+          'current music exist when enabling shuffle mode, so move current playing content to top'
+        );
         this.playlist.moveToTop(nowContent);
         this.status.setNowPlayingIdx(0);
       }
@@ -226,6 +247,10 @@ module.exports = class Player extends EventEmitter {
     return idx < this.playlist.length() ? this.playlist.pull(idx) : null;
   }
 
+  get seekSeconds() {
+    return this.speaker && this.speaker.seekSeconds;
+  }
+
   setVolume(vol) {
     if (this.speaker) {
       this.speaker.volume = vol;
@@ -235,6 +260,7 @@ module.exports = class Player extends EventEmitter {
   }
 
   async _onSpeakerStopped() {
+    debug('_onSpeakerStopped()');
     await this.stop();
 
     switch (this.status.loopMode) {
@@ -257,16 +283,19 @@ module.exports = class Player extends EventEmitter {
 
   load() {
     if (this.store.existsSync()) {
+      debug('load exists player status');
       const x = this.store.readSync();
       this.playlist.replace(x.playlist);
       this.status.init(x);
     } else {
+      debug('store is not found, load default player status');
       this.playlist.replace([]);
       this.status.init();
     }
   }
 
   save() {
+    debug('save player');
     this.store.writeSync(this.serialize(), {
       pretty: process.env.NODE_ENV !== 'production'
     });
