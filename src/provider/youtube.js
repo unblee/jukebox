@@ -1,6 +1,7 @@
 const ytdl = require('ytdl-core');
 const request = require('request-promise');
 const memorize = require('promise-memorize');
+const debug = require('debug')('jukebox:provider:youtube');
 
 const CACHE_TIME = Number(process.env.JUKEBOX_CACHE_TIME || 60 * 1000);
 
@@ -30,6 +31,8 @@ module.exports = {
       })
     );
 
+    debug('%d thumbnail link were found', uris.length);
+
     return uris.find(Boolean) || null;
   },
 
@@ -37,6 +40,7 @@ module.exports = {
     try {
       return await memorizedYtdlGetInfo(link);
     } catch (e) {
+      debug('warn: get info was failed, %s', link);
       return null;
     }
   },
