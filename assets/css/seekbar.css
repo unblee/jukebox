@@ -1,0 +1,7 @@
+.seekbar .progress::-webkit-progress-bar {
+  background-color: hsl(0, 0%, 29%)
+}
+
+.seekbar .progress::-webkit-progress-value {
+  background-color: hsl(0, 0%, 86%);
+}
