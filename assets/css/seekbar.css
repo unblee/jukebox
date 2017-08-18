@@ -5,3 +5,30 @@
 .seekbar .progress::-webkit-progress-value {
   background-color: hsl(0, 0%, 86%);
 }
+
+.seekbar {
+  position: relative;
+  overflow: visible;
+}
+
+.seek-tooltip::after {
+  content: attr(data-review-seek-time);
+  position: absolute;
+  background-color: hsl(0, 0%, 29%);
+  border-radius: 7px;
+  top: 18px;
+  color: #fff;
+  padding: 4px;
+  font-size: 0.75em;
+  height: 24px;
+  text-align: center;
+}
+
+.seek-tooltip::before {
+  content: "";
+  position: absolute;
+  border: solid;
+  border-color: hsl(0, 0%, 29%) transparent;
+  border-width: 0 6px 6px 6px;
+  top: 12px;
+}
