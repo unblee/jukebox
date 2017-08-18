@@ -26,9 +26,13 @@ module.exports = class Speaker extends EventEmitter {
     super();
     this.lock = new AwaitLock();
 
-    this._volume = volume;
     this._bufferTime =
       Number(process.env.JUKEBOX_SPEAKER_BUFFER_TIME) || DEFAULT_SPEAKER_BUFFER_TIME;
+    this._forceMute = (() => {
+      const x = process.env.JUKEBOX_FORCE_MUTE;
+      return x && ['true', 'yes', '1'].includes(x.toLowerCase());
+    })();
+    this.volume = volume;
 
     this._seekBuffer = 0;
 
@@ -61,10 +65,10 @@ module.exports = class Speaker extends EventEmitter {
 
   set volume(volume) {
     debug('set volume = %d', volume);
+    this._volume = this._forceMute ? 0 : volume;
     if (this._pcmVolume) {
-      this._pcmVolume.setVolume(volume);
+      this._pcmVolume.setVolume(this._volume);
     }
-    this._volume = volume;
   }
 
   async start(stream) {
