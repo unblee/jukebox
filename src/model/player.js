@@ -178,6 +178,13 @@ module.exports = class Player extends EventEmitter {
     await this.start();
   }
 
+  async changeSeekTime(seekSeconds) {
+    debug('changeSeekTime($d)', seekSeconds);
+    if (this.speaker) {
+      await this.speaker.changeSeekTime(seekSeconds);
+    }
+  }
+
   setLoopMode(loopMode) {
     switch (loopMode) {
       case LoopMode.ONE:

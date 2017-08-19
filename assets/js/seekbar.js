@@ -40,7 +40,13 @@ Vue.component('seekbar', {
     }
   },
   methods: {
-    changeSeek() {},
+    changeSeek() {
+      const body = JSON.stringify({ seekSeconds: this.reviewSeek });
+      const headers = {
+        'Content-Type': 'application/json'
+      };
+      fetch('/player/seek/time', { method: 'POST', body, headers });
+    },
     showReviewSeek() {
       this.enabledReviewSeek = true;
     },

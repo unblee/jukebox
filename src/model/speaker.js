@@ -87,14 +87,21 @@ module.exports = class Speaker extends EventEmitter {
     await this._executeWithLock(this.stopWithoutLock);
   }
 
+  async changeSeekTime(seekSeconds) {
+    await this._executeWithLock(this.changeSeekTimeWithoutLock, seekSeconds);
+  }
+
   async _executeWithLock(method, ...args) {
     await this.lock.acquireAsync();
 
+    let res;
     try {
-      method.apply(this, args);
+      res = method.apply(this, args);
+      if (res && res.then) res = await res;
     } finally {
       this.lock.release();
     }
+    return res;
   }
 
   async startWithoutLock(stream) {
@@ -202,6 +209,16 @@ module.exports = class Speaker extends EventEmitter {
       debug('warn: has not started yet');
     }
     this.emit('stopped');
+  }
+
+  async changeSeekTimeWithoutLock(seekSeconds) {
+    debug('change seek to %d s', seekSeconds);
+    if (this._stream) {
+      this._pcmVolume.unpipe(this._speaker);
+      // TODO
+    } else {
+      // TODO
+    }
   }
 
   static get format() {
