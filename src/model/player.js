@@ -15,6 +15,8 @@ module.exports = class Player extends EventEmitter {
     this.speaker = null;
     this.store = new PlayerStatusStore();
 
+    this._seekSeconds = 0;
+
     this._onSpeakerStoppedEventBinded = () => this._onSpeakerStopped();
 
     this.playlist.on('removed', ({ index }) => {
@@ -74,11 +76,13 @@ module.exports = class Player extends EventEmitter {
         debug('start music, %o', this.nowPlayingContent);
         this.speaker = new Speaker({ volume: this.status.volume });
         // Call start async to early notify and improve UX
-        this.speaker.start(this.nowPlayingStream).catch(e => console.error(e));
+        this.speaker
+          .start(this.nowPlayingStream, { seekSeconds: this.seekSeconds })
+          .catch(e => console.error(e));
         this.speaker.on('stopped', this._onSpeakerStoppedEventBinded);
-        this.speaker.on('updatedSeek', ({ seekSeconds }) =>
-          this.emit('updatedSeek', { seekSeconds })
-        );
+        this.speaker.on('updatedSeek', ({ seekSeconds }) => {
+          this.seekSeconds = seekSeconds;
+        });
         this.status.play();
 
         debug('add history, %o', this.nowPlayingContent);
@@ -167,6 +171,7 @@ module.exports = class Player extends EventEmitter {
       this.speaker.removeListener('stopped', this._onSpeakerStoppedEventBinded);
       await this.speaker.stop();
       this.speaker = null;
+      this.seekSeconds = 0;
     }
     this.status.stop();
     this.emit('updated-status');
@@ -179,9 +184,22 @@ module.exports = class Player extends EventEmitter {
   }
 
   async changeSeekTime(seekSeconds) {
-    debug('changeSeekTime($d)', seekSeconds);
-    if (this.speaker) {
-      await this.speaker.changeSeekTime(seekSeconds);
+    switch (this.status.state) {
+      case State.PLAYING:
+        await this.speaker.changeSeekTime(seekSeconds);
+        return;
+
+      case State.PAUSING:
+        await this.stop();
+        this.seekSeconds = seekSeconds;
+        return;
+
+      case State.STOPPED:
+        this.seekSeconds = seekSeconds;
+        return;
+
+      default:
+        throw new Error(`invalid state: ${this.status.state}`);
     }
   }
 
@@ -255,7 +273,13 @@ module.exports = class Player extends EventEmitter {
   }
 
   get seekSeconds() {
-    return this.speaker && this.speaker.seekSeconds;
+    return this._seekSeconds;
+  }
+
+  set seekSeconds(value) {
+    debug('set seek seconds to %d', value);
+    this._seekSeconds = value;
+    this.emit('updatedSeek', { seekSeconds: value });
   }
 
   setVolume(vol) {
