@@ -90,11 +90,15 @@ module.exports = class Speaker extends EventEmitter {
   async _executeWithLock(method, ...args) {
     await this.lock.acquireAsync();
 
+    let res;
     try {
-      method.apply(this, args);
+      res = method.apply(this, args);
+      if (res && res.then) res = await res;
     } finally {
       this.lock.release();
     }
+
+    return res;
   }
 
   async startWithoutLock(stream) {
