@@ -719,7 +719,13 @@ debug-log@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/debug-log/-/debug-log-1.0.1.tgz#2307632d4c04382b8df8a32f70b895046d52745f"
 
-debug@*, debug@2, debug@2.6.8, debug@^2.1.1, debug@^2.1.2, debug@^2.2.0, debug@^2.6.1, debug@^2.6.3, debug@^2.6.8:
+debug@*, debug@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-3.0.0.tgz#1d2feae53349047b08b264ec41906ba17a8516e4"
+  dependencies:
+    ms "2.0.0"
+
+debug@2, debug@2.6.8, debug@^2.1.1, debug@^2.1.2, debug@^2.2.0, debug@^2.6.1, debug@^2.6.3, debug@^2.6.8:
   version "2.6.8"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.8.tgz#e731531ca2ede27d188222427da17821d68ff4fc"
   dependencies:
@@ -730,12 +736,6 @@ debug@2.2.0:
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.2.0.tgz#f87057e995b1a1f6ae6a4960664137bc56f039da"
   dependencies:
     ms "0.7.1"
-
-debug@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-3.0.0.tgz#1d2feae53349047b08b264ec41906ba17a8516e4"
-  dependencies:
-    ms "2.0.0"
 
 decamelize@^1.0.0, decamelize@^1.1.1:
   version "1.2.0"
@@ -4581,9 +4581,9 @@ yauzl@2.4.1:
   dependencies:
     fd-slicer "~1.0.1"
 
-ytdl-core@^0.15.0:
-  version "0.15.0"
-  resolved "https://registry.yarnpkg.com/ytdl-core/-/ytdl-core-0.15.0.tgz#ab74fcac9d2dcac2c5b995b27aecc0f7ec3ea586"
+ytdl-core@0.16.0:
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/ytdl-core/-/ytdl-core-0.16.0.tgz#fc08f26144ff72290293e668facf2af4e22394a2"
   dependencies:
     html-entities "^1.1.3"
     m3u8stream "^0.1.1"
