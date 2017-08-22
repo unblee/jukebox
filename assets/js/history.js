@@ -1,27 +1,18 @@
 Vue.component('history', {
-  props: ['data'],
   methods: {
     humanizeTime(seconds) {
       return Util.humanizeTimeFromSeconds(seconds);
     },
     async addContent(idx) {
       try {
-        await fetch('/playlist', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify([this.history[idx].track.link])
-        });
+        this.$store.dispatch('addContent', [this.history[idx].track.link]);
       } catch (e) {
         console.error(e);
       }
     }
   },
   computed: {
-    history() {
-      return this.data;
-    }
+    ...mapState(['history'])
   },
 
   template: `

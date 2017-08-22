@@ -1,35 +1,17 @@
 Vue.component('playlist', {
-  props: ['data'],
   methods: {
     humanizeTime(seconds) {
       return Util.humanizeTimeFromSeconds(seconds);
     },
-    isNowPlayingContent(idx) {
-      return this.playlist.nowPlayingContent && this.playlist.nowPlayingIdx === idx;
-    },
     openClearPlaylistModal() {
       this.$refs.clearPlaylistModal.open();
     },
-    movedPlaylist({ newIndex, oldIndex }) {
-      if (newIndex !== oldIndex) {
-        fetch(`/playlist/${oldIndex}/move/${newIndex}`, { method: 'POST' });
-        this.$emit('moved-playlist', { newIndex, oldIndex });
-      }
-    },
-    deleteContent(index) {
-      fetch(`/playlist/${index}`, { method: 'DELETE' });
-    },
-    playMusic(index) {
-      fetch(`/player/seek/${index}`, { method: 'POST' });
-    }
+    ...mapGetters(['isNowPlayingIdx']),
+    ...mapActions(['deleteContent', 'playMusic', 'moveTrack'])
   },
   computed: {
-    isPlaylistEmpty() {
-      return !this.playlist.contents || this.playlist.contents.length === 0;
-    },
-    playlist() {
-      return this.data;
-    }
+    ...mapState(['playlist']),
+    ...mapGetters(['isPlaylistEmpty'])
   },
 
   template: `
@@ -37,9 +19,9 @@ Vue.component('playlist', {
     <div class="scroll-view">
       <div class="tracks">
         <draggable class="panel scroll-view"
-                  v-show="playlist && playlist.contents && playlist.contents.length"
-                  :list="playlist.contents"
-                  @end="movedPlaylist">
+                  v-show="!isPlaylistEmpty"
+                  :list="playlist"
+                  @end="moveTrack">
           <a v-for="(content,idx) in playlist.contents" class="panel-block playlist-content is-paddingless"
               :class="{'now-playing-content is-active':isNowPlayingContent(idx)}"
               :title="content.title"

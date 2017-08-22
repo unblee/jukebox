@@ -11,11 +11,8 @@ Vue.component('clear-playlist-modal', {
     close() {
       this.opened = false;
     },
-    clearPlaylist() {
-      fetch('/playlist', { method: 'DELETE' });
-    },
     onSubmit() {
-      this.clearPlaylist();
+      this.$store.dispatch('clearPlaylist');
       this.close();
     }
   },

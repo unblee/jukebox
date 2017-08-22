@@ -1,105 +1,76 @@
 Vue.component('player', {
-  props: ['player'],
-
   methods: {
-    playerStart() {
-      fetch('/player/start', { method: 'POST' });
-    },
-    playerPause() {
-      fetch('/player/pause', { method: 'POST' });
-    },
-    playerNext() {
-      fetch('/player/next', { method: 'POST' });
-    },
-    playerPrev() {
-      fetch('/player/prev', { method: 'POST' });
-    },
-    playerLoopModeToggle() {
-      const kinds = ['none', 'one', 'playlist'];
-      const current = kinds.indexOf(this.player.loopMode);
-      const next = typeof current === 'number' ? kinds[(current + 1) % kinds.length] : 'none';
-      fetch(`/player/loop/${next}`, { method: 'POST' });
-    },
-    playerShuffleModeToggle() {
-      if (this.player.shuffleMode) {
-        fetch('/player/loop/shuffle/off', { method: 'POST' });
-      } else {
-        fetch('/player/loop/shuffle/on', { method: 'POST' });
-      }
-    },
-    restart() {
-      fetch('/player/restart', { method: 'POST' });
-    }
+    ...mapActions([
+      'playerStart',
+      'playerPause',
+      'playerNext',
+      'playerPrev',
+      'playerRestart',
+      'togglePlayerLoopMode',
+      'togglePlayerShuffleMode'
+    ])
   },
   computed: {
-    existThumbnail() {
-      return this.player.nowPlayingContent && this.player.nowPlayingContent.thumbnailLink;
-    },
-    isPlaylistEmpty() {
-      return !this.player.playlist || this.player.playlist.length === 0;
-    },
     mute: {
       get() {
-        return !this.volume;
+        return !this.$store.state.volume;
       },
       set(isMute) {
-        fetch(`/player/volume/${isMute ? 'off' : 'on'}`, { method: 'POST' });
+        this.$store.dispatch('setMute', isMute);
       }
     },
     volume: {
       get() {
-        return this.player.volume;
+        return this.$store.status.volume;
       },
       set(volume) {
         // TODO: Remove eslint-disable-line when introduce webpack and lodash.throttle
         // _.throttle(() => { // eslint-disable-line
-        const body = JSON.stringify({ volume });
-        const headers = {
-          'Content-Type': 'application/json'
-        };
-        fetch('/player/volume', { method: 'POST', body, headers });
+        this.$store.dispatch('setVolume', volume);
         // }, 500);
       }
-    },
-    lengthSeconds() {
-      return this.player.nowPlayingContent && this.player.nowPlayingContent.lengthSeconds;
     },
     lengthTime() {
       return Util.humanizeTimeFromSeconds(this.lengthSeconds);
     },
     seekTime() {
-      return Util.humanizeTimeFromSeconds(Math.floor(this.player.seekSeconds));
-    }
+      return Util.humanizeTimeFromSeconds(Math.floor(this.$store.seekSeconds));
+    },
+    ...mapState(['state', 'seekSeconds']),
+    ...mapGetters(['nowPlayingContent', 'isPlaylistEmpty, existsThumbnail']),
+    ...mapGetters({
+      lengthSeconds: 'nowPlayingLengthSeconds'
+    })
   },
 
   template: `
   <div class="player is-flex black-background">
-    <img v-if="existThumbnail" :src="player.nowPlayingContent.thumbnailLink" alt="Image" class="player-thumbnail is-block">
+    <img v-if="existThumbnail" :src="nowPlayingContent.thumbnailLink" alt="Image" class="player-thumbnail is-block">
     <div class="image player-no-content"  v-if="isPlaylistEmpty"></div>
     <div class="player-overlay is-flex" :class="{ 'player-overlay--stop': existThumbnail &&  player.state !== 'playing' }">
       <h1 class="title is-4 player-title is-marginless">
-        <a :href="player.nowPlayingContent.link" target="_blank"
-        v-if="player.nowPlayingContent"
-        class="has-text-white" :title="player.nowPlayingContent.title">
-          {{ player.nowPlayingContent.title }}
+        <a :href="nowPlayingContent.link" target="_blank"
+        v-if="nowPlayingContent"
+        class="has-text-white" :title="nowPlayingContent.title">
+          {{ nowPlayingContent.title }}
         </a>
         <span v-else>&nbsp;</span>
       </h1>
       <div class="player-main-controller has-text-centered">
         <div class="columns is-mobile">
           <div class="column">
-            <a title="Prev" :class="{ 'deactivate': player.loopMode === 'none' || isPlaylistEmpty }" @click="playerPrev()">
+            <a title="Prev" :class="{ 'deactivate': status.loopMode === 'none' || isPlaylistEmpty }" @click="playerPrev()">
               <i class="material-icons is-large is-pushable">skip_previous</i>
             </a>
           </div>
           <div class="column">
             <div v-if="player.state === 'playing'">
-              <a title="Pause" @click="playerPause()" :class="{ 'deactivate': isPlaylistEmpty && !player.nowPlayingContent }">
+              <a title="Pause" @click="playerPause()" :class="{ 'deactivate': isPlaylistEmpty && !nowPlayingContent }">
                 <i class="material-icons is-large is-pushable">pause</i>
               </a>
             </div>
             <div v-else>
-              <a title="Play" @click="playerStart()" :class="{ 'deactivate': isPlaylistEmpty && !player.nowPlayingContent }">
+              <a title="Play" @click="playerStart()" :class="{ 'deactivate': isPlaylistEmpty && !nowPlayingContent }">
                 <i class="material-icons is-large is-pushable">play_arrow</i>
               </a>
             </div>
@@ -112,16 +83,16 @@ Vue.component('player', {
         </div>
       </div>
       <div class="player-other-controller">
-        <div class="columns has-text-centered is-mobile progressbar-block" v-if="player.nowPlayingContent">
+        <div class="columns has-text-centered is-mobile progressbar-block" v-if="nowPlayingContent">
           <div class="column is-3 seek-time has-text-right">{{ seekTime }}</div>
           <div class="column is-6 ">
-            <progress class="progress" :value="player.seekSeconds" :max="lengthSeconds"></progress>
+            <progress class="progress" :value="seekSeconds" :max="lengthSeconds"></progress>
           </div>
           <div class="column is-3 length-time has-text-left">{{ lengthTime }}</div>
         </div>
         <div class="columns has-text-centered is-mobile">
           <div class="column is-2">
-            <a @click="restart">
+            <a @click="playerRestart">
               <i class="material-icons is-medium">replay</i>
             </a>
           </div>
@@ -133,18 +104,18 @@ Vue.component('player', {
             <input type="range" v-model.number="volume" max="1.5" min="0" step="0.01" @dblclick="volume = 1" class="player-volume-bar">
           </div>
           <div class="column is-2">
-            <a title="Queue" v-if="player.loopMode === 'none'" @click="playerLoopModeToggle()">
+            <a title="Queue" v-if="status.loopMode === 'none'" @click="togglePlayerLoopMode">
               <i class="material-icons is-medium">arrow_forward</i>
             </a>
-            <a title="One Loop" class="is-loop-active" v-if="player.loopMode === 'one'" @click="playerLoopModeToggle()">
+            <a title="One Loop" class="is-loop-active" v-if="status.loopMode === 'one'" @click="togglePlayerLoopMode">
               <i class="material-icons is-medium">repeat_one</i>
             </a>
-            <a title="Playlist Loop" class="is-loop-active" v-if="player.loopMode === 'playlist'" @click="playerLoopModeToggle()">
+            <a title="Playlist Loop" class="is-loop-active" v-if="status.loopMode === 'playlist'" @click="togglePlayerLoopMode">
               <i class="material-icons is-medium">repeat</i>
             </a>
           </div>
           <div class="column">
-            <a title="Shuffle" :class="[{ 'is-loop-active': player.shuffleMode }, { 'deactivate': isPlaylistEmpty }]" @click="playerShuffleModeToggle()">
+            <a title="Shuffle" :class="[{ 'is-loop-active': status.shuffleMode }, { 'deactivate': isPlaylistEmpty }]" @click="togglePlayerShuffleMode">
               <i class="material-icons is-medium">shuffle</i>
             </a>
           </div>

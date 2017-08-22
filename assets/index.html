@@ -94,7 +94,6 @@
             <div class="panel tab-content">
               <component
                 :is="activeTab"
-                :data="tracks"
                 @moved-playlist="movedPlaylist"
                 v-if="bindPlaylist">
               </component>
