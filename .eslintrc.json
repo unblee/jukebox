@@ -11,6 +11,12 @@
   },
   "globals": {
     "Vue": true,
+    "Vuex": true,
+    "mapState": true,
+    "mapGetters": true,
+    "mapMutations": true,
+    "mapActions": true,
+    "store": true,
     "Clipboard": true,
     "Util": true
   },

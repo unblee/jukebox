@@ -6,6 +6,7 @@ new Vue({
     activeTab: 'playlist',
     seekSeconds: 0
   },
+  store,
   computed: {
     nowPlayingContent() {
       const { nowPlayingIdx: idx, playlist } = this.playerStatus;
