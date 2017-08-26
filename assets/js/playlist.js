@@ -10,8 +10,7 @@ Vue.component('playlist', {
   },
   computed: {
     ...mapState(['playlist']),
-    ...mapGetters(['isPlaylistEmpty']),
-    ...mapGetters(['isNowPlayingIdx'])
+    ...mapGetters(['isPlaylistEmpty', 'isNowPlayingIdx'])
   },
 
   template: `
