@@ -69,7 +69,7 @@
     "server-destroy": "^1.0.1",
     "speaker": "^0.3.0",
     "timed-stream": "^1.1.0",
-    "ytdl-core": "^0.15.0"
+    "ytdl-core": "^0.17.0"
   },
   "devDependencies": {
     "chromedriver": "^2.31.0",
