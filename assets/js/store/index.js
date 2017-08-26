@@ -128,7 +128,7 @@ window.store = new Vuex.Store({
     async setMute(context, isMute) {
       return fetch(`/player/volume/${isMute ? 'off' : 'on'}`, { method: 'POST' });
     },
-    async addContent(context, links) {
+    async addTracks(context, links) {
       return fetch('/playlist', {
         method: 'POST',
         headers: {
@@ -137,7 +137,7 @@ window.store = new Vuex.Store({
         body: JSON.stringify(links)
       });
     },
-    async deleteContent(context, index) {
+    async deleteTrack(context, index) {
       return fetch(`/playlist/${index}`, { method: 'DELETE' });
     },
     async clearPlaylist() {

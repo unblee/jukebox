@@ -6,7 +6,7 @@ Vue.component('playlist', {
     openClearPlaylistModal() {
       this.$refs.clearPlaylistModal.open();
     },
-    ...mapActions(['deleteContent', 'playMusic', 'moveTrack'])
+    ...mapActions(['deleteTrack', 'playMusic', 'moveTrack'])
   },
   computed: {
     ...mapState(['playlist']),
@@ -44,7 +44,7 @@ Vue.component('playlist', {
                   <copy-link-button class="is-flex" :link="content.link" tooltip-duration="1000"></copy-link-button>
                 </div>
                 <div class="column is-1 has-text-centered align-self-center is-paddingless-vertical">
-                  <a class="is-flex in-content-button" @click.prevent.stop="deleteContent(idx)">
+                  <a class="is-flex in-content-button" @click.prevent.stop="deleteTrack(idx)">
                     <i class="material-icons icon" title="Delete">&#xE872;</i>
                   </a>
                 </div>

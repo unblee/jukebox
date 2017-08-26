@@ -5,12 +5,12 @@ Vue.component('history', {
     },
     async addFromHistory(idx) {
       try {
-        this.addContent([this.history[idx].track.link]);
+        this.addTracks([this.history[idx].track.link]);
       } catch (e) {
         console.error(e);
       }
     },
-    ...mapActions(['addContent'])
+    ...mapActions(['addTracks'])
   },
   computed: {
     ...mapState(['history'])
