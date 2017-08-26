@@ -65,7 +65,7 @@
         </div>
         <div class="columns player-wrapper" id="app" v-cloak>
           <div class="column is-6">
-            <player :player="bindPlayer" v-if="bindPlayer"></player>
+            <player></player>
           </div>
           <div class="column is-6 tab-wrapper">
             <div class="panel is-marginless">
@@ -92,11 +92,7 @@
               </div>
             </div>
             <div class="panel tab-content">
-              <component
-                :is="activeTab"
-                @moved-playlist="movedPlaylist"
-                v-if="bindPlaylist">
-              </component>
+              <component :is="activeTab"></component>
             </div>
           </div>
         </div>

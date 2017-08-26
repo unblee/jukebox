@@ -6,12 +6,12 @@ Vue.component('playlist', {
     openClearPlaylistModal() {
       this.$refs.clearPlaylistModal.open();
     },
-    ...mapGetters(['isNowPlayingIdx']),
     ...mapActions(['deleteContent', 'playMusic', 'moveTrack'])
   },
   computed: {
     ...mapState(['playlist']),
-    ...mapGetters(['isPlaylistEmpty'])
+    ...mapGetters(['isPlaylistEmpty']),
+    ...mapGetters(['isNowPlayingIdx'])
   },
 
   template: `
@@ -22,14 +22,14 @@ Vue.component('playlist', {
                   v-show="!isPlaylistEmpty"
                   :list="playlist"
                   @end="moveTrack">
-          <a v-for="(content,idx) in playlist.contents" class="panel-block playlist-content is-paddingless"
-              :class="{'now-playing-content is-active':isNowPlayingContent(idx)}"
+          <a v-for="(content,idx) in playlist" class="panel-block playlist-content is-paddingless"
+              :class="{'now-playing-content is-active':isNowPlayingIdx(idx)}"
               :title="content.title"
               @click="playMusic(idx)"
               >
               <div class="control columns is-marginless is-mobile">
                 <div class="column is-1 align-self-center has-text-centered is-paddingless-vertical thumbnail-wrapper">
-                  <span class="panel-icon" v-if="isNowPlayingContent(idx)">
+                  <span class="panel-icon" v-if="isNowPlayingIdx(idx)">
                     <i class="material-icons icon">equalizer</i>
                   </span>
                   <img :src="content.thumbnailLink" v-else class="is-block">

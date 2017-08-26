@@ -11,7 +11,7 @@ Vue.component('links-sender', {
       if (this.input.length === 0) return;
       try {
         this.adding = true;
-        const res = this.$store.dispatch('addContent', this.input.split(','));
+        const res = await this.addContent(this.input.split(','));
         this.adding = false;
         if (!res.ok) return;
         this.unavaliableLinks = await res.json();
@@ -29,7 +29,8 @@ Vue.component('links-sender', {
     },
     isUnavaliableLinksEmpty() {
       return this.unavaliableLinks.length === 0;
-    }
+    },
+    ...mapActions(['addContent'])
   },
   template: `
   <div class="links-sender">

@@ -7,26 +7,28 @@ Vue.component('player', {
       'playerPrev',
       'playerRestart',
       'togglePlayerLoopMode',
-      'togglePlayerShuffleMode'
+      'togglePlayerShuffleMode',
+      'setMute',
+      'setVolume'
     ])
   },
   computed: {
     mute: {
       get() {
-        return !this.$store.state.volume;
+        return !this.status.volume;
       },
       set(isMute) {
-        this.$store.dispatch('setMute', isMute);
+        this.setMute(isMute);
       }
     },
     volume: {
       get() {
-        return this.$store.status.volume;
+        return this.status.volume;
       },
       set(volume) {
         // TODO: Remove eslint-disable-line when introduce webpack and lodash.throttle
         // _.throttle(() => { // eslint-disable-line
-        this.$store.dispatch('setVolume', volume);
+        this.setVolume(volume);
         // }, 500);
       }
     },
@@ -34,10 +36,10 @@ Vue.component('player', {
       return Util.humanizeTimeFromSeconds(this.lengthSeconds);
     },
     seekTime() {
-      return Util.humanizeTimeFromSeconds(Math.floor(this.$store.seekSeconds));
+      return Util.humanizeTimeFromSeconds(Math.floor(this.seekSeconds));
     },
-    ...mapState(['state', 'seekSeconds']),
-    ...mapGetters(['nowPlayingContent', 'isPlaylistEmpty, existsThumbnail']),
+    ...mapState(['status', 'seekSeconds']),
+    ...mapGetters(['nowPlayingContent', 'isPlaylistEmpty', 'existThumbnail']),
     ...mapGetters({
       lengthSeconds: 'nowPlayingLengthSeconds'
     })
@@ -47,7 +49,7 @@ Vue.component('player', {
   <div class="player is-flex black-background">
     <img v-if="existThumbnail" :src="nowPlayingContent.thumbnailLink" alt="Image" class="player-thumbnail is-block">
     <div class="image player-no-content"  v-if="isPlaylistEmpty"></div>
-    <div class="player-overlay is-flex" :class="{ 'player-overlay--stop': existThumbnail &&  player.state !== 'playing' }">
+    <div class="player-overlay is-flex" :class="{ 'player-overlay--stop': existThumbnail &&  status.state !== 'playing' }">
       <h1 class="title is-4 player-title is-marginless">
         <a :href="nowPlayingContent.link" target="_blank"
         v-if="nowPlayingContent"
@@ -64,7 +66,7 @@ Vue.component('player', {
             </a>
           </div>
           <div class="column">
-            <div v-if="player.state === 'playing'">
+            <div v-if="status.state === 'playing'">
               <a title="Pause" @click="playerPause()" :class="{ 'deactivate': isPlaylistEmpty && !nowPlayingContent }">
                 <i class="material-icons is-large is-pushable">pause</i>
               </a>

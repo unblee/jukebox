@@ -60,6 +60,7 @@ window.store = new Vuex.Store({
     },
     teardown(state) {
       state.status = DEFAULT_STATUS;
+      state.playlist = [];
       state.history = [];
       state.seekSeconds = 0;
     },
@@ -128,7 +129,7 @@ window.store = new Vuex.Store({
       return fetch(`/player/volume/${isMute ? 'off' : 'on'}`, { method: 'POST' });
     },
     async addContent(context, links) {
-      return fetch('/playlitogglePlayerShuffleModest', {
+      return fetch('/playlist', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

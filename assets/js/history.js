@@ -3,13 +3,14 @@ Vue.component('history', {
     humanizeTime(seconds) {
       return Util.humanizeTimeFromSeconds(seconds);
     },
-    async addContent(idx) {
+    async addFromHistory(idx) {
       try {
-        this.$store.dispatch('addContent', [this.history[idx].track.link]);
+        this.addContent([this.history[idx].track.link]);
       } catch (e) {
         console.error(e);
       }
-    }
+    },
+    ...mapActions(['addContent'])
   },
   computed: {
     ...mapState(['history'])
@@ -37,7 +38,7 @@ Vue.component('history', {
               <copy-link-button class="is-flex" :link="content.track.link" tooltip-duration="1000"></copy-link-button>
             </div>
             <div class="column is-1 has-text-centered align-self-center is-paddingless-vertical">
-              <a class="is-flex in-content-button add-content-button" @click.prevent.stop="addContent(idx)">
+              <a class="is-flex in-content-button add-content-button" @click.prevent.stop="addFromHistory(idx)">
                 <i class="material-icons icon" title="Add to Playlist">library_add</i>
               </a>
             </div>

@@ -12,9 +12,10 @@ Vue.component('clear-playlist-modal', {
       this.opened = false;
     },
     onSubmit() {
-      this.$store.dispatch('clearPlaylist');
+      this.clearPlaylist();
       this.close();
-    }
+    },
+    ...mapActions(['clearPlaylist'])
   },
 
   template: `
