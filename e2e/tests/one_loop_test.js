@@ -13,11 +13,7 @@ module.exports = {
   },
 
   'Go to top page': browser => {
-    browser.page
-      .index()
-      .navigate()
-      .waitForElementVisible('body', PRESENT_WAIT_TIME)
-      .api.pause(WAIT_TIME);
+    browser.page.index().navigate().waitForElementVisible('body', PRESENT_WAIT_TIME);
   },
 
   'Add musics': browser => {
