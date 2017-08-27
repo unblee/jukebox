@@ -16,7 +16,7 @@ module.exports = {
       .index()
       .navigate()
       .waitForElementVisible('body', PRESENT_WAIT_TIME)
-      .api.pause(WAIT_TIME);
+      .api.pause(WAIT_TIME * 5);
   },
 
   'Set playlist loop mode': browser => {
