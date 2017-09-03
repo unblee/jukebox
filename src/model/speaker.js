@@ -106,7 +106,7 @@ module.exports = class Speaker extends EventEmitter {
     } finally {
       this.lock.release();
     }
-    
+
     return res;
   }
 
