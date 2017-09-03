@@ -63,6 +63,9 @@ module.exports = {
       quality: 'lowest'
     };
 
-    return ytdl(link, opts);
+    const res = ytdl(link, opts);
+    res.reCreate = () => this.createStream(link);
+
+    return res;
   }
 };
