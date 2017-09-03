@@ -1,35 +1,16 @@
 Vue.component('playlist', {
-  props: ['data'],
   methods: {
     humanizeTime(seconds) {
       return Util.humanizeTimeFromSeconds(seconds);
     },
-    isNowPlayingContent(idx) {
-      return this.playlist.nowPlayingContent && this.playlist.nowPlayingIdx === idx;
-    },
     openClearPlaylistModal() {
       this.$refs.clearPlaylistModal.open();
     },
-    movedPlaylist({ newIndex, oldIndex }) {
-      if (newIndex !== oldIndex) {
-        fetch(`/playlist/${oldIndex}/move/${newIndex}`, { method: 'POST' });
-        this.$emit('moved-playlist', { newIndex, oldIndex });
-      }
-    },
-    deleteContent(index) {
-      fetch(`/playlist/${index}`, { method: 'DELETE' });
-    },
-    playMusic(index) {
-      fetch(`/player/seek/${index}`, { method: 'POST' });
-    }
+    ...mapActions(['deleteTrack', 'playMusic', 'moveTrack'])
   },
   computed: {
-    isPlaylistEmpty() {
-      return !this.playlist.contents || this.playlist.contents.length === 0;
-    },
-    playlist() {
-      return this.data;
-    }
+    ...mapState(['playlist']),
+    ...mapGetters(['isPlaylistEmpty', 'isNowPlayingIdx'])
   },
 
   template: `
@@ -37,17 +18,17 @@ Vue.component('playlist', {
     <div class="scroll-view">
       <div class="tracks">
         <draggable class="panel scroll-view"
-                  v-show="playlist && playlist.contents && playlist.contents.length"
-                  :list="playlist.contents"
-                  @end="movedPlaylist">
-          <a v-for="(content,idx) in playlist.contents" class="panel-block playlist-content is-paddingless"
-              :class="{'now-playing-content is-active':isNowPlayingContent(idx)}"
+                  v-show="!isPlaylistEmpty"
+                  :list="playlist"
+                  @end="moveTrack">
+          <a v-for="(content,idx) in playlist" class="panel-block playlist-content is-paddingless"
+              :class="{'now-playing-content is-active':isNowPlayingIdx(idx)}"
               :title="content.title"
               @click="playMusic(idx)"
               >
               <div class="control columns is-marginless is-mobile">
                 <div class="column is-1 align-self-center has-text-centered is-paddingless-vertical thumbnail-wrapper">
-                  <span class="panel-icon" v-if="isNowPlayingContent(idx)">
+                  <span class="panel-icon" v-if="isNowPlayingIdx(idx)">
                     <i class="material-icons icon">equalizer</i>
                   </span>
                   <img :src="content.thumbnailLink" v-else class="is-block">
@@ -62,7 +43,7 @@ Vue.component('playlist', {
                   <copy-link-button class="is-flex" :link="content.link" tooltip-duration="1000"></copy-link-button>
                 </div>
                 <div class="column is-1 has-text-centered align-self-center is-paddingless-vertical">
-                  <a class="is-flex in-content-button" @click.prevent.stop="deleteContent(idx)">
+                  <a class="is-flex in-content-button" @click.prevent.stop="deleteTrack(idx)">
                     <i class="material-icons icon" title="Delete">&#xE872;</i>
                   </a>
                 </div>

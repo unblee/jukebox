@@ -66,7 +66,7 @@
         </div>
         <div class="columns player-wrapper" id="app" v-cloak>
           <div class="column is-6">
-            <player :player="bindPlayer" v-if="bindPlayer"></player>
+            <player></player>
           </div>
           <div class="column is-6 tab-wrapper">
             <div class="panel is-marginless">
@@ -93,12 +93,7 @@
               </div>
             </div>
             <div class="panel tab-content">
-              <component
-                :is="activeTab"
-                :data="tracks"
-                @moved-playlist="movedPlaylist"
-                v-if="bindPlaylist">
-              </component>
+              <component :is="activeTab"></component>
             </div>
           </div>
         </div>
@@ -107,11 +102,13 @@
   </section>
 
   <script src="https://unpkg.com/vue"></script>
+  <script src="https://unpkg.com/vuex"></script>
   <!-- <script src="https://unpkg.com/vue/dist/vue.min.js"></script> -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.6.0/Sortable.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.14.1/vuedraggable.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
   <script src="js/util.js"></script>
+  <script src="js/store/index.js"></script>
   <script src="js/animation-badge.js"></script>
   <script src="js/copy-link-button.js"></script>
   <script src="js/clear-playlist-modal.js"></script>

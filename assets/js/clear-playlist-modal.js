@@ -11,13 +11,11 @@ Vue.component('clear-playlist-modal', {
     close() {
       this.opened = false;
     },
-    clearPlaylist() {
-      fetch('/playlist', { method: 'DELETE' });
-    },
     onSubmit() {
       this.clearPlaylist();
       this.close();
-    }
+    },
+    ...mapActions(['clearPlaylist'])
   },
 
   template: `
