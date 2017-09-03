@@ -117,7 +117,7 @@ window.store = new Vuex.Store({
       });
     },
     async setVolume(context, volume) {
-      fetch('/player/volume', {
+      return fetch('/player/volume', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
