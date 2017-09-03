@@ -45,6 +45,11 @@ module.exports = class Speaker extends EventEmitter {
     this._fixedMultipleSizeStream = null;
   }
 
+  set seekSeconds(value) {
+    const { sampleRate, byteDepth, channels } = this.constructor.format;
+    this.seekBuffer = value * byteDepth * channels * sampleRate;
+  }
+
   get seekSeconds() {
     const { sampleRate, byteDepth, channels } = this.constructor.format;
     return this._seekBuffer / byteDepth / channels / sampleRate;
@@ -71,8 +76,8 @@ module.exports = class Speaker extends EventEmitter {
     }
   }
 
-  async start(stream) {
-    await this._executeWithLock(this.startWithoutLock, stream);
+  async start(stream, opts) {
+    await this._executeWithLock(this.startWithoutLock, stream, opts);
   }
 
   async pause() {
@@ -87,17 +92,25 @@ module.exports = class Speaker extends EventEmitter {
     await this._executeWithLock(this.stopWithoutLock);
   }
 
+  async changeSeekTime(seekSeconds) {
+    await this._executeWithLock(this.changeSeekTimeWithoutLock, seekSeconds);
+  }
+
   async _executeWithLock(method, ...args) {
     await this.lock.acquireAsync();
 
+    let res;
     try {
-      method.apply(this, args);
+      res = method.apply(this, args);
+      if (res && res.then) res = await res;
     } finally {
       this.lock.release();
     }
+
+    return res;
   }
 
-  async startWithoutLock(stream) {
+  async startWithoutLock(stream, { seekSeconds = 0 } = {}) {
     debug('start');
 
     return new Promise(resolve => {
@@ -137,7 +150,7 @@ module.exports = class Speaker extends EventEmitter {
       this._pcmVolume.on('error', err => console.error('error on pcmVolume, ', err));
       this._pcmVolume.on('data', data => debugStream.pcmVolume('received %d buffers', data.length));
 
-      this.seekBuffer = 0;
+      this.seekSeconds = seekSeconds;
       this._pcmVolume.on('data', data => {
         this.seekBuffer += data.length;
       });
@@ -148,6 +161,7 @@ module.exports = class Speaker extends EventEmitter {
 
       this._readableFFmpeg = this._ffmpeg
         .input(this._stream)
+        .seekInput(seekSeconds)
         .pipe()
         .on('error', err => console.error('error on readableFFmpeg, ', err))
         .on('data', data => debugStream.readableFFmpeg('received %d buffers', data.length))
@@ -193,15 +207,29 @@ module.exports = class Speaker extends EventEmitter {
 
   stopWithoutLock() {
     debug('stop');
+    this._stop();
+    this.emit('stopped');
+  }
+
+  _stop() {
     if (this._stream) {
+      this._speaker.removeAllListeners();
       this._stream.destroy();
       this._timedStream.destroy();
       this._pcmVolume.unpipe(this._speaker);
+      this._pcmVolume.removeAllListeners();
       this._speaker.end();
     } else {
       debug('warn: has not started yet');
     }
-    this.emit('stopped');
+  }
+
+  async changeSeekTimeWithoutLock(seekSeconds) {
+    debug('change seek to %d s', seekSeconds);
+    if (this._stream) {
+      this._stop();
+      await this.startWithoutLock(this._stream.reCreate(), { seekSeconds });
+    }
   }
 
   static get format() {

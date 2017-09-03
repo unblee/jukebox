@@ -86,12 +86,10 @@ jukebox.history.on(
 jukebox.player.on(
   'updatedSeek',
   throttle(({ seekSeconds }) => {
-    app.ws.broadcast(
-      JSON.stringify({
-        name: 'updated-seek',
-        data: { seekSeconds }
-      })
-    );
+    app.ws.broadcast({
+      name: 'updated-seek',
+      data: { seekSeconds }
+    });
   }, 100)
 );
 

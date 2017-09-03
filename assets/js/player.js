@@ -88,7 +88,7 @@ Vue.component('player', {
         <div class="columns has-text-centered is-mobile progressbar-block" v-if="nowPlayingContent">
           <div class="column is-3 seek-time has-text-right">{{ seekTime }}</div>
           <div class="column is-6 ">
-            <progress class="progress" :value="seekSeconds" :max="lengthSeconds"></progress>
+            <seekbar :value="seekSeconds" :max="lengthSeconds"></seekbar>
           </div>
           <div class="column is-3 length-time has-text-left">{{ lengthTime }}</div>
         </div>
