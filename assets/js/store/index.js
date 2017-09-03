@@ -151,6 +151,15 @@ window.store = new Vuex.Store({
 
       // this is for beautiful rendering, same as server side
       commit('moveTrack', { newIndex, oldIndex });
+    },
+    async changeSeek(context, seekSeconds) {
+      return fetch('/player/seek/time', {
+        method: 'POST',
+        body: JSON.stringify({ seekSeconds }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
     }
   }
 });

@@ -41,11 +41,7 @@ Vue.component('seekbar', {
   },
   methods: {
     changeSeek() {
-      const body = JSON.stringify({ seekSeconds: this.reviewSeek });
-      const headers = {
-        'Content-Type': 'application/json'
-      };
-      fetch('/player/seek/time', { method: 'POST', body, headers });
+      this._changeSeek(this.reviewSeek);
     },
     showReviewSeek() {
       this.enabledReviewSeek = true;
@@ -64,7 +60,10 @@ Vue.component('seekbar', {
       }
       this.styleSheet.insertRule(this.seekReviewAfterStyle, this.styleSheet.cssRules.length);
       this.styleSheet.insertRule(this.seekReviewBeforeStyle, this.styleSheet.cssRules.length);
-    }
+    },
+    ...mapActions({
+      _changeSeek: 'changeSeek'
+    })
   },
   template: `
   <progress class="progress seekbar"
