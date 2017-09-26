@@ -2551,6 +2551,10 @@ lodash.defaultsdeep@4.3.2:
     lodash.mergewith "^4.0.0"
     lodash.rest "^4.0.0"
 
+lodash.get@^4.4.2:
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
+
 lodash.isarguments@^3.0.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/lodash.isarguments/-/lodash.isarguments-3.1.0.tgz#2f573d85c6a24289ff00663b491c1d338ff3458a"
@@ -2909,14 +2913,15 @@ nightwatch@^0.9.16:
     proxy-agent "2.0.0"
     q "1.4.1"
 
-nise@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/nise/-/nise-1.0.1.tgz#0da92b10a854e97c0f496f6c2845a301280b3eef"
+nise@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/nise/-/nise-1.1.0.tgz#37e41b9bf0041ccb83d1bf03e79440bbc0db10ad"
   dependencies:
     formatio "^1.2.0"
     just-extend "^1.1.22"
     lolex "^1.6.0"
     path-to-regexp "^1.7.0"
+    text-encoding "^0.6.4"
 
 node-pre-gyp@^0.6.36:
   version "0.6.36"
@@ -3894,15 +3899,16 @@ signal-exit@^3.0.0, signal-exit@^3.0.1, signal-exit@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-3.0.2.tgz#b5fdc08f1287ea1178628e415e25132b73646c6d"
 
-sinon@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/sinon/-/sinon-3.0.0.tgz#f6919755c8c705e0b4ae977e8351bbcbaf6d91de"
+sinon@4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/sinon/-/sinon-4.0.0.tgz#a54a5f0237aa1dd2215e5e81c89b42b50c4fdb6b"
   dependencies:
     diff "^3.1.0"
     formatio "1.2.0"
+    lodash.get "^4.4.2"
     lolex "^2.1.2"
     native-promise-only "^0.8.1"
-    nise "^1.0.1"
+    nise "^1.1.0"
     path-to-regexp "^1.7.0"
     samsam "^1.1.3"
     text-encoding "0.6.4"
@@ -4223,7 +4229,7 @@ test-exclude@^4.1.1:
     read-pkg-up "^1.0.1"
     require-main-filename "^1.0.1"
 
-text-encoding@0.6.4:
+text-encoding@0.6.4, text-encoding@^0.6.4:
   version "0.6.4"
   resolved "https://registry.yarnpkg.com/text-encoding/-/text-encoding-0.6.4.tgz#e399a982257a276dae428bb92845cb71bdc26d19"
 
