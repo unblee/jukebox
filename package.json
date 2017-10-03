@@ -80,7 +80,7 @@
     "geckodriver": "^1.8.0",
     "husky": "^0.14.3",
     "lint-staged": "^4.0.2",
-    "mocha": "^3.5.0",
+    "mocha": "^4.0.0",
     "nightwatch": "^0.9.16",
     "nodemon": "^1.11.0",
     "nyc": "^11.1.0",
