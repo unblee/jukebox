@@ -1,0 +1,24 @@
+.play-count {
+  width: 3rem;
+}
+
+.playlist-content {
+  overflow: hidden;
+}
+.playlist-content:last-child {
+  margin-bottom: -1px;
+}
+
+.playlist-content-title-wrapper {
+  padding-left: 0;
+  padding-right: 0;
+}
+.playlist-content-title {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.playlist-thumbnail {
+  vertical-align: middle;
+}
