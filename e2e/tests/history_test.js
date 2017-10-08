@@ -47,15 +47,15 @@ module.exports = {
       .index()
       .moveToElement('@playerBlock', 10, 10)
       .click('@playButton')
-      .waitForElementPresent('.history-content:nth-child(1)', PRESENT_WAIT_TIME)
+      .waitForElementPresent('.playlist-content:nth-child(1)', PRESENT_WAIT_TIME)
       .click('@nextButton')
-      .waitForElementPresent('.history-content:nth-child(2)', PRESENT_WAIT_TIME)
+      .waitForElementPresent('.playlist-content:nth-child(2)', PRESENT_WAIT_TIME)
       .click('@nextButton')
-      .waitForElementPresent('.history-content:nth-child(3)', PRESENT_WAIT_TIME)
-      .assert.elementPresent('.history-content:nth-child(3)')
-      .assert.containsText('.history-content:nth-child(1) .play-count', '1')
-      .assert.containsText('.history-content:nth-child(2) .play-count', '1')
-      .assert.containsText('.history-content:nth-child(3) .play-count', '1');
+      .waitForElementPresent('.playlist-content:nth-child(3)', PRESENT_WAIT_TIME)
+      .assert.elementPresent('.playlist-content:nth-child(3)')
+      .assert.containsText('.playlist-content:nth-child(1) .play-count', '1')
+      .assert.containsText('.playlist-content:nth-child(2) .play-count', '1')
+      .assert.containsText('.playlist-content:nth-child(3) .play-count', '1');
   },
 
   'Play prev music': browser => {
@@ -64,16 +64,16 @@ module.exports = {
       .click('@prevButton')
       .api.pause(WAIT_TIME)
       .page.index()
-      .assert.elementPresent('.history-content:nth-child(3)')
-      .assert.containsText('.history-content:nth-child(1) .play-count', '2') // sorted
-      .assert.containsText('.history-content:nth-child(2) .play-count', '1')
-      .assert.containsText('.history-content:nth-child(3) .play-count', '1');
+      .assert.elementPresent('.playlist-content:nth-child(3)')
+      .assert.containsText('.playlist-content:nth-child(1) .play-count', '2') // sorted
+      .assert.containsText('.playlist-content:nth-child(2) .play-count', '1')
+      .assert.containsText('.playlist-content:nth-child(3) .play-count', '1');
   },
 
   'Add music from history': browser => {
     browser.page
       .index()
-      .click('.history-content:nth-child(1) .add-content-button')
+      .click('.playlist-content:nth-child(1) .add-content-button')
       .click('@playlistTabButton')
       .waitForElementPresent('@playlist', PRESENT_WAIT_TIME)
       .waitForElementPresent('a.playlist-content:nth-child(6)', PRESENT_WAIT_TIME)

@@ -43,12 +43,12 @@
 }
 
 .scroll-view {
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   position: relative;
   flex: 1;
   border-right: 1px solid #dbdbdb;
   border-left: 1px solid #dbdbdb;
-  margin-bottom: -1px;
 }
 
 .scroll-view .panel-block {
@@ -66,17 +66,8 @@
   padding-bottom: 0;
 }
 
-.playlist-content-title-wrapper {
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-}
 .playlist-border-top {
   border-top: 1px solid #dbdbdb;
-}
-
-.thumbnail-wrapper {
-  padding-right: 0;
 }
 
 .tab-with-icon {
