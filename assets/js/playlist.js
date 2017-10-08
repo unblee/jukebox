@@ -1,12 +1,9 @@
 Vue.component('playlist', {
   methods: {
-    humanizeTime(seconds) {
-      return Util.humanizeTimeFromSeconds(seconds);
-    },
     openClearPlaylistModal() {
       this.$refs.clearPlaylistModal.open();
     },
-    ...mapActions(['deleteTrack', 'playMusic', 'moveTrack'])
+    ...mapActions(['moveTrack'])
   },
   computed: {
     ...mapState(['playlist']),
@@ -16,42 +13,13 @@ Vue.component('playlist', {
   template: `
   <div class="scroll-view-wrapper playlist">
     <div class="scroll-view">
-      <div class="tracks">
-        <draggable class="panel scroll-view"
-                  v-show="!isPlaylistEmpty"
-                  :list="playlist"
-                  @end="moveTrack">
-          <a v-for="(content,idx) in playlist" class="panel-block playlist-content is-paddingless"
-              :class="{'now-playing-content is-active':isNowPlayingIdx(idx)}"
-              :title="content.title"
-              @click="playMusic(idx)"
-              >
-              <div class="control columns is-marginless is-mobile">
-                <div class="column is-1 align-self-center has-text-centered is-paddingless-vertical thumbnail-wrapper">
-                  <span class="panel-icon" v-if="isNowPlayingIdx(idx)">
-                    <i class="material-icons icon">equalizer</i>
-                  </span>
-                  <img :src="content.thumbnailLink" v-else class="is-block">
-                </div>
-                <div class="column is-7 playlist-content-title-wrapper">
-                  {{ content.title }}
-                </div>
-                <div class="column has-text-centered is-2">
-                  {{ humanizeTime(content.lengthSeconds) }}
-                </div>
-                <div class="column is-1 has-text-centered align-self-center is-paddingless-vertical">
-                  <copy-link-button class="is-flex" :link="content.link" tooltip-duration="1000"></copy-link-button>
-                </div>
-                <div class="column is-1 has-text-centered align-self-center is-paddingless-vertical">
-                  <a class="is-flex in-content-button" @click.prevent.stop="deleteTrack(idx)">
-                    <i class="material-icons icon" title="Delete">&#xE872;</i>
-                  </a>
-                </div>
-              </div>
-            </a>
-          </draggable>
-        </div>
-      </div>
+      <draggable class="panel"
+                v-show="!isPlaylistEmpty"
+                :list="playlist"
+                @end="moveTrack">
+        <playlist-item v-for="(content,idx) in playlist" mode="playlist" :track="content" :idx="idx" />
+      </draggable>
+    </div>
     <div class="panel playlist-controller">
       <div class="panel">
         <div class="panel-block playlist-border-top">
