@@ -9,10 +9,7 @@ exports.assertion = function currentTitleEquals(num, msg) {
   this.command = function command(callback) {
     this.api.getTitle(title => {
       this.expected = title;
-      this.api.getText(
-        `.playlist-content:nth-child(${num}) .playlist-content-title-wrapper`,
-        callback
-      );
+      this.api.getText(`.playlist-content:nth-child(${num}) .playlist-content-title`, callback);
     });
   };
 };
