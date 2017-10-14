@@ -44,6 +44,10 @@ a {
   margin-left: 0.2rem;
 }
 
+.modal-card-foot.is-right {
+  justify-content: flex-end;
+}
+
 .github-corner:hover .octo-arm {
   animation: octocat-wave 560ms ease-in-out;
 }
