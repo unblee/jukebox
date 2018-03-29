@@ -67,7 +67,7 @@
     "request": "^2.81.0",
     "request-promise": "^4.2.1",
     "server-destroy": "^1.0.1",
-    "speaker": "^0.3.0",
+    "speaker": "^0.4.1",
     "timed-stream": "^1.1.0",
     "ytdl-core": "^0.15.0"
   },
