@@ -79,7 +79,7 @@
     "eslint-plugin-prettier": "^2.1.2",
     "geckodriver": "^1.8.0",
     "husky": "^0.14.3",
-    "lint-staged": "^4.0.2",
+    "lint-staged": "^8.0.3",
     "mocha": "^3.5.0",
     "nightwatch": "^0.9.16",
     "nodemon": "^1.11.0",
