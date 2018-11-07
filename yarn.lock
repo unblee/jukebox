@@ -3457,7 +3457,11 @@ prettier-eslint@^6.0.0:
     pretty-format "^20.0.3"
     require-relative "^0.8.7"
 
-prettier@^1.5.0, prettier@^1.5.3:
+prettier@^1.15.0:
+  version "1.15.1"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.15.1.tgz#06c67106afb1b40e74b002353b2079cc7e0e67bf"
+
+prettier@^1.5.0:
   version "1.5.3"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.5.3.tgz#59dadc683345ec6b88f88b94ed4ae7e1da394bfe"
 
