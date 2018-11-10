@@ -3834,9 +3834,9 @@ sax@^1.1.3:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
 
-selenium-server@^3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/selenium-server/-/selenium-server-3.4.0.tgz#f9303656d956c8d6c856e4942167e0dec97fa7a8"
+selenium-server@^3.141.5:
+  version "3.141.5"
+  resolved "https://registry.yarnpkg.com/selenium-server/-/selenium-server-3.141.5.tgz#f27f47d40697d4445f4c15656fc2cece6dd2f341"
 
 semver-diff@^2.0.0:
   version "2.1.0"
